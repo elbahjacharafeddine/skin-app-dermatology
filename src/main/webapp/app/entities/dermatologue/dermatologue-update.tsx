@@ -15,7 +15,6 @@ import { getEntity, updateEntity, createEntity, reset } from './dermatologue.red
 
 export const DermatologueUpdate = () => {
   const dispatch = useAppDispatch();
-
   const navigate = useNavigate();
 
   const { id } = useParams<'id'>();
@@ -45,6 +44,10 @@ export const DermatologueUpdate = () => {
     },
   });
 
+  const updateUser = (id: string) => {
+    console.log(id);
+  };
+
   const handleClose = () => {
     navigate('/dermatologue');
   };
@@ -54,6 +57,7 @@ export const DermatologueUpdate = () => {
       dispatch(reset());
     } else {
       dispatch(getEntity(id));
+      updateUser(id);
     }
 
     dispatch(getUsers({}));
@@ -144,7 +148,7 @@ export const DermatologueUpdate = () => {
                 {users
                   ? users.map(otherEntity => (
                       <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.id}
+                        {otherEntity.firstName + ' '} elbahja
                       </option>
                     ))
                   : null}

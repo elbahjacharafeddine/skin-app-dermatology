@@ -12,10 +12,7 @@ import com.ensaj.web.rest.errors.BadRequestAlertException;
 import com.ensaj.web.rest.vm.ManagedUserVM;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -90,6 +87,30 @@ public class DermatologueResource {
      * or with status {@code 500 (Internal Server Error)} if the dermatologue couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
+    //    @PutMapping("/dermatologues/{id}")
+    //    public ResponseEntity<Dermatologue> updateDermatologue(
+    //        @PathVariable(value = "id", required = false) final String id,
+    //        @RequestBody Dermatologue dermatologue
+    //    ) throws URISyntaxException {
+    //        log.debug("REST request to update Dermatologue : {}, {}", id, dermatologue);
+    //        if (dermatologue.getId() == null) {
+    //            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+    //        }
+    //        if (!Objects.equals(id, dermatologue.getId())) {
+    //            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+    //        }
+    //
+    //        if (!dermatologueRepository.existsById(id)) {
+    //            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+    //        }
+    //
+    //        Dermatologue result = dermatologueRepository.save(dermatologue);
+    //        return ResponseEntity
+    //            .ok()
+    //            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, dermatologue.getId()))
+    //            .body(result);
+    //    }
+
     @PutMapping("/dermatologues/{id}")
     public ResponseEntity<Dermatologue> updateDermatologue(
         @PathVariable(value = "id", required = false) final String id,
@@ -170,11 +191,57 @@ public class DermatologueResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of dermatologues in body.
      */
+    //    @GetMapping("/dermatologues")
+    //    public List<Dermatologue> getAllDermatologues() {
+    //        log.debug("REST request to get all Dermatologues");
+    //        return dermatologueRepository.findAll();
+    //    }
+
     @GetMapping("/dermatologues")
     public List<Dermatologue> getAllDermatologues() {
         log.debug("REST request to get all Dermatologues");
-        return dermatologueRepository.findAll();
+        //        return dermatologueRepository.findAll();
+        List<Dermatologue> liste = dermatologueRepository.findAll();
+        for (Dermatologue e : liste) {
+            Optional<User> u = userRepository.findById(e.getId());
+            if (u.isPresent()) {
+                e.setUser(u.get());
+            }
+        }
+        return liste;
     }
+
+    //    @GetMapping("/dermatologues")
+    //    public List<TransformedDermatologueUserDTO> getAllDermatologues() {
+    //        log.debug("REST request to get all Dermatologues");
+    ////        return dermatologueRepository.findAll();
+    //        List<DermatologueUserDTO> list = new ArrayList<>();
+    //        List<TransformedDermatologueUserDTO> response = new ArrayList<>();
+    //        List<Dermatologue> liste = dermatologueRepository.findAll();
+    //
+    //
+    //        for (Dermatologue d: liste){
+    //            Optional<User> u = userRepository.findById(d.getId());
+    //            DermatologueUserDTO dermatologueUserDTO = new DermatologueUserDTO();
+    //            if (u.isPresent()){
+    //                dermatologueUserDTO.setDermatologue(d);
+    //                ManagedUserVM user = new ManagedUserVM();
+    //                user.setFirstName(u.get().getFirstName());
+    //                user.setLastName(u.get().getLastName());
+    //                user.setEmail(u.get().getEmail());
+    //                dermatologueUserDTO.setUser(user);
+    //                dermatologueUserDTO.setUser(user);
+    //
+    //                list.add(dermatologueUserDTO);
+    //            }
+    //        }
+    //
+    //        for(DermatologueUserDTO d : list){
+    //            response.add(new TransformedDermatologueUserDTO(d));
+    //        }
+    //
+    //        return response;
+    //    }
 
     /**
      * {@code GET  /dermatologues/:id} : get the "id" dermatologue.

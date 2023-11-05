@@ -63,6 +63,10 @@ export const Dermatologue = () => {
     }
   };
 
+  const showData = () => {
+    console.log(dermatologueList);
+  };
+
   return (
     <div>
       <h2 id="dermatologue-heading" data-cy="DermatologueHeading">
@@ -100,9 +104,7 @@ export const Dermatologue = () => {
                   <Translate contentKey="assistanteDermatologueApp.dermatologue.telephone">Telephone</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('telephone')} />
                 </th>
-                <th>
-                  <Translate contentKey="assistanteDermatologueApp.dermatologue.user">User</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
+                <th>Full name</th>
                 <th />
               </tr>
             </thead>
@@ -117,7 +119,8 @@ export const Dermatologue = () => {
                   <td>{dermatologue.codeEmp}</td>
                   <td>{dermatologue.genre}</td>
                   <td>{dermatologue.telephone}</td>
-                  <td>{dermatologue.user ? dermatologue.user.id : ''}</td>
+                  {/*<td>{dermatologue.user ? dermatologue.user : ''}</td>*/}
+                  <td>{dermatologue.user.firstName + ' ' + dermatologue.user.lastName}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/dermatologue/${dermatologue.id}`} color="info" size="sm" data-cy="entityDetailsButton">

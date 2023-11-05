@@ -231,6 +231,8 @@ class ImageStadeResourceIT {
         ImageStade partialUpdatedImageStade = new ImageStade();
         partialUpdatedImageStade.setId(imageStade.getId());
 
+        partialUpdatedImageStade.picture(UPDATED_PICTURE).pictureContentType(UPDATED_PICTURE_CONTENT_TYPE);
+
         restImageStadeMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedImageStade.getId())
@@ -243,8 +245,8 @@ class ImageStadeResourceIT {
         List<ImageStade> imageStadeList = imageStadeRepository.findAll();
         assertThat(imageStadeList).hasSize(databaseSizeBeforeUpdate);
         ImageStade testImageStade = imageStadeList.get(imageStadeList.size() - 1);
-        assertThat(testImageStade.getPicture()).isEqualTo(DEFAULT_PICTURE);
-        assertThat(testImageStade.getPictureContentType()).isEqualTo(DEFAULT_PICTURE_CONTENT_TYPE);
+        assertThat(testImageStade.getPicture()).isEqualTo(UPDATED_PICTURE);
+        assertThat(testImageStade.getPictureContentType()).isEqualTo(UPDATED_PICTURE_CONTENT_TYPE);
     }
 
     @Test

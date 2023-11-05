@@ -47,6 +47,7 @@ export const MaladieUpdate = () => {
     }
   }, [updateSuccess]);
 
+  // eslint-disable-next-line complexity
   const saveEntity = values => {
     const entity = {
       ...maladieEntity,

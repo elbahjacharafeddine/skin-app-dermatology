@@ -49,6 +49,7 @@ export const DermatologueUpdate = () => {
     }
   }, [updateSuccess]);
 
+  // eslint-disable-next-line complexity
   const saveEntity = values => {
     const entity = {
       ...dermatologueEntity,

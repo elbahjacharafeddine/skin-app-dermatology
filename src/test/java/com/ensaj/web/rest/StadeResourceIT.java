@@ -231,7 +231,7 @@ class StadeResourceIT {
         Stade partialUpdatedStade = new Stade();
         partialUpdatedStade.setId(stade.getId());
 
-        partialUpdatedStade.stade(UPDATED_STADE);
+        partialUpdatedStade.description(UPDATED_DESCRIPTION);
 
         restStadeMockMvc
             .perform(
@@ -245,8 +245,8 @@ class StadeResourceIT {
         List<Stade> stadeList = stadeRepository.findAll();
         assertThat(stadeList).hasSize(databaseSizeBeforeUpdate);
         Stade testStade = stadeList.get(stadeList.size() - 1);
-        assertThat(testStade.getStade()).isEqualTo(UPDATED_STADE);
-        assertThat(testStade.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertThat(testStade.getStade()).isEqualTo(DEFAULT_STADE);
+        assertThat(testStade.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
     }
 
     @Test

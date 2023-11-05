@@ -238,7 +238,7 @@ class DermatologueResourceIT {
         Dermatologue partialUpdatedDermatologue = new Dermatologue();
         partialUpdatedDermatologue.setId(dermatologue.getId());
 
-        partialUpdatedDermatologue.codeEmp(UPDATED_CODE_EMP);
+        partialUpdatedDermatologue.genre(UPDATED_GENRE).telephone(UPDATED_TELEPHONE);
 
         restDermatologueMockMvc
             .perform(
@@ -252,9 +252,9 @@ class DermatologueResourceIT {
         List<Dermatologue> dermatologueList = dermatologueRepository.findAll();
         assertThat(dermatologueList).hasSize(databaseSizeBeforeUpdate);
         Dermatologue testDermatologue = dermatologueList.get(dermatologueList.size() - 1);
-        assertThat(testDermatologue.getCodeEmp()).isEqualTo(UPDATED_CODE_EMP);
-        assertThat(testDermatologue.getGenre()).isEqualTo(DEFAULT_GENRE);
-        assertThat(testDermatologue.getTelephone()).isEqualTo(DEFAULT_TELEPHONE);
+        assertThat(testDermatologue.getCodeEmp()).isEqualTo(DEFAULT_CODE_EMP);
+        assertThat(testDermatologue.getGenre()).isEqualTo(UPDATED_GENRE);
+        assertThat(testDermatologue.getTelephone()).isEqualTo(UPDATED_TELEPHONE);
     }
 
     @Test

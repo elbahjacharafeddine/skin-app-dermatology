@@ -224,8 +224,6 @@ class SymptomsResourceIT {
         Symptoms partialUpdatedSymptoms = new Symptoms();
         partialUpdatedSymptoms.setId(symptoms.getId());
 
-        partialUpdatedSymptoms.nom(UPDATED_NOM);
-
         restSymptomsMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedSymptoms.getId())
@@ -238,7 +236,7 @@ class SymptomsResourceIT {
         List<Symptoms> symptomsList = symptomsRepository.findAll();
         assertThat(symptomsList).hasSize(databaseSizeBeforeUpdate);
         Symptoms testSymptoms = symptomsList.get(symptomsList.size() - 1);
-        assertThat(testSymptoms.getNom()).isEqualTo(UPDATED_NOM);
+        assertThat(testSymptoms.getNom()).isEqualTo(DEFAULT_NOM);
     }
 
     @Test

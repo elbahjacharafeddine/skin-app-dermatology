@@ -20,7 +20,7 @@ import tech.jhipster.web.util.ResponseUtil;
  * REST controller for managing {@link com.ensaj.domain.Stade}.
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/stades")
 public class StadeResource {
 
     private final Logger log = LoggerFactory.getLogger(StadeResource.class);
@@ -43,7 +43,7 @@ public class StadeResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new stade, or with status {@code 400 (Bad Request)} if the stade has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/stades")
+    @PostMapping("")
     public ResponseEntity<Stade> createStade(@RequestBody Stade stade) throws URISyntaxException {
         log.debug("REST request to save Stade : {}", stade);
         if (stade.getId() != null) {
@@ -66,7 +66,7 @@ public class StadeResource {
      * or with status {@code 500 (Internal Server Error)} if the stade couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/stades/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Stade> updateStade(@PathVariable(value = "id", required = false) final String id, @RequestBody Stade stade)
         throws URISyntaxException {
         log.debug("REST request to update Stade : {}, {}", id, stade);
@@ -99,7 +99,7 @@ public class StadeResource {
      * or with status {@code 500 (Internal Server Error)} if the stade couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/stades/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<Stade> partialUpdateStade(
         @PathVariable(value = "id", required = false) final String id,
         @RequestBody Stade stade
@@ -138,7 +138,7 @@ public class StadeResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of stades in body.
      */
-    @GetMapping("/stades")
+    @GetMapping("")
     public List<Stade> getAllStades() {
         log.debug("REST request to get all Stades");
         return stadeRepository.findAll();
@@ -150,7 +150,7 @@ public class StadeResource {
      * @param id the id of the stade to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the stade, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/stades/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Stade> getStade(@PathVariable String id) {
         log.debug("REST request to get Stade : {}", id);
         Optional<Stade> stade = stadeRepository.findById(id);
@@ -163,7 +163,7 @@ public class StadeResource {
      * @param id the id of the stade to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/stades/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStade(@PathVariable String id) {
         log.debug("REST request to delete Stade : {}", id);
         stadeRepository.deleteById(id);

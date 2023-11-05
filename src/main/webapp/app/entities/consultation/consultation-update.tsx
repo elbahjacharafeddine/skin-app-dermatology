@@ -47,6 +47,7 @@ export const ConsultationUpdate = () => {
     }
   }, [updateSuccess]);
 
+  // eslint-disable-next-line complexity
   const saveEntity = values => {
     values.dateConsultation = convertDateTimeToServer(values.dateConsultation);
 

@@ -47,8 +47,12 @@ export const DiagnosticUpdate = () => {
     }
   }, [updateSuccess]);
 
+  // eslint-disable-next-line complexity
   const saveEntity = values => {
     values.dateDiagnostic = convertDateTimeToServer(values.dateDiagnostic);
+    if (values.probability !== undefined && typeof values.probability !== 'number') {
+      values.probability = Number(values.probability);
+    }
 
     const entity = {
       ...diagnosticEntity,

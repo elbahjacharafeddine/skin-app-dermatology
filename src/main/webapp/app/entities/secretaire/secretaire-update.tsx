@@ -21,6 +21,7 @@ export const SecretaireUpdate = () => {
   const isNew = id === undefined;
 
   const users = useAppSelector(state => state.userManagement.users);
+  // localStorage.setItem('Users', users);
   const secretaireEntity = useAppSelector(state => state.secretaire.entity);
   const loading = useAppSelector(state => state.secretaire.loading);
   const updating = useAppSelector(state => state.secretaire.updating);
@@ -41,6 +42,8 @@ export const SecretaireUpdate = () => {
   }, []);
 
   useEffect(() => {
+    // localStorage.setItem("SecretaryUser",secretaireEntity.user);
+
     if (updateSuccess) {
       handleClose();
     }
@@ -59,6 +62,7 @@ export const SecretaireUpdate = () => {
     } else {
       dispatch(updateEntity(entity));
     }
+    // localStorage.setItem('SecretaireUser', JSON.stringify(entity.user));
   };
 
   const defaultValues = () =>

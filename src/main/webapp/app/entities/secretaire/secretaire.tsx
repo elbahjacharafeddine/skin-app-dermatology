@@ -62,6 +62,7 @@ export const Secretaire = () => {
       return order === ASC ? faSortUp : faSortDown;
     }
   };
+  // const storedUser = JSON.parse(localStorage.getItem('SecretaireUser'));
 
   return (
     <div>

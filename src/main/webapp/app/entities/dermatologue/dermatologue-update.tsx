@@ -27,24 +27,6 @@ export const DermatologueUpdate = () => {
   const updating = useAppSelector(state => state.dermatologue.updating);
   const updateSuccess = useAppSelector(state => state.dermatologue.updateSuccess);
 
-  const [dermatologue, setDermatologue] = useState({
-    dermatologue: {
-      codeEmp: '8979567',
-      telephone: '09165516617',
-      genre: 'male',
-    },
-    user: {
-      login: 'elmansouri',
-      password: 'password',
-      firstName: 'test',
-      lastName: 'test',
-      email: 'test.doe@example.com',
-      activated: true,
-      langKey: 'en',
-      imageUrl: 'https://example.com/user.jpg',
-    },
-  });
-
   const handleClose = () => {
     navigate('/dermatologue');
   };
@@ -75,7 +57,7 @@ export const DermatologueUpdate = () => {
     };
 
     if (isNew) {
-      dispatch(createEntity(dermatologue));
+      dispatch(createEntity(formData));
     } else {
       dispatch(updateEntity(entity));
     }
@@ -89,8 +71,35 @@ export const DermatologueUpdate = () => {
           user: dermatologueEntity?.user,
         };
 
+  const [formData, setFormData] = useState({
+    dermatologue: {
+      codeEmp: '',
+      telephone: '',
+      genre: '',
+    },
+    user: {
+      login: '',
+      password: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      activated: true,
+      langKey: 'en',
+    },
+  });
+
+  const showData = () => {
+    console.log(defaultValues());
+  };
   return (
     <div>
+      <button
+        onClick={() => {
+          showData();
+        }}
+      >
+        Show data
+      </button>
       <Row className="justify-content-center">
         <Col md="8">
           <h2 id="assistanteDermatologueApp.dermatologue.home.createOrEditLabel" data-cy="DermatologueCreateUpdateHeading">
@@ -121,6 +130,12 @@ export const DermatologueUpdate = () => {
                 name="codeEmp"
                 data-cy="codeEmp"
                 type="text"
+                onChange={e => {
+                  setFormData({
+                    ...formData,
+                    dermatologue: { ...formData.dermatologue, codeEmp: e.target.value },
+                  });
+                }}
               />
               <ValidatedField
                 label={translate('assistanteDermatologueApp.dermatologue.genre')}
@@ -128,6 +143,12 @@ export const DermatologueUpdate = () => {
                 name="genre"
                 data-cy="genre"
                 type="text"
+                onChange={e => {
+                  setFormData({
+                    ...formData,
+                    dermatologue: { ...formData.dermatologue, genre: e.target.value },
+                  });
+                }}
               />
               <ValidatedField
                 label={translate('assistanteDermatologueApp.dermatologue.telephone')}
@@ -135,6 +156,12 @@ export const DermatologueUpdate = () => {
                 name="telephone"
                 data-cy="telephone"
                 type="text"
+                onChange={e => {
+                  setFormData({
+                    ...formData,
+                    dermatologue: { ...formData.dermatologue, telephone: e.target.value },
+                  });
+                }}
               />
               <ValidatedField
                 label="Login"
@@ -143,8 +170,30 @@ export const DermatologueUpdate = () => {
                 name="user.login"
                 data-cy="user.login"
                 type="text"
-                readOnly={true}
+                readOnly={!isNew}
+                onChange={e => {
+                  setFormData({
+                    ...formData,
+                    user: { ...formData.user, login: e.target.value },
+                  });
+                }}
               />
+              {isNew && (
+                <ValidatedField
+                  label="Password"
+                  id="password"
+                  name="user.passwword"
+                  data-cy="user.password"
+                  type="text"
+                  hidden={!isNew}
+                  onChange={e => {
+                    setFormData({
+                      ...formData,
+                      user: { ...formData.user, password: e.target.value },
+                    });
+                  }}
+                />
+              )}
               <ValidatedField
                 label="email"
                 // label={translate('assistanteDermatologueApp.dermatologue.user.login')}
@@ -152,6 +201,12 @@ export const DermatologueUpdate = () => {
                 name="user.email"
                 data-cy="user.email"
                 type="text"
+                onChange={e => {
+                  setFormData({
+                    ...formData,
+                    user: { ...formData.user, email: e.target.value },
+                  });
+                }}
               />
               <ValidatedField
                 label="First name"
@@ -160,6 +215,12 @@ export const DermatologueUpdate = () => {
                 name="user.firstName"
                 data-cy="user.firstName"
                 type="text"
+                onChange={e => {
+                  setFormData({
+                    ...formData,
+                    user: { ...formData.user, firstName: e.target.value },
+                  });
+                }}
               />
               <ValidatedField
                 label="Last name"
@@ -168,6 +229,12 @@ export const DermatologueUpdate = () => {
                 name="user.lastName"
                 data-cy="user.lastName"
                 type="text"
+                onChange={e => {
+                  setFormData({
+                    ...formData,
+                    user: { ...formData.user, lastName: e.target.value },
+                  });
+                }}
               />
               {/*<ValidatedField*/}
               {/*  id="dermatologue-user"*/}

@@ -3,15 +3,19 @@ package com.ensaj.service;
 import com.ensaj.config.Constants;
 import com.ensaj.domain.Authority;
 import com.ensaj.domain.Dermatologue;
+import com.ensaj.domain.Secretaire;
 import com.ensaj.domain.User;
 import com.ensaj.repository.AuthorityRepository;
 import com.ensaj.repository.DermatologueRepository;
+import com.ensaj.repository.SecretaireRepository;
 import com.ensaj.repository.UserRepository;
 import com.ensaj.security.AuthoritiesConstants;
 import com.ensaj.security.SecurityUtils;
 import com.ensaj.service.dto.AdminUserDTO;
 import com.ensaj.service.dto.DermatologueUserDTO;
+import com.ensaj.service.dto.SecretaireUserDTO;
 import com.ensaj.service.dto.TransformedDermatologueUserDTO;
+import com.ensaj.service.dto.TransformedSecretaireUserDTO;
 import com.ensaj.service.dto.UserDTO;
 import com.ensaj.web.rest.errors.BadRequestAlertException;
 import com.ensaj.web.rest.vm.ManagedUserVM;
@@ -44,17 +48,20 @@ public class UserService {
 
     private final AuthorityRepository authorityRepository;
     private final DermatologueRepository dermatologueRepository;
+    private final SecretaireRepository secretaireRepository;
 
     public UserService(
         UserRepository userRepository,
         PasswordEncoder passwordEncoder,
         AuthorityRepository authorityRepository,
-        DermatologueRepository dermatologueRepository
+        DermatologueRepository dermatologueRepository,
+        SecretaireRepository secretaireRepository
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.dermatologueRepository = dermatologueRepository;
+        this.secretaireRepository = secretaireRepository;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -363,6 +370,71 @@ public class UserService {
                 t.setCodeEmp(dermatologue.get().getCodeEmp());
                 t.setGenre(dermatologue.get().getGenre());
                 t.setTelephone(dermatologue.get().getTelephone());
+                t.setUser(managedUserVM);
+
+                return t;
+            }
+        }
+        return null;
+    }
+
+    //secretaire
+    public User createSecretaire(ManagedUserVM userDTO) {
+        User user = new User();
+        user.setLogin(userDTO.getLogin().toLowerCase());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        if (userDTO.getEmail() != null) {
+            user.setEmail(userDTO.getEmail().toLowerCase());
+        }
+        user.setImageUrl(userDTO.getImageUrl());
+        if (userDTO.getLangKey() == null) {
+            user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
+        } else {
+            user.setLangKey(userDTO.getLangKey());
+        }
+        String encryptedPassword = passwordEncoder.encode(userDTO.getPassword());
+        user.setPassword(encryptedPassword);
+        user.setResetKey(RandomUtil.generateResetKey());
+        user.setResetDate(Instant.now());
+        user.setActivated(true);
+        if (userDTO.getAuthorities() != null) {
+            Set<Authority> authorities = userDTO
+                .getAuthorities()
+                .stream()
+                .map(authorityRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toSet());
+            user.setAuthorities(authorities);
+        }
+        userRepository.save(user);
+        log.debug("Created Information for User: {}", user);
+        return user;
+    }
+
+    public TransformedSecretaireUserDTO findUserSecretaire(String id) {
+        Optional<Secretaire> secretaire = secretaireRepository.findById(id);
+        if (secretaire.isPresent()) {
+            Optional<User> user = userRepository.findById(id);
+            if (user.isPresent()) {
+                SecretaireUserDTO secretaireUserDTO = new SecretaireUserDTO();
+                secretaireUserDTO.setSecretaire(secretaire.get());
+
+                ManagedUserVM managedUserVM = new ManagedUserVM();
+                managedUserVM.setId(user.get().getId());
+                managedUserVM.setLogin(user.get().getLogin());
+                managedUserVM.setFirstName(user.get().getFirstName());
+                managedUserVM.setLastName(user.get().getLastName());
+                managedUserVM.setEmail(user.get().getEmail());
+                managedUserVM.setImageUrl(user.get().getImageUrl());
+                secretaireUserDTO.setUser(managedUserVM);
+
+                TransformedSecretaireUserDTO t = new TransformedSecretaireUserDTO();
+                t.setId(managedUserVM.getId());
+                t.setCodeEmp(secretaire.get().getCodeEmp());
+                t.setGenre(secretaire.get().getGenre());
+                t.setTelephone(secretaire.get().getTelephone());
                 t.setUser(managedUserVM);
 
                 return t;

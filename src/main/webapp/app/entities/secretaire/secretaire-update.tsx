@@ -15,7 +15,6 @@ import { getEntity, updateEntity, createEntity, reset } from './secretaire.reduc
 
 export const SecretaireUpdate = () => {
   const dispatch = useAppDispatch();
-
   const navigate = useNavigate();
 
   const { id } = useParams<'id'>();
@@ -56,7 +55,7 @@ export const SecretaireUpdate = () => {
     };
 
     if (isNew) {
-      dispatch(createEntity(entity));
+      dispatch(createEntity(formData));
     } else {
       dispatch(updateEntity(entity));
     }
@@ -67,11 +66,39 @@ export const SecretaireUpdate = () => {
       ? {}
       : {
           ...secretaireEntity,
-          user: secretaireEntity?.user?.id,
+          user: secretaireEntity?.user,
         };
 
+  const [formData, setFormData] = useState({
+    secretaire: {
+      codeEmp: '',
+      telephone: '',
+      genre: '',
+    },
+    user: {
+      login: '',
+      password: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      activated: true,
+      langKey: 'en',
+    },
+  });
+  const showData = () => {
+    console.log(defaultValues());
+  };
+
+  //
   return (
     <div>
+      <button
+        onClick={() => {
+          showData();
+        }}
+      >
+        Show data
+      </button>
       <Row className="justify-content-center">
         <Col md="8">
           <h2 id="assistanteDermatologueApp.secretaire.home.createOrEditLabel" data-cy="SecretaireCreateUpdateHeading">
@@ -93,6 +120,7 @@ export const SecretaireUpdate = () => {
                   id="secretaire-id"
                   label={translate('global.field.id')}
                   validate={{ required: true }}
+                  hidden={true}
                 />
               ) : null}
               <ValidatedField
@@ -101,6 +129,14 @@ export const SecretaireUpdate = () => {
                 name="codeEmp"
                 data-cy="codeEmp"
                 type="text"
+                onChange={e => {
+                  if (isNew) {
+                    setFormData({
+                      ...formData,
+                      secretaire: { ...formData.secretaire, codeEmp: e.target.value },
+                    });
+                  }
+                }}
               />
               <ValidatedField
                 label={translate('assistanteDermatologueApp.secretaire.genre')}
@@ -108,6 +144,14 @@ export const SecretaireUpdate = () => {
                 name="genre"
                 data-cy="genre"
                 type="text"
+                onChange={e => {
+                  if (isNew) {
+                    setFormData({
+                      ...formData,
+                      secretaire: { ...formData.secretaire, genre: e.target.value },
+                    });
+                  }
+                }}
               />
               <ValidatedField
                 label={translate('assistanteDermatologueApp.secretaire.telephone')}
@@ -115,8 +159,99 @@ export const SecretaireUpdate = () => {
                 name="telephone"
                 data-cy="telephone"
                 type="text"
+                onChange={e => {
+                  if (isNew) {
+                    setFormData({
+                      ...formData,
+                      secretaire: { ...formData.secretaire, telephone: e.target.value },
+                    });
+                  }
+                }}
               />
               <ValidatedField
+                label="Login"
+                // label={translate('assistanteDermatologueApp.dermatologue.user.login')}
+                id="login"
+                name="user.login"
+                data-cy="user.login"
+                type="text"
+                readOnly={!isNew}
+                onChange={e => {
+                  if (isNew) {
+                    setFormData({
+                      ...formData,
+                      user: { ...formData.user, login: e.target.value },
+                    });
+                  }
+                }}
+              />
+              {isNew && (
+                <ValidatedField
+                  label="Password"
+                  id="password"
+                  name="user.passwword"
+                  data-cy="user.password"
+                  type="text"
+                  hidden={!isNew}
+                  onChange={e => {
+                    if (isNew) {
+                      setFormData({
+                        ...formData,
+                        user: { ...formData.user, password: e.target.value },
+                      });
+                    }
+                  }}
+                />
+              )}
+              <ValidatedField
+                label="email"
+                // label={translate('assistanteDermatologueApp.dermatologue.user.login')}
+                id="lastName"
+                name="user.email"
+                data-cy="user.email"
+                type="text"
+                onChange={e => {
+                  if (isNew) {
+                    setFormData({
+                      ...formData,
+                      user: { ...formData.user, email: e.target.value },
+                    });
+                  }
+                }}
+              />
+              <ValidatedField
+                label="First name"
+                // label={translate('assistanteDermatologueApp.dermatologue.user.login')}
+                id="firstName"
+                name="user.firstName"
+                data-cy="user.firstName"
+                type="text"
+                onChange={e => {
+                  if (isNew) {
+                    setFormData({
+                      ...formData,
+                      user: { ...formData.user, firstName: e.target.value },
+                    });
+                  }
+                }}
+              />
+              <ValidatedField
+                label="Last name"
+                // label={translate('assistanteDermatologueApp.dermatologue.user.login')}
+                id="lastName"
+                name="user.lastName"
+                data-cy="user.lastName"
+                type="text"
+                onChange={e => {
+                  if (isNew) {
+                    setFormData({
+                      ...formData,
+                      user: { ...formData.user, lastName: e.target.value },
+                    });
+                  }
+                }}
+              />
+              {/* <ValidatedField
                 id="secretaire-user"
                 name="user"
                 data-cy="user"
@@ -131,7 +266,7 @@ export const SecretaireUpdate = () => {
                       </option>
                     ))
                   : null}
-              </ValidatedField>
+              </ValidatedField> */}
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/secretaire" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

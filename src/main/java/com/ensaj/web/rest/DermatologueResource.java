@@ -1,6 +1,7 @@
 package com.ensaj.web.rest;
 
 import com.ensaj.domain.Dermatologue;
+import com.ensaj.domain.User;
 import com.ensaj.repository.DermatologueRepository;
 import com.ensaj.repository.UserRepository;
 import com.ensaj.security.AuthoritiesConstants;
@@ -8,8 +9,10 @@ import com.ensaj.service.UserService;
 import com.ensaj.service.dto.DermatologueUserDTO;
 import com.ensaj.service.dto.TransformedDermatologueUserDTO;
 import com.ensaj.web.rest.errors.BadRequestAlertException;
+import com.ensaj.web.rest.vm.ManagedUserVM;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -25,7 +28,7 @@ import tech.jhipster.web.util.ResponseUtil;
  * REST controller for managing {@link com.ensaj.domain.Dermatologue}.
  */
 @RestController
-@RequestMapping("/api/dermatologues")
+@RequestMapping("/api")
 public class DermatologueResource {
 
     private final Logger log = LoggerFactory.getLogger(DermatologueResource.class);
@@ -36,9 +39,13 @@ public class DermatologueResource {
     private String applicationName;
 
     private final DermatologueRepository dermatologueRepository;
+    private final UserService userService;
+    private final UserRepository userRepository;
 
-    public DermatologueResource(DermatologueRepository dermatologueRepository) {
+    public DermatologueResource(DermatologueRepository dermatologueRepository, UserService userService, UserRepository userRepository) {
         this.dermatologueRepository = dermatologueRepository;
+        this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -48,17 +55,29 @@ public class DermatologueResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new dermatologue, or with status {@code 400 (Bad Request)} if the dermatologue has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("")
-    public ResponseEntity<Dermatologue> createDermatologue(@RequestBody Dermatologue dermatologue) throws URISyntaxException {
+    @PostMapping("/dermatologues")
+    public ResponseEntity<Dermatologue> createDermatologue(@RequestBody DermatologueUserDTO dermatologue) throws URISyntaxException {
         log.debug("REST request to save Dermatologue : {}", dermatologue);
-        if (dermatologue.getId() != null) {
+        if (dermatologue.getDermatologue().getId() != null) {
             throw new BadRequestAlertException("A new dermatologue cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Dermatologue result = dermatologueRepository.save(dermatologue);
-        return ResponseEntity
-            .created(new URI("/api/dermatologues/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId()))
-            .body(result);
+
+        Dermatologue dermatologue1 = dermatologue.getDermatologue();
+        ManagedUserVM user = dermatologue.getUser();
+        user.setAuthorities(new HashSet<>());
+        user.getAuthorities().add(AuthoritiesConstants.DERMATOLOGUE);
+
+        User u = userService.createDermatologue(user);
+        Optional<User> lastOne = userRepository.findOneByLogin(u.getLogin());
+        if (lastOne.isPresent()) {
+            dermatologue1.setId(lastOne.get().getId());
+            Dermatologue result = dermatologueRepository.save(dermatologue1);
+            return ResponseEntity
+                .created(new URI("/api/dermatologues/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId()))
+                .body(result);
+        }
+        return null;
     }
 
     /**
@@ -71,7 +90,7 @@ public class DermatologueResource {
      * or with status {@code 500 (Internal Server Error)} if the dermatologue couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/{id}")
+    @PutMapping("/dermatologues/{id}")
     public ResponseEntity<Dermatologue> updateDermatologue(
         @PathVariable(value = "id", required = false) final String id,
         @RequestBody Dermatologue dermatologue
@@ -106,7 +125,7 @@ public class DermatologueResource {
      * or with status {@code 500 (Internal Server Error)} if the dermatologue couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PatchMapping(value = "/dermatologues/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<Dermatologue> partialUpdateDermatologue(
         @PathVariable(value = "id", required = false) final String id,
         @RequestBody Dermatologue dermatologue
@@ -151,7 +170,7 @@ public class DermatologueResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of dermatologues in body.
      */
-    @GetMapping("")
+    @GetMapping("/dermatologues")
     public List<Dermatologue> getAllDermatologues() {
         log.debug("REST request to get all Dermatologues");
         return dermatologueRepository.findAll();
@@ -163,10 +182,6 @@ public class DermatologueResource {
      * @param id the id of the dermatologue to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the dermatologue, or with status {@code 404 (Not Found)}.
      */
-
-    // @GetMapping("/{id}")
-    // public ResponseEntity<Dermatologue> getDermatologue(@PathVariable String id) {
-
     @GetMapping("/dermatologues/{id}")
     public ResponseEntity<TransformedDermatologueUserDTO> getDermatologue(@PathVariable String id) {
         log.debug("REST request to get Dermatologue : {}", id);
@@ -181,7 +196,7 @@ public class DermatologueResource {
      * @param id the id of the dermatologue to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/dermatologues/{id}")
     public ResponseEntity<Void> deleteDermatologue(@PathVariable String id) {
         log.debug("REST request to delete Dermatologue : {}", id);
         dermatologueRepository.deleteById(id);

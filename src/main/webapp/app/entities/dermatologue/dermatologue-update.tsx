@@ -132,10 +132,12 @@ export const DermatologueUpdate = () => {
                 data-cy="codeEmp"
                 type="text"
                 onChange={e => {
-                  setFormData({
-                    ...formData,
-                    dermatologue: { ...formData.dermatologue, codeEmp: e.target.value },
-                  });
+                  if (isNew) {
+                    setFormData({
+                      ...formData,
+                      dermatologue: { ...formData.dermatologue, codeEmp: e.target.value },
+                    });
+                  }
                 }}
               />
               <ValidatedField
@@ -145,10 +147,12 @@ export const DermatologueUpdate = () => {
                 data-cy="genre"
                 type="text"
                 onChange={e => {
-                  setFormData({
-                    ...formData,
-                    dermatologue: { ...formData.dermatologue, genre: e.target.value },
-                  });
+                  if (isNew) {
+                    setFormData({
+                      ...formData,
+                      dermatologue: { ...formData.dermatologue, genre: e.target.value },
+                    });
+                  }
                 }}
               />
               <ValidatedField
@@ -158,10 +162,12 @@ export const DermatologueUpdate = () => {
                 data-cy="telephone"
                 type="text"
                 onChange={e => {
-                  setFormData({
-                    ...formData,
-                    dermatologue: { ...formData.dermatologue, telephone: e.target.value },
-                  });
+                  if (isNew) {
+                    setFormData({
+                      ...formData,
+                      dermatologue: { ...formData.dermatologue, telephone: e.target.value },
+                    });
+                  }
                 }}
               />
               <ValidatedField
@@ -173,10 +179,12 @@ export const DermatologueUpdate = () => {
                 type="text"
                 readOnly={!isNew}
                 onChange={e => {
-                  setFormData({
-                    ...formData,
-                    user: { ...formData.user, login: e.target.value },
-                  });
+                  if (isNew) {
+                    setFormData({
+                      ...formData,
+                      user: { ...formData.user, login: e.target.value },
+                    });
+                  }
                 }}
               />
               {isNew && (
@@ -188,10 +196,12 @@ export const DermatologueUpdate = () => {
                   type="text"
                   hidden={!isNew}
                   onChange={e => {
-                    setFormData({
-                      ...formData,
-                      user: { ...formData.user, password: e.target.value },
-                    });
+                    if (isNew) {
+                      setFormData({
+                        ...formData,
+                        user: { ...formData.user, password: e.target.value },
+                      });
+                    }
                   }}
                 />
               )}
@@ -203,10 +213,12 @@ export const DermatologueUpdate = () => {
                 data-cy="user.email"
                 type="text"
                 onChange={e => {
-                  setFormData({
-                    ...formData,
-                    user: { ...formData.user, email: e.target.value },
-                  });
+                  if (isNew) {
+                    setFormData({
+                      ...formData,
+                      user: { ...formData.user, email: e.target.value },
+                    });
+                  }
                 }}
               />
               <ValidatedField
@@ -217,10 +229,12 @@ export const DermatologueUpdate = () => {
                 data-cy="user.firstName"
                 type="text"
                 onChange={e => {
-                  setFormData({
-                    ...formData,
-                    user: { ...formData.user, firstName: e.target.value },
-                  });
+                  if (isNew) {
+                    setFormData({
+                      ...formData,
+                      user: { ...formData.user, firstName: e.target.value },
+                    });
+                  }
                 }}
               />
               <ValidatedField
@@ -231,10 +245,12 @@ export const DermatologueUpdate = () => {
                 data-cy="user.lastName"
                 type="text"
                 onChange={e => {
-                  setFormData({
-                    ...formData,
-                    user: { ...formData.user, lastName: e.target.value },
-                  });
+                  if (isNew) {
+                    setFormData({
+                      ...formData,
+                      user: { ...formData.user, lastName: e.target.value },
+                    });
+                  }
                 }}
               />
               {/*<ValidatedField*/}

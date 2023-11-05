@@ -255,7 +255,7 @@ class PatientResourceIT {
         Patient partialUpdatedPatient = new Patient();
         partialUpdatedPatient.setId(patient.getId());
 
-        partialUpdatedPatient.adress(UPDATED_ADRESS).genre(UPDATED_GENRE).telephone(UPDATED_TELEPHONE);
+        partialUpdatedPatient.birthdate(UPDATED_BIRTHDATE).telephone(UPDATED_TELEPHONE);
 
         restPatientMockMvc
             .perform(
@@ -269,9 +269,9 @@ class PatientResourceIT {
         List<Patient> patientList = patientRepository.findAll();
         assertThat(patientList).hasSize(databaseSizeBeforeUpdate);
         Patient testPatient = patientList.get(patientList.size() - 1);
-        assertThat(testPatient.getBirthdate()).isEqualTo(DEFAULT_BIRTHDATE);
-        assertThat(testPatient.getAdress()).isEqualTo(UPDATED_ADRESS);
-        assertThat(testPatient.getGenre()).isEqualTo(UPDATED_GENRE);
+        assertThat(testPatient.getBirthdate()).isEqualTo(UPDATED_BIRTHDATE);
+        assertThat(testPatient.getAdress()).isEqualTo(DEFAULT_ADRESS);
+        assertThat(testPatient.getGenre()).isEqualTo(DEFAULT_GENRE);
         assertThat(testPatient.getTelephone()).isEqualTo(UPDATED_TELEPHONE);
     }
 

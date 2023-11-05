@@ -20,7 +20,7 @@ import tech.jhipster.web.util.ResponseUtil;
  * REST controller for managing {@link com.ensaj.domain.ImageStade}.
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/image-stades")
 public class ImageStadeResource {
 
     private final Logger log = LoggerFactory.getLogger(ImageStadeResource.class);
@@ -43,7 +43,7 @@ public class ImageStadeResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new imageStade, or with status {@code 400 (Bad Request)} if the imageStade has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/image-stades")
+    @PostMapping("")
     public ResponseEntity<ImageStade> createImageStade(@RequestBody ImageStade imageStade) throws URISyntaxException {
         log.debug("REST request to save ImageStade : {}", imageStade);
         if (imageStade.getId() != null) {
@@ -66,7 +66,7 @@ public class ImageStadeResource {
      * or with status {@code 500 (Internal Server Error)} if the imageStade couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/image-stades/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<ImageStade> updateImageStade(
         @PathVariable(value = "id", required = false) final String id,
         @RequestBody ImageStade imageStade
@@ -101,7 +101,7 @@ public class ImageStadeResource {
      * or with status {@code 500 (Internal Server Error)} if the imageStade couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/image-stades/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<ImageStade> partialUpdateImageStade(
         @PathVariable(value = "id", required = false) final String id,
         @RequestBody ImageStade imageStade
@@ -143,7 +143,7 @@ public class ImageStadeResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of imageStades in body.
      */
-    @GetMapping("/image-stades")
+    @GetMapping("")
     public List<ImageStade> getAllImageStades() {
         log.debug("REST request to get all ImageStades");
         return imageStadeRepository.findAll();
@@ -155,7 +155,7 @@ public class ImageStadeResource {
      * @param id the id of the imageStade to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the imageStade, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/image-stades/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ImageStade> getImageStade(@PathVariable String id) {
         log.debug("REST request to get ImageStade : {}", id);
         Optional<ImageStade> imageStade = imageStadeRepository.findById(id);
@@ -168,7 +168,7 @@ public class ImageStadeResource {
      * @param id the id of the imageStade to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/image-stades/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteImageStade(@PathVariable String id) {
         log.debug("REST request to delete ImageStade : {}", id);
         imageStadeRepository.deleteById(id);

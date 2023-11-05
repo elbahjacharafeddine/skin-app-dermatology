@@ -51,6 +51,7 @@ export const RendezVousUpdate = () => {
     }
   }, [updateSuccess]);
 
+  // eslint-disable-next-line complexity
   const saveEntity = values => {
     values.dateDebut = convertDateTimeToServer(values.dateDebut);
     values.dateFin = convertDateTimeToServer(values.dateFin);

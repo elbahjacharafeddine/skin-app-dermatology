@@ -47,6 +47,7 @@ export const StadeUpdate = () => {
     }
   }, [updateSuccess]);
 
+  // eslint-disable-next-line complexity
   const saveEntity = values => {
     const entity = {
       ...stadeEntity,

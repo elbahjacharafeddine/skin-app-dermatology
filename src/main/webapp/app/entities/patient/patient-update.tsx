@@ -47,6 +47,7 @@ export const PatientUpdate = () => {
     }
   }, [updateSuccess]);
 
+  // eslint-disable-next-line complexity
   const saveEntity = values => {
     values.birthdate = convertDateTimeToServer(values.birthdate);
 

@@ -133,8 +133,7 @@ export const Dermatologue = () => {
                         </span>
                       </Button>
                       <Button
-                        tag={Link}
-                        to={`/dermatologue/${dermatologue.id}/delete`}
+                        onClick={() => (location.href = `/dermatologue/${dermatologue.id}/delete`)}
                         color="danger"
                         size="sm"
                         data-cy="entityDeleteButton"

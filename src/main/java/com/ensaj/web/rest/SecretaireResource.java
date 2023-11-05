@@ -20,7 +20,7 @@ import tech.jhipster.web.util.ResponseUtil;
  * REST controller for managing {@link com.ensaj.domain.Secretaire}.
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/secretaires")
 public class SecretaireResource {
 
     private final Logger log = LoggerFactory.getLogger(SecretaireResource.class);
@@ -43,7 +43,7 @@ public class SecretaireResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new secretaire, or with status {@code 400 (Bad Request)} if the secretaire has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/secretaires")
+    @PostMapping("")
     public ResponseEntity<Secretaire> createSecretaire(@RequestBody Secretaire secretaire) throws URISyntaxException {
         log.debug("REST request to save Secretaire : {}", secretaire);
         if (secretaire.getId() != null) {
@@ -66,7 +66,7 @@ public class SecretaireResource {
      * or with status {@code 500 (Internal Server Error)} if the secretaire couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/secretaires/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Secretaire> updateSecretaire(
         @PathVariable(value = "id", required = false) final String id,
         @RequestBody Secretaire secretaire
@@ -101,7 +101,7 @@ public class SecretaireResource {
      * or with status {@code 500 (Internal Server Error)} if the secretaire couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/secretaires/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<Secretaire> partialUpdateSecretaire(
         @PathVariable(value = "id", required = false) final String id,
         @RequestBody Secretaire secretaire
@@ -146,7 +146,7 @@ public class SecretaireResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of secretaires in body.
      */
-    @GetMapping("/secretaires")
+    @GetMapping("")
     public List<Secretaire> getAllSecretaires() {
         log.debug("REST request to get all Secretaires");
         return secretaireRepository.findAll();
@@ -158,7 +158,7 @@ public class SecretaireResource {
      * @param id the id of the secretaire to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the secretaire, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/secretaires/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Secretaire> getSecretaire(@PathVariable String id) {
         log.debug("REST request to get Secretaire : {}", id);
         Optional<Secretaire> secretaire = secretaireRepository.findById(id);
@@ -171,7 +171,7 @@ public class SecretaireResource {
      * @param id the id of the secretaire to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/secretaires/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSecretaire(@PathVariable String id) {
         log.debug("REST request to delete Secretaire : {}", id);
         secretaireRepository.deleteById(id);

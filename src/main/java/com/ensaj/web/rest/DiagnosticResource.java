@@ -20,7 +20,7 @@ import tech.jhipster.web.util.ResponseUtil;
  * REST controller for managing {@link com.ensaj.domain.Diagnostic}.
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/diagnostics")
 public class DiagnosticResource {
 
     private final Logger log = LoggerFactory.getLogger(DiagnosticResource.class);
@@ -43,7 +43,7 @@ public class DiagnosticResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new diagnostic, or with status {@code 400 (Bad Request)} if the diagnostic has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/diagnostics")
+    @PostMapping("")
     public ResponseEntity<Diagnostic> createDiagnostic(@RequestBody Diagnostic diagnostic) throws URISyntaxException {
         log.debug("REST request to save Diagnostic : {}", diagnostic);
         if (diagnostic.getId() != null) {
@@ -66,7 +66,7 @@ public class DiagnosticResource {
      * or with status {@code 500 (Internal Server Error)} if the diagnostic couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/diagnostics/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Diagnostic> updateDiagnostic(
         @PathVariable(value = "id", required = false) final String id,
         @RequestBody Diagnostic diagnostic
@@ -101,7 +101,7 @@ public class DiagnosticResource {
      * or with status {@code 500 (Internal Server Error)} if the diagnostic couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/diagnostics/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<Diagnostic> partialUpdateDiagnostic(
         @PathVariable(value = "id", required = false) final String id,
         @RequestBody Diagnostic diagnostic
@@ -155,7 +155,7 @@ public class DiagnosticResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of diagnostics in body.
      */
-    @GetMapping("/diagnostics")
+    @GetMapping("")
     public List<Diagnostic> getAllDiagnostics() {
         log.debug("REST request to get all Diagnostics");
         return diagnosticRepository.findAll();
@@ -167,7 +167,7 @@ public class DiagnosticResource {
      * @param id the id of the diagnostic to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the diagnostic, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/diagnostics/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Diagnostic> getDiagnostic(@PathVariable String id) {
         log.debug("REST request to get Diagnostic : {}", id);
         Optional<Diagnostic> diagnostic = diagnosticRepository.findById(id);
@@ -180,7 +180,7 @@ public class DiagnosticResource {
      * @param id the id of the diagnostic to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/diagnostics/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteDiagnostic(@PathVariable String id) {
         log.debug("REST request to delete Diagnostic : {}", id);
         diagnosticRepository.deleteById(id);

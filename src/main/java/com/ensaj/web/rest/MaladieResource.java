@@ -20,7 +20,7 @@ import tech.jhipster.web.util.ResponseUtil;
  * REST controller for managing {@link com.ensaj.domain.Maladie}.
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/maladies")
 public class MaladieResource {
 
     private final Logger log = LoggerFactory.getLogger(MaladieResource.class);
@@ -43,7 +43,7 @@ public class MaladieResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new maladie, or with status {@code 400 (Bad Request)} if the maladie has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/maladies")
+    @PostMapping("")
     public ResponseEntity<Maladie> createMaladie(@RequestBody Maladie maladie) throws URISyntaxException {
         log.debug("REST request to save Maladie : {}", maladie);
         if (maladie.getId() != null) {
@@ -66,7 +66,7 @@ public class MaladieResource {
      * or with status {@code 500 (Internal Server Error)} if the maladie couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/maladies/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Maladie> updateMaladie(
         @PathVariable(value = "id", required = false) final String id,
         @RequestBody Maladie maladie
@@ -101,7 +101,7 @@ public class MaladieResource {
      * or with status {@code 500 (Internal Server Error)} if the maladie couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/maladies/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<Maladie> partialUpdateMaladie(
         @PathVariable(value = "id", required = false) final String id,
         @RequestBody Maladie maladie
@@ -140,7 +140,7 @@ public class MaladieResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of maladies in body.
      */
-    @GetMapping("/maladies")
+    @GetMapping("")
     public List<Maladie> getAllMaladies() {
         log.debug("REST request to get all Maladies");
         return maladieRepository.findAll();
@@ -152,7 +152,7 @@ public class MaladieResource {
      * @param id the id of the maladie to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the maladie, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/maladies/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Maladie> getMaladie(@PathVariable String id) {
         log.debug("REST request to get Maladie : {}", id);
         Optional<Maladie> maladie = maladieRepository.findById(id);
@@ -165,7 +165,7 @@ public class MaladieResource {
      * @param id the id of the maladie to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/maladies/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMaladie(@PathVariable String id) {
         log.debug("REST request to delete Maladie : {}", id);
         maladieRepository.deleteById(id);

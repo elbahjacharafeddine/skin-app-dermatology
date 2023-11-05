@@ -20,7 +20,7 @@ import tech.jhipster.web.util.ResponseUtil;
  * REST controller for managing {@link com.ensaj.domain.Consultation}.
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/consultations")
 public class ConsultationResource {
 
     private final Logger log = LoggerFactory.getLogger(ConsultationResource.class);
@@ -43,7 +43,7 @@ public class ConsultationResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new consultation, or with status {@code 400 (Bad Request)} if the consultation has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/consultations")
+    @PostMapping("")
     public ResponseEntity<Consultation> createConsultation(@RequestBody Consultation consultation) throws URISyntaxException {
         log.debug("REST request to save Consultation : {}", consultation);
         if (consultation.getId() != null) {
@@ -66,7 +66,7 @@ public class ConsultationResource {
      * or with status {@code 500 (Internal Server Error)} if the consultation couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/consultations/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Consultation> updateConsultation(
         @PathVariable(value = "id", required = false) final String id,
         @RequestBody Consultation consultation
@@ -101,7 +101,7 @@ public class ConsultationResource {
      * or with status {@code 500 (Internal Server Error)} if the consultation couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/consultations/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<Consultation> partialUpdateConsultation(
         @PathVariable(value = "id", required = false) final String id,
         @RequestBody Consultation consultation
@@ -140,7 +140,7 @@ public class ConsultationResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of consultations in body.
      */
-    @GetMapping("/consultations")
+    @GetMapping("")
     public List<Consultation> getAllConsultations() {
         log.debug("REST request to get all Consultations");
         return consultationRepository.findAll();
@@ -152,7 +152,7 @@ public class ConsultationResource {
      * @param id the id of the consultation to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the consultation, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/consultations/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Consultation> getConsultation(@PathVariable String id) {
         log.debug("REST request to get Consultation : {}", id);
         Optional<Consultation> consultation = consultationRepository.findById(id);
@@ -165,7 +165,7 @@ public class ConsultationResource {
      * @param id the id of the consultation to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/consultations/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteConsultation(@PathVariable String id) {
         log.debug("REST request to delete Consultation : {}", id);
         consultationRepository.deleteById(id);

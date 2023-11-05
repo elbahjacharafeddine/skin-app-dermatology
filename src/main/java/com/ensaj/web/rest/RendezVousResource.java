@@ -20,7 +20,7 @@ import tech.jhipster.web.util.ResponseUtil;
  * REST controller for managing {@link com.ensaj.domain.RendezVous}.
  */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/rendez-vous")
 public class RendezVousResource {
 
     private final Logger log = LoggerFactory.getLogger(RendezVousResource.class);
@@ -43,7 +43,7 @@ public class RendezVousResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new rendezVous, or with status {@code 400 (Bad Request)} if the rendezVous has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/rendez-vous")
+    @PostMapping("")
     public ResponseEntity<RendezVous> createRendezVous(@RequestBody RendezVous rendezVous) throws URISyntaxException {
         log.debug("REST request to save RendezVous : {}", rendezVous);
         if (rendezVous.getId() != null) {
@@ -66,7 +66,7 @@ public class RendezVousResource {
      * or with status {@code 500 (Internal Server Error)} if the rendezVous couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/rendez-vous/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<RendezVous> updateRendezVous(
         @PathVariable(value = "id", required = false) final String id,
         @RequestBody RendezVous rendezVous
@@ -101,7 +101,7 @@ public class RendezVousResource {
      * or with status {@code 500 (Internal Server Error)} if the rendezVous couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/rendez-vous/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<RendezVous> partialUpdateRendezVous(
         @PathVariable(value = "id", required = false) final String id,
         @RequestBody RendezVous rendezVous
@@ -146,7 +146,7 @@ public class RendezVousResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of rendezVous in body.
      */
-    @GetMapping("/rendez-vous")
+    @GetMapping("")
     public List<RendezVous> getAllRendezVous() {
         log.debug("REST request to get all RendezVous");
         return rendezVousRepository.findAll();
@@ -158,7 +158,7 @@ public class RendezVousResource {
      * @param id the id of the rendezVous to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the rendezVous, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/rendez-vous/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<RendezVous> getRendezVous(@PathVariable String id) {
         log.debug("REST request to get RendezVous : {}", id);
         Optional<RendezVous> rendezVous = rendezVousRepository.findById(id);
@@ -171,7 +171,7 @@ public class RendezVousResource {
      * @param id the id of the rendezVous to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/rendez-vous/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRendezVous(@PathVariable String id) {
         log.debug("REST request to delete RendezVous : {}", id);
         rendezVousRepository.deleteById(id);

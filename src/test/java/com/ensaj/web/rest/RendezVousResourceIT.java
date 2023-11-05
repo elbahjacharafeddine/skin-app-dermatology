@@ -240,7 +240,7 @@ class RendezVousResourceIT {
         RendezVous partialUpdatedRendezVous = new RendezVous();
         partialUpdatedRendezVous.setId(rendezVous.getId());
 
-        partialUpdatedRendezVous.dateDebut(UPDATED_DATE_DEBUT).dateFin(UPDATED_DATE_FIN).statut(UPDATED_STATUT);
+        partialUpdatedRendezVous.dateFin(UPDATED_DATE_FIN).statut(UPDATED_STATUT);
 
         restRendezVousMockMvc
             .perform(
@@ -254,7 +254,7 @@ class RendezVousResourceIT {
         List<RendezVous> rendezVousList = rendezVousRepository.findAll();
         assertThat(rendezVousList).hasSize(databaseSizeBeforeUpdate);
         RendezVous testRendezVous = rendezVousList.get(rendezVousList.size() - 1);
-        assertThat(testRendezVous.getDateDebut()).isEqualTo(UPDATED_DATE_DEBUT);
+        assertThat(testRendezVous.getDateDebut()).isEqualTo(DEFAULT_DATE_DEBUT);
         assertThat(testRendezVous.getDateFin()).isEqualTo(UPDATED_DATE_FIN);
         assertThat(testRendezVous.getStatut()).isEqualTo(UPDATED_STATUT);
     }

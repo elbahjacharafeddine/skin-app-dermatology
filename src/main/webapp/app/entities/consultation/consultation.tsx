@@ -135,8 +135,7 @@ export const Consultation = () => {
                         </span>
                       </Button>
                       <Button
-                        tag={Link}
-                        to={`/consultation/${consultation.id}/delete`}
+                        onClick={() => (location.href = `/consultation/${consultation.id}/delete`)}
                         color="danger"
                         size="sm"
                         data-cy="entityDeleteButton"

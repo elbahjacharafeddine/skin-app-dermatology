@@ -280,11 +280,9 @@ class DiagnosticResourceIT {
         partialUpdatedDiagnostic.setId(diagnostic.getId());
 
         partialUpdatedDiagnostic
-            .picture(UPDATED_PICTURE)
-            .pictureContentType(UPDATED_PICTURE_CONTENT_TYPE)
+            .dateDiagnostic(UPDATED_DATE_DIAGNOSTIC)
             .description(UPDATED_DESCRIPTION)
-            .prescription(UPDATED_PRESCRIPTION)
-            .probability(UPDATED_PROBABILITY);
+            .prescription(UPDATED_PRESCRIPTION);
 
         restDiagnosticMockMvc
             .perform(
@@ -298,12 +296,12 @@ class DiagnosticResourceIT {
         List<Diagnostic> diagnosticList = diagnosticRepository.findAll();
         assertThat(diagnosticList).hasSize(databaseSizeBeforeUpdate);
         Diagnostic testDiagnostic = diagnosticList.get(diagnosticList.size() - 1);
-        assertThat(testDiagnostic.getDateDiagnostic()).isEqualTo(DEFAULT_DATE_DIAGNOSTIC);
-        assertThat(testDiagnostic.getPicture()).isEqualTo(UPDATED_PICTURE);
-        assertThat(testDiagnostic.getPictureContentType()).isEqualTo(UPDATED_PICTURE_CONTENT_TYPE);
+        assertThat(testDiagnostic.getDateDiagnostic()).isEqualTo(UPDATED_DATE_DIAGNOSTIC);
+        assertThat(testDiagnostic.getPicture()).isEqualTo(DEFAULT_PICTURE);
+        assertThat(testDiagnostic.getPictureContentType()).isEqualTo(DEFAULT_PICTURE_CONTENT_TYPE);
         assertThat(testDiagnostic.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testDiagnostic.getPrescription()).isEqualTo(UPDATED_PRESCRIPTION);
-        assertThat(testDiagnostic.getProbability()).isEqualTo(UPDATED_PROBABILITY);
+        assertThat(testDiagnostic.getProbability()).isEqualTo(DEFAULT_PROBABILITY);
     }
 
     @Test

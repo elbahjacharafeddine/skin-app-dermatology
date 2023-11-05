@@ -65,7 +65,8 @@ public class DermatologueResource {
         ManagedUserVM user = dermatologue.getUser();
         user.setAuthorities(new HashSet<>());
         user.getAuthorities().add(AuthoritiesConstants.DERMATOLOGUE);
-        User u = userService.createUser(user);
+
+        User u = userService.createDermatologue(user);
         Optional<User> lastOne = userRepository.findOneByLogin(u.getLogin());
         if (lastOne.isPresent()) {
             dermatologue1.setId(lastOne.get().getId());

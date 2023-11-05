@@ -27,6 +27,24 @@ export const DermatologueUpdate = () => {
   const updating = useAppSelector(state => state.dermatologue.updating);
   const updateSuccess = useAppSelector(state => state.dermatologue.updateSuccess);
 
+  const [dermatologue, setDermatologue] = useState({
+    dermatologue: {
+      codeEmp: '8979567',
+      telephone: '09165516617',
+      genre: 'male',
+    },
+    user: {
+      login: 'elmansouri',
+      password: 'password',
+      firstName: 'test',
+      lastName: 'test',
+      email: 'test.doe@example.com',
+      activated: true,
+      langKey: 'en',
+      imageUrl: 'https://example.com/user.jpg',
+    },
+  });
+
   const handleClose = () => {
     navigate('/dermatologue');
   };
@@ -55,7 +73,7 @@ export const DermatologueUpdate = () => {
     };
 
     if (isNew) {
-      dispatch(createEntity(entity));
+      dispatch(createEntity(dermatologue));
     } else {
       dispatch(updateEntity(entity));
     }

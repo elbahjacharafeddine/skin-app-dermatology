@@ -36,8 +36,6 @@ export const DermatologueUpdate = () => {
       dispatch(reset());
     } else {
       dispatch(getEntity(id));
-
-      // updateUser(id);
     }
 
     dispatch(getUsers({}));
@@ -51,6 +49,8 @@ export const DermatologueUpdate = () => {
 
   // eslint-disable-next-line complexity
   const saveEntity = values => {
+    console.log('ELBAHJA >>>>>>>>>>>>');
+    console.log(values);
     const entity = {
       ...dermatologueEntity,
       ...values,

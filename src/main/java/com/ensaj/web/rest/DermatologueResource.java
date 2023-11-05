@@ -7,6 +7,7 @@ import com.ensaj.repository.UserRepository;
 import com.ensaj.security.AuthoritiesConstants;
 import com.ensaj.service.UserService;
 import com.ensaj.service.dto.DermatologueUserDTO;
+import com.ensaj.service.dto.TransformedDermatologueUserDTO;
 import com.ensaj.web.rest.errors.BadRequestAlertException;
 import com.ensaj.web.rest.vm.ManagedUserVM;
 import java.net.URI;
@@ -182,10 +183,11 @@ public class DermatologueResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the dermatologue, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/dermatologues/{id}")
-    public ResponseEntity<Dermatologue> getDermatologue(@PathVariable String id) {
+    public ResponseEntity<TransformedDermatologueUserDTO> getDermatologue(@PathVariable String id) {
         log.debug("REST request to get Dermatologue : {}", id);
-        Optional<Dermatologue> dermatologue = dermatologueRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(dermatologue);
+        //        Optional<Dermatologue> dermatologue = dermatologueRepository.findById(id);
+        TransformedDermatologueUserDTO transformedDermatologueUserDTO = userService.findUserDermatologue(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(transformedDermatologueUserDTO));
     }
 
     /**

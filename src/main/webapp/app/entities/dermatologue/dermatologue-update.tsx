@@ -12,6 +12,7 @@ import { IUser } from 'app/shared/model/user.model';
 import { getUsers } from 'app/modules/administration/user-management/user-management.reducer';
 import { IDermatologue } from 'app/shared/model/dermatologue.model';
 import { getEntity, updateEntity, createEntity, reset } from './dermatologue.reducer';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 
 export const DermatologueUpdate = () => {
   const dispatch = useAppDispatch();
@@ -44,10 +45,6 @@ export const DermatologueUpdate = () => {
     },
   });
 
-  const updateUser = (id: string) => {
-    console.log(id);
-  };
-
   const handleClose = () => {
     navigate('/dermatologue');
   };
@@ -57,7 +54,8 @@ export const DermatologueUpdate = () => {
       dispatch(reset());
     } else {
       dispatch(getEntity(id));
-      updateUser(id);
+
+      // updateUser(id);
     }
 
     dispatch(getUsers({}));
@@ -88,7 +86,7 @@ export const DermatologueUpdate = () => {
       ? {}
       : {
           ...dermatologueEntity,
-          user: dermatologueEntity?.user?.id,
+          user: dermatologueEntity?.user,
         };
 
   return (
@@ -114,6 +112,7 @@ export const DermatologueUpdate = () => {
                   id="dermatologue-id"
                   label={translate('global.field.id')}
                   validate={{ required: true }}
+                  hidden={true}
                 />
               ) : null}
               <ValidatedField
@@ -138,21 +137,54 @@ export const DermatologueUpdate = () => {
                 type="text"
               />
               <ValidatedField
-                id="dermatologue-user"
-                name="user"
-                data-cy="user"
-                label={translate('assistanteDermatologueApp.dermatologue.user')}
-                type="select"
-              >
-                <option value="" key="0" />
-                {users
-                  ? users.map(otherEntity => (
-                      <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.firstName + ' '} elbahja
-                      </option>
-                    ))
-                  : null}
-              </ValidatedField>
+                label="Login"
+                // label={translate('assistanteDermatologueApp.dermatologue.user.login')}
+                id="login"
+                name="user.login"
+                data-cy="user.login"
+                type="text"
+                readOnly={true}
+              />
+              <ValidatedField
+                label="email"
+                // label={translate('assistanteDermatologueApp.dermatologue.user.login')}
+                id="lastName"
+                name="user.email"
+                data-cy="user.email"
+                type="text"
+              />
+              <ValidatedField
+                label="First name"
+                // label={translate('assistanteDermatologueApp.dermatologue.user.login')}
+                id="firstName"
+                name="user.firstName"
+                data-cy="user.firstName"
+                type="text"
+              />
+              <ValidatedField
+                label="Last name"
+                // label={translate('assistanteDermatologueApp.dermatologue.user.login')}
+                id="lastName"
+                name="user.lastName"
+                data-cy="user.lastName"
+                type="text"
+              />
+              {/*<ValidatedField*/}
+              {/*  id="dermatologue-user"*/}
+              {/*  name="user"*/}
+              {/*  data-cy="user"*/}
+              {/*  label={translate('assistanteDermatologueApp.dermatologue.user')}*/}
+              {/*  type="select"*/}
+              {/*>*/}
+              {/*  <option value="" key="0" />*/}
+              {/*  {users*/}
+              {/*    ? users.map(otherEntity => (*/}
+              {/*        <option value={otherEntity.id} key={otherEntity.id}>*/}
+              {/*          {otherEntity.login }*/}
+              {/*        </option>*/}
+              {/*      ))*/}
+              {/*    : null}*/}
+              {/*</ValidatedField>*/}
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/dermatologue" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

@@ -2,14 +2,21 @@ package com.ensaj.service;
 
 import com.ensaj.config.Constants;
 import com.ensaj.domain.Authority;
+import com.ensaj.domain.Dermatologue;
 import com.ensaj.domain.User;
 import com.ensaj.repository.AuthorityRepository;
+import com.ensaj.repository.DermatologueRepository;
 import com.ensaj.repository.UserRepository;
 import com.ensaj.security.AuthoritiesConstants;
 import com.ensaj.security.SecurityUtils;
 import com.ensaj.service.dto.AdminUserDTO;
+import com.ensaj.service.dto.DermatologueUserDTO;
+import com.ensaj.service.dto.TransformedDermatologueUserDTO;
 import com.ensaj.service.dto.UserDTO;
+import com.ensaj.web.rest.errors.BadRequestAlertException;
 import com.ensaj.web.rest.vm.ManagedUserVM;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -36,11 +43,18 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final AuthorityRepository authorityRepository;
+    private final DermatologueRepository dermatologueRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository) {
+    public UserService(
+        UserRepository userRepository,
+        PasswordEncoder passwordEncoder,
+        AuthorityRepository authorityRepository,
+        DermatologueRepository dermatologueRepository
+    ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
+        this.dermatologueRepository = dermatologueRepository;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -325,5 +339,35 @@ public class UserService {
         userRepository.save(user);
         log.debug("Created Information for User: {}", user);
         return user;
+    }
+
+    public TransformedDermatologueUserDTO findUserDermatologue(String id) {
+        Optional<Dermatologue> dermatologue = dermatologueRepository.findById(id);
+        if (dermatologue.isPresent()) {
+            Optional<User> user = userRepository.findById(id);
+            if (user.isPresent()) {
+                DermatologueUserDTO dermatologueUserDTO = new DermatologueUserDTO();
+                dermatologueUserDTO.setDermatologue(dermatologue.get());
+
+                ManagedUserVM managedUserVM = new ManagedUserVM();
+                managedUserVM.setId(user.get().getId());
+                managedUserVM.setLogin(user.get().getLogin());
+                managedUserVM.setFirstName(user.get().getFirstName());
+                managedUserVM.setLastName(user.get().getLastName());
+                managedUserVM.setEmail(user.get().getEmail());
+                managedUserVM.setImageUrl(user.get().getImageUrl());
+                dermatologueUserDTO.setUser(managedUserVM);
+
+                TransformedDermatologueUserDTO t = new TransformedDermatologueUserDTO();
+                t.setId(managedUserVM.getId());
+                t.setCodeEmp(dermatologue.get().getCodeEmp());
+                t.setGenre(dermatologue.get().getGenre());
+                t.setTelephone(dermatologue.get().getTelephone());
+                t.setUser(managedUserVM);
+
+                return t;
+            }
+        }
+        return null;
     }
 }

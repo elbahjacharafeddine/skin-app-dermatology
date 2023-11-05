@@ -46,6 +46,8 @@ export const updateEntity = createAsyncThunk(
   'dermatologue/update_entity',
   async (entity: IDermatologue, thunkAPI) => {
     const result = await axios.put<IDermatologue>(`${apiUrl}/${entity.id}`, cleanEntity(entity));
+    console.log(entity);
+    console.log('ELBAHJA >>>>>>>>>>>>>>');
     thunkAPI.dispatch(getEntities({}));
     return result;
   },

@@ -1,10 +1,21 @@
 package com.ensaj.web.rest;
 
+import com.ensaj.domain.Dermatologue;
 import com.ensaj.domain.Secretaire;
+import com.ensaj.domain.User;
 import com.ensaj.repository.SecretaireRepository;
+import com.ensaj.repository.UserRepository;
+import com.ensaj.security.AuthoritiesConstants;
+import com.ensaj.service.UserService;
+import com.ensaj.service.dto.DermatologueUserDTO;
+import com.ensaj.service.dto.SecretaireUserDTO;
+import com.ensaj.service.dto.TransformedDermatologueUserDTO;
+import com.ensaj.service.dto.TransformedSecretaireUserDTO;
 import com.ensaj.web.rest.errors.BadRequestAlertException;
+import com.ensaj.web.rest.vm.ManagedUserVM;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -20,7 +31,7 @@ import tech.jhipster.web.util.ResponseUtil;
  * REST controller for managing {@link com.ensaj.domain.Secretaire}.
  */
 @RestController
-@RequestMapping("/api/secretaires")
+@RequestMapping("/api")
 public class SecretaireResource {
 
     private final Logger log = LoggerFactory.getLogger(SecretaireResource.class);
@@ -31,9 +42,13 @@ public class SecretaireResource {
     private String applicationName;
 
     private final SecretaireRepository secretaireRepository;
+    private final UserService userService;
+    private final UserRepository userRepository;
 
-    public SecretaireResource(SecretaireRepository secretaireRepository) {
+    public SecretaireResource(SecretaireRepository secretaireRepository, UserService userService, UserRepository userRepository) {
         this.secretaireRepository = secretaireRepository;
+        this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -43,19 +58,45 @@ public class SecretaireResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new secretaire, or with status {@code 400 (Bad Request)} if the secretaire has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("")
-    public ResponseEntity<Secretaire> createSecretaire(@RequestBody Secretaire secretaire) throws URISyntaxException {
+    // @PostMapping("")
+    // public ResponseEntity<Secretaire> createSecretaire(@RequestBody Secretaire secretaire) throws URISyntaxException {
+    //     log.debug("REST request to save Secretaire : {}", secretaire);
+    //     if (secretaire.getId() != null) {
+    //         throw new BadRequestAlertException("A new secretaire cannot already have an ID", ENTITY_NAME, "idexists");
+    //     }
+    //     Secretaire result = secretaireRepository.save(secretaire);
+    //     return ResponseEntity
+    //         .created(new URI("/api/secretaires/" + result.getId()))
+    //         .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId()))
+    //         .body(result);
+    // }
+    //ajoute
+    @PostMapping("/secretaires")
+    public ResponseEntity<Secretaire> createSecretaire(@RequestBody SecretaireUserDTO secretaire) throws URISyntaxException {
         log.debug("REST request to save Secretaire : {}", secretaire);
-        if (secretaire.getId() != null) {
+        if (secretaire.getSecretaire().getId() != null) {
             throw new BadRequestAlertException("A new secretaire cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Secretaire result = secretaireRepository.save(secretaire);
-        return ResponseEntity
-            .created(new URI("/api/secretaires/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId()))
-            .body(result);
+
+        Secretaire secretaire1 = secretaire.getSecretaire();
+        ManagedUserVM user = secretaire.getUser();
+        user.setAuthorities(new HashSet<>());
+        user.getAuthorities().add(AuthoritiesConstants.SECRETAIRE);
+
+        User u = userService.createSecretaire(user);
+        Optional<User> lastOne = userRepository.findOneByLogin(u.getLogin());
+        if (lastOne.isPresent()) {
+            secretaire1.setId(lastOne.get().getId());
+            Secretaire result = secretaireRepository.save(secretaire1);
+            return ResponseEntity
+                .created(new URI("/api/secretaires/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId()))
+                .body(result);
+        }
+        return null;
     }
 
+    //end ajoute
     /**
      * {@code PUT  /secretaires/:id} : Updates an existing secretaire.
      *
@@ -66,7 +107,7 @@ public class SecretaireResource {
      * or with status {@code 500 (Internal Server Error)} if the secretaire couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/{id}")
+    @PutMapping("/secretaires/{id}")
     public ResponseEntity<Secretaire> updateSecretaire(
         @PathVariable(value = "id", required = false) final String id,
         @RequestBody Secretaire secretaire
@@ -101,7 +142,7 @@ public class SecretaireResource {
      * or with status {@code 500 (Internal Server Error)} if the secretaire couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PatchMapping(value = "/secretaires/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<Secretaire> partialUpdateSecretaire(
         @PathVariable(value = "id", required = false) final String id,
         @RequestBody Secretaire secretaire
@@ -146,7 +187,7 @@ public class SecretaireResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of secretaires in body.
      */
-    @GetMapping("")
+    @GetMapping("/secretaires")
     public List<Secretaire> getAllSecretaires() {
         log.debug("REST request to get all Secretaires");
         return secretaireRepository.findAll();
@@ -158,11 +199,18 @@ public class SecretaireResource {
      * @param id the id of the secretaire to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the secretaire, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<Secretaire> getSecretaire(@PathVariable String id) {
+    // @GetMapping("/{id}")
+    // public ResponseEntity<Secretaire> getSecretaire(@PathVariable String id) {
+    //     log.debug("REST request to get Secretaire : {}", id);
+    //     Optional<Secretaire> secretaire = secretaireRepository.findById(id);
+    //     return ResponseUtil.wrapOrNotFound(secretaire);
+    // }
+    @GetMapping("/secretaires/{id}")
+    public ResponseEntity<TransformedSecretaireUserDTO> getSecretaire(@PathVariable String id) {
         log.debug("REST request to get Secretaire : {}", id);
-        Optional<Secretaire> secretaire = secretaireRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(secretaire);
+        //        Optional<Dermatologue> dermatologue = dermatologueRepository.findById(id);
+        TransformedSecretaireUserDTO transformedSecretaireUserDTO = userService.findUserSecretaire(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(transformedSecretaireUserDTO));
     }
 
     /**

@@ -94,13 +94,6 @@ export const DermatologueUpdate = () => {
   };
   return (
     <div>
-      <button
-        onClick={() => {
-          showData();
-        }}
-      >
-        Show data
-      </button>
       <Row className="justify-content-center">
         <Col md="8">
           <h2 id="assistanteDermatologueApp.dermatologue.home.createOrEditLabel" data-cy="DermatologueCreateUpdateHeading">
@@ -126,7 +119,7 @@ export const DermatologueUpdate = () => {
                 />
               ) : null}
               <ValidatedField
-                label={translate('assistanteDermatologueApp.dermatologue.codeEmp')}
+                label="Employee code"
                 id="dermatologue-codeEmp"
                 name="codeEmp"
                 data-cy="codeEmp"
@@ -140,23 +133,27 @@ export const DermatologueUpdate = () => {
                   }
                 }}
               />
+              <ValidatedField id="dermatologue-user" name="genre" data-cy="genre" label="Gender" type="select">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </ValidatedField>
+              {/*<ValidatedField*/}
+              {/*  label={translate('assistanteDermatologueApp.dermatologue.genre')}*/}
+              {/*  id="dermatologue-genre"*/}
+              {/*  name="genre"*/}
+              {/*  data-cy="genre"*/}
+              {/*  type="text"*/}
+              {/*  onChange={e => {*/}
+              {/*    if (isNew) {*/}
+              {/*      setFormData({*/}
+              {/*        ...formData,*/}
+              {/*        dermatologue: { ...formData.dermatologue, genre: e.target.value },*/}
+              {/*      });*/}
+              {/*    }*/}
+              {/*  }}*/}
+              {/*/>*/}
               <ValidatedField
-                label={translate('assistanteDermatologueApp.dermatologue.genre')}
-                id="dermatologue-genre"
-                name="genre"
-                data-cy="genre"
-                type="text"
-                onChange={e => {
-                  if (isNew) {
-                    setFormData({
-                      ...formData,
-                      dermatologue: { ...formData.dermatologue, genre: e.target.value },
-                    });
-                  }
-                }}
-              />
-              <ValidatedField
-                label={translate('assistanteDermatologueApp.dermatologue.telephone')}
+                label="Phone"
                 id="dermatologue-telephone"
                 name="telephone"
                 data-cy="telephone"
@@ -193,7 +190,7 @@ export const DermatologueUpdate = () => {
                   id="password"
                   name="user.passwword"
                   data-cy="user.password"
-                  type="text"
+                  type="password"
                   hidden={!isNew}
                   onChange={e => {
                     if (isNew) {
@@ -206,7 +203,7 @@ export const DermatologueUpdate = () => {
                 />
               )}
               <ValidatedField
-                label="email"
+                label="Email"
                 // label={translate('assistanteDermatologueApp.dermatologue.user.login')}
                 id="lastName"
                 name="user.email"
@@ -253,22 +250,6 @@ export const DermatologueUpdate = () => {
                   }
                 }}
               />
-              {/*<ValidatedField*/}
-              {/*  id="dermatologue-user"*/}
-              {/*  name="user"*/}
-              {/*  data-cy="user"*/}
-              {/*  label={translate('assistanteDermatologueApp.dermatologue.user')}*/}
-              {/*  type="select"*/}
-              {/*>*/}
-              {/*  <option value="" key="0" />*/}
-              {/*  {users*/}
-              {/*    ? users.map(otherEntity => (*/}
-              {/*        <option value={otherEntity.id} key={otherEntity.id}>*/}
-              {/*          {otherEntity.login }*/}
-              {/*        </option>*/}
-              {/*      ))*/}
-              {/*    : null}*/}
-              {/*</ValidatedField>*/}
               <Button tag={Link} id="cancel-save" data-cy="entityCreateCancelButton" to="/dermatologue" replace color="info">
                 <FontAwesomeIcon icon="arrow-left" />
                 &nbsp;

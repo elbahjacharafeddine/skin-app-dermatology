@@ -1,10 +1,24 @@
 package com.ensaj.web.rest;
 
+import com.ensaj.domain.Authority;
 import com.ensaj.domain.Patient;
+import com.ensaj.domain.User;
+import com.ensaj.repository.AuthorityRepository;
 import com.ensaj.repository.PatientRepository;
+import com.ensaj.repository.UserRepository;
+import com.ensaj.security.AuthoritiesConstants;
+import com.ensaj.service.UserService;
+import com.ensaj.service.dto.PatientUserDTO;
 import com.ensaj.web.rest.errors.BadRequestAlertException;
+import com.ensaj.web.rest.vm.ManagedUserVM;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,29 +45,72 @@ public class PatientResource {
     private String applicationName;
 
     private final PatientRepository patientRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
+    private final AuthorityRepository authorityRepository;
 
-    public PatientResource(PatientRepository patientRepository) {
+    public PatientResource(
+        PatientRepository patientRepository,
+        UserRepository userRepository,
+        UserService userService,
+        AuthorityRepository authorityRepository
+    ) {
         this.patientRepository = patientRepository;
+        this.userRepository = userRepository;
+        this.userService = userService;
+        this.authorityRepository = authorityRepository;
     }
 
-    /**
-     * {@code POST  /patients} : Create a new patient.
-     *
-     * @param patient the patient to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new patient, or with status {@code 400 (Bad Request)} if the patient has already an ID.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
+    //    @PostMapping("")
+    //    public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) throws URISyntaxException {
+    //        log.debug("REST request to save Patient : {}", patient);
+    //        if (patient.getId() != null) {
+    //            throw new BadRequestAlertException("A new patient cannot already have an ID", ENTITY_NAME, "idexists");
+    //        }
+    //        Patient result = patientRepository.save(patient);
+    //        return ResponseEntity
+    //            .created(new URI("/api/patients/" + result.getId()))
+    //            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId()))
+    //            .body(result);
+    //    }
+
     @PostMapping("")
-    public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) throws URISyntaxException {
-        log.debug("REST request to save Patient : {}", patient);
-        if (patient.getId() != null) {
+    public ResponseEntity<Patient> createPatient(@RequestBody PatientUserDTO patientUserDTO) throws URISyntaxException {
+        log.debug("REST request to save Patient : {}", patientUserDTO);
+        if (patientUserDTO.getUser().getId() != null) {
             throw new BadRequestAlertException("A new patient cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Patient result = patientRepository.save(patient);
+
+        Patient patient = patientUserDTO.getPatient();
+
+        //        String dateStr = "2023/11/10"; // Replace with the date string you receive from the request
+        //        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        //        LocalDate localDate = LocalDate.parse(dateStr, dateFormatter);
+        //
+        //        // You can set the time to a default value if needed, like midnight (00:00:00)
+        //        LocalTime localTime = LocalTime.of(0, 0, 0);
+        //        ZonedDateTime zonedDateTime = ZonedDateTime.of(localDate, localTime, ZonedDateTime.now().getZone());
+        //
+        //        // Convert ZonedDateTime to Instant
+        //        Instant instant = zonedDateTime.toInstant();
+
+        //        patient.setBirthdate(instant);
+
+        ManagedUserVM puser = patientUserDTO.getUser();
+
+        puser.setAuthorities(new HashSet<>());
+        puser.getAuthorities().add(AuthoritiesConstants.PATIENT);
+
+        User user = userService.createAdministrateurUser(puser);
+
+        patient.setUser(user);
+
+        Patient res = patientRepository.save(patient);
+
         return ResponseEntity
-            .created(new URI("/api/patients/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId()))
-            .body(result);
+            .created(new URI("/api/patients/" + res.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, res.getId()))
+            .body(res);
     }
 
     /**
@@ -162,6 +219,8 @@ public class PatientResource {
     public ResponseEntity<Patient> getPatient(@PathVariable String id) {
         log.debug("REST request to get Patient : {}", id);
         Optional<Patient> patient = patientRepository.findById(id);
+        Optional<User> user = userRepository.findById(id);
+        patient.get().setUser(user.get());
         return ResponseUtil.wrapOrNotFound(patient);
     }
 

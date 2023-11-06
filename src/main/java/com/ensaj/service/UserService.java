@@ -370,4 +370,49 @@ public class UserService {
         }
         return null;
     }
+
+    public User createAdministrateurUser(ManagedUserVM userDTO) {
+        User user = new User();
+        user.setLogin(userDTO.getLogin().toLowerCase());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+
+        if (userDTO.getEmail() != null) {
+            user.setEmail(userDTO.getEmail().toLowerCase());
+        }
+
+        //        user.setImageUrl(userDTO.getImageUrl());
+        //        if (userDTO.getLangKey() == null) {
+        //            user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
+        //        } else {
+        //            user.setLangKey(userDTO.getLangKey());
+        //        }
+
+        String encryptedPassword;
+
+        if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty() && !userDTO.getPassword().equals("")) {
+            encryptedPassword = passwordEncoder.encode(userDTO.getPassword());
+        } else {
+            encryptedPassword = passwordEncoder.encode(userDTO.getLogin());
+        }
+
+        user.setPassword(encryptedPassword);
+        user.setActivated(true);
+
+        if (userDTO.getAuthorities() != null) {
+            Set<Authority> authorities = userDTO
+                .getAuthorities()
+                .stream()
+                .map(authorityRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toSet());
+            user.setAuthorities(authorities);
+        }
+
+        userRepository.save(user);
+        log.debug("Created Information for User: {}", user);
+
+        return user;
+    }
 }

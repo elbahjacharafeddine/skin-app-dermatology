@@ -65,6 +65,22 @@ export const PatientUpdate = () => {
     }
   };
 
+  const handleDatetimeLocalChange = e => {
+    if (isNew) {
+      const datetimeLocalValue = e.target.value;
+      const selectedDate = new Date(datetimeLocalValue);
+      const instantValue = selectedDate.toISOString();
+
+      setFormData({
+        ...formData,
+        patient: {
+          ...formData.patient,
+          birthdate: instantValue,
+        },
+      });
+    }
+  };
+
   const defaultValues = () =>
     isNew
       ? {
@@ -123,18 +139,11 @@ export const PatientUpdate = () => {
               <ValidatedField
                 label={translate('assistanteDermatologueApp.patient.birthdate')}
                 id="patient-birthdate"
-                name="birthdae"
-                data-cy="birthdate"
+                name="birthdat"
+                data-cy="birthdat"
                 type="datetime-local"
-                placeholder="YYYY-MM-DD "
-                onChange={e => {
-                  if (isNew) {
-                    setFormData({
-                      ...formData,
-                      patient: { ...formData.patient, birthdate: e.target.value },
-                    });
-                  }
-                }}
+                placeholder="YYYY-MM-DD"
+                onChange={handleDatetimeLocalChange}
               />
               <ValidatedField
                 label={translate('assistanteDermatologueApp.patient.adress')}

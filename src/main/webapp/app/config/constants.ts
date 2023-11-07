@@ -1,6 +1,9 @@
 export const AUTHORITIES = {
   ADMIN: 'ROLE_ADMIN',
   USER: 'ROLE_USER',
+  SECRETAIRE: 'ROLE_SECRETAIRE',
+  PATIENT: 'ROLE_PATIENT',
+  DERMATOLOGUE: 'ROLE_DERMATOLOGUE',
 };
 
 export const messages = {

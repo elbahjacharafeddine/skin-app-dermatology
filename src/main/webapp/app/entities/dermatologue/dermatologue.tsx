@@ -120,7 +120,7 @@ export const Dermatologue = () => {
                   <td>{dermatologue.genre}</td>
                   <td>{dermatologue.telephone}</td>
                   {/*<td>{dermatologue.user ? dermatologue.user : ''}</td>*/}
-                  <td>{dermatologue.user.firstName + ' ' + dermatologue.user.lastName}</td>
+                  <td>{dermatologue.user ? dermatologue.user.firstName + ' ' + dermatologue.user.lastName : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/dermatologue/${dermatologue.id}`} color="info" size="sm" data-cy="entityDetailsButton">

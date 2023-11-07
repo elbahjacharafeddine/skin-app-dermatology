@@ -105,9 +105,7 @@ export const Patient = () => {
                   <Translate contentKey="assistanteDermatologueApp.patient.telephone">Telephone</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('telephone')} />
                 </th>
-                <th>
-                  <Translate contentKey="assistanteDermatologueApp.patient.user">User</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
+                <th>Full name</th>
                 <th />
               </tr>
             </thead>
@@ -123,7 +121,7 @@ export const Patient = () => {
                   <td>{patient.adress}</td>
                   <td>{patient.genre}</td>
                   <td>{patient.telephone}</td>
-                  <td>{patient.user ? patient.user.id : ''}</td>
+                  <td>{patient.user ? patient.user.firstName : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/patient/${patient.id}`} color="info" size="sm" data-cy="entityDetailsButton">

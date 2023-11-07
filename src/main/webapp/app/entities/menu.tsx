@@ -2,14 +2,18 @@ import React from 'react';
 import { Translate } from 'react-jhipster';
 
 import MenuItem from 'app/shared/layout/menus/menu-item';
-
+import { AUTHORITIES } from 'app/config/constants';
+import PrivateRoute from 'app/shared/auth/private-route';
 const EntitiesMenu = () => {
   return (
     <>
       {/* prettier-ignore */}
-      <MenuItem icon="asterisk" to="/dermatologue">
-        <Translate contentKey="global.menu.entities.dermatologue" />
-      </MenuItem>
+
+      <PrivateRoute hasAnyAuthorities={[AUTHORITIES.ADMIN,AUTHORITIES.SECRETAIRE]}>
+        <MenuItem icon="asterisk" to="/dermatologue" >
+          <Translate contentKey="global.menu.entities.dermatologue" />
+        </MenuItem>
+      </PrivateRoute>
       <MenuItem icon="asterisk" to="/patient">
         <Translate contentKey="global.menu.entities.patient" />
       </MenuItem>

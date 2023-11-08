@@ -67,7 +67,7 @@ export const RendezVous = () => {
   return (
     <div>
       <h2 id="rendez-vous-heading" data-cy="RendezVousHeading">
-        <Translate contentKey="assistanteDermatologueApp.rendezVous.home.title">Rendez Vous</Translate>
+        <Translate contentKey="assistanteDermatologueApp.rendezVous.home.title">Rendez Vous {rendezVousList}</Translate>
         <div className="d-flex justify-content-end">
           <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
             <FontAwesomeIcon icon="sync" spin={loading} />{' '}
@@ -121,15 +121,29 @@ export const RendezVous = () => {
                   </td>
                   <td>{rendezVous.dateDebut ? <TextFormat type="date" value={rendezVous.dateDebut} format={APP_DATE_FORMAT} /> : null}</td>
                   <td>{rendezVous.dateFin ? <TextFormat type="date" value={rendezVous.dateFin} format={APP_DATE_FORMAT} /> : null}</td>
-                  <td>{rendezVous.statut ? 'true' : 'false'}</td>
+                  <td>{rendezVous.statut ? 'Confirmed' : 'Waiting'}</td>
                   <td>
-                    {rendezVous.dermatologues ? (
-                      <Link to={`/dermatologue/${rendezVous.dermatologues.id}`}>{rendezVous.dermatologues.id}</Link>
+                    {/* {rendezVous.dermatologues.id} */}
+                    {rendezVous.dermatologue ? (
+                      <Link to={`/dermatologue/${rendezVous.dermatologue.id}`}>
+                        {rendezVous.dermatologue.user
+                          ? rendezVous.dermatologue.user.firstName + ' ' + rendezVous.dermatologue.user.lastName
+                          : ' '}
+                      </Link>
                     ) : (
                       ''
                     )}
                   </td>
-                  <td>{rendezVous.patients ? <Link to={`/patient/${rendezVous.patients.id}`}>{rendezVous.patients.id}</Link> : ''}</td>
+                  {/* {rendezVous.patients.id} */}
+                  <td>
+                    {rendezVous.patient ? (
+                      <Link to={`/patient/${rendezVous.patient.id}`}>
+                        {rendezVous.dermatologue.user ? rendezVous.patient.user.firstName + ' ' + rendezVous.patient.user.lastName : ' '}
+                      </Link>
+                    ) : (
+                      ''
+                    )}
+                  </td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/rendez-vous/${rendezVous.id}`} color="info" size="sm" data-cy="entityDetailsButton">

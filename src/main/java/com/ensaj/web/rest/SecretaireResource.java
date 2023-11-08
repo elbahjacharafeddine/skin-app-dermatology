@@ -189,8 +189,16 @@ public class SecretaireResource {
      */
     @GetMapping("/secretaires")
     public List<Secretaire> getAllSecretaires() {
-        log.debug("REST request to get all Secretaires");
-        return secretaireRepository.findAll();
+        // log.debug("REST request to get all Secretaires");
+        // return secretaireRepository.findAll();
+        List<Secretaire> myliste = secretaireRepository.findAll();
+        for (Secretaire e : myliste) {
+            Optional<User> u = userRepository.findById(e.getId());
+            if (u.isPresent()) {
+                e.setUser(u.get());
+            }
+        }
+        return myliste;
     }
 
     /**

@@ -1,13 +1,25 @@
 package com.ensaj.web.rest;
 
+import com.ensaj.domain.Dermatologue;
+import com.ensaj.domain.Patient;
 import com.ensaj.domain.RendezVous;
+import com.ensaj.domain.User;
 import com.ensaj.repository.RendezVousRepository;
+import com.ensaj.repository.UserRepository;
+import com.ensaj.service.UserService;
+import com.ensaj.service.dto.DermatologueUserDTO;
+import com.ensaj.service.dto.PatientUserDTO;
+import com.ensaj.service.dto.RendezVousDTO;
+import com.ensaj.service.dto.TransformedDermatologueUserDTO;
 import com.ensaj.web.rest.errors.BadRequestAlertException;
+import com.ensaj.web.rest.vm.ManagedUserVM;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,9 +43,13 @@ public class RendezVousResource {
     private String applicationName;
 
     private final RendezVousRepository rendezVousRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public RendezVousResource(RendezVousRepository rendezVousRepository) {
+    public RendezVousResource(RendezVousRepository rendezVousRepository, UserRepository userRepository, UserService userService) {
         this.rendezVousRepository = rendezVousRepository;
+        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     /**
@@ -146,11 +162,193 @@ public class RendezVousResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of rendezVous in body.
      */
+    // @GetMapping("")
+    // public List<RendezVous> getAllRendezVous() {
+    //     log.debug("REST request to get all RendezVous");
+    //     List<RendezVous> mylist=rendezVousRepository.findAll();
+    //     return mylist;
+    // }
     @GetMapping("")
-    public List<RendezVous> getAllRendezVous() {
+    public List<RendezVousDTO> getAllRendezVous() {
         log.debug("REST request to get all RendezVous");
-        return rendezVousRepository.findAll();
+        List<RendezVous> rendezvousList = rendezVousRepository.findAll();
+
+        List<RendezVousDTO> rendezvousDTOList = rendezvousList
+            .stream()
+            .map(rendezvous -> {
+                RendezVousDTO rendezvousDTO = new RendezVousDTO();
+                rendezvousDTO.setId(rendezvous.getId());
+                rendezvousDTO.setDateDebut(rendezvous.getDateDebut());
+                rendezvousDTO.setDateFin(rendezvous.getDateFin());
+                // rendezvousDTO.setStatut(rendezvous.getStatut());
+                TransformedDermatologueUserDTO transformedDermatologueUserDTO = userService.findUserDermatologue(
+                    rendezvous.getDermatologues().getId()
+                );
+
+                // Add the dermatologist's user to the RendezVousDTO
+                if (rendezvous.getDermatologues() != null) {
+                    rendezvousDTO.setDermatologue(transformedDermatologueUserDTO);
+                } else {
+                    // Handle the case where the dermatologist is null or does not have a user
+                    // You can set it to null or handle it in some other way based on your requirements.
+                    rendezvousDTO.setDermatologue(null);
+                }
+
+                // Add the patient's user to the RendezVousDTO
+                rendezvousDTO.setPatient(rendezvous.getPatients());
+
+                return rendezvousDTO;
+            })
+            .collect(Collectors.toList());
+
+        return rendezvousDTOList;
     }
+
+    //  @GetMapping("")
+    // public List<RendezVousDTO> getAllRendezVous() {
+    //     log.debug("REST request to get all RendezVous");
+    //     List<RendezVous> rendezvousList = rendezVousRepository.findAll();
+
+    //     List<RendezVousDTO> rendezvousDTOList = rendezvousList.stream()
+    //             .map(rendezvous -> {
+    //                 RendezVousDTO rendezvousDTO = new RendezVousDTO();
+    //                 rendezvousDTO.setId(rendezvous.getId());
+    //                 rendezvousDTO.setDateDebut(rendezvous.getDateDebut());
+    //                 rendezvousDTO.setDateFin(rendezvous.getDateFin());
+    //                 // rendezvousDTO.setStatut(rendezvous.getStatut());
+
+    //                 // Add the dermatologist's user to the RendezVousDTO
+    //                 if (rendezvous.getDermatologues() != null) {
+    //                     rendezvousDTO.setDermatologue(rendezvous.getDermatologues());
+    //                 } else {
+    //                     // Handle the case where the dermatologist is null or does not have a user
+    //                     // You can set it to null or handle it in some other way based on your requirements.
+    //                     rendezvousDTO.setDermatologue(null);
+    //                 }
+
+    //                 // Add the patient's user to the RendezVousDTO
+    //                 rendezvousDTO.setPatient(rendezvous.getPatients());
+
+    //                 return rendezvousDTO;
+    //             })
+    //             .collect(Collectors.toList());
+
+    //     return rendezvousDTOList;
+    // }
+
+    //     @GetMapping("")
+    // public List<RendezVous> getAllRendezVous() {
+    //     log.debug("REST request to get all RendezVous");
+
+    //     List<RendezVous> rendezVousList = rendezVousRepository.findAll();
+    //     List<RendezVous> rendezVousDTOList = new ArrayList<>();
+
+    //     for (RendezVous rendezVous : rendezVousList) {
+    //         Dermatologue dermatologue = rendezVous.getDermatologues();
+    //         Patient patient = rendezVous.getPatients();
+
+    //         if (dermatologue != null) {
+    //             log.debug("Processing RendezVous with Dermatologue");
+
+    //             Optional<User> u = userRepository.findById(dermatologue.getId());
+    //             User dermatologueUser = u.orElse(null);
+
+    //             if (dermatologueUser != null) {
+    //                 log.debug("Dermatologue User found, ID: " + dermatologueUser.getId());
+    //                 dermatologue.setUser(dermatologueUser);
+    //             } else {
+    //                 log.debug("Dermatologue User not found for ID: " + dermatologue.getId());
+    //             }
+    //         } else {
+    //             log.debug("RendezVous has no associated Dermatologue");
+    //         }
+
+    //         if (patient != null) {
+    //             log.debug("Processing RendezVous with Patient");
+
+    //         }
+    //         // Add the processed RendezVous to the list
+    //         rendezVousDTOList.add(rendezVous);
+    //     }
+
+    //     return rendezVousDTOList;
+    // }
+
+    //     @GetMapping("")
+    //     public List<RendezVous> getAllRendezVous() {
+    //         log.debug("REST request to get all RendezVous");
+
+    //         List<RendezVous> rendezVousList = rendezVousRepository.findAll();
+
+    //         for (RendezVous rendezVous : rendezVousList) {
+
+    //             Dermatologue dermatologue = rendezVous.getDermatologues();
+    //             Patient patient = rendezVous.getPatients();
+    //             if (dermatologue != null) {
+    //                 Optional<User> u = userRepository.findById(dermatologue.getId());
+    //                 if (u.isPresent()) {
+    //                     dermatologue.setUser(u.get());
+
+    //                 }
+
+    //             }
+    //             rendezVous.setDermatologues(dermatologue);
+    //             if (patient != null) {
+    //                 Optional<User> u = userRepository.findById(patient.getId());
+    //                 if (u.isPresent()) {
+    //                     patient.setUser(u.get());
+
+    //                 }
+    //                 rendezVous.setPatients(patient);
+    //             }
+    //         }
+
+    //     return rendezVousList;
+    // }
+
+    // @GetMapping("")
+    // public List<RendezVous> getAllRendezVous() {
+    //     log.debug("REST request to get all RendezVous");
+    //     List<RendezVous> AllrendezVous = rendezVousRepository.findAll();
+    //     List<RendezVous> rendezVousDTOList = new ArrayList<>();
+    //     for (RendezVous rendezVous : AllrendezVous) {
+    //         RendezVous rendezVousDTO = new RendezVous();
+    //         rendezVousDTO.setId(rendezVous.getId());
+    //         rendezVousDTO.setDateDebut(rendezVous.getDateDebut());
+    //         rendezVousDTO.setDateFin(rendezVous.getDateFin());
+    //         // rendezVousDTO.setStatut(rendezVous.isStatut());
+
+    //         // Add the dermatologue user information
+    //         Dermatologue dermatologue = rendezVous.getDermatologues();
+    //         Optional<User> user = userRepository.findById(dermatologue.getId());
+    //         if (user.isPresent()) {
+    //             User userVM = new User();
+    //             userVM.setId(user.get().getId());
+    //             userVM.setFirstName(user.get().getFirstName());
+    //             userVM.setLastName(user.get().getLastName());
+    //             userVM.setEmail(user.get().getEmail());
+    //             dermatologue.setUser(userVM);
+    //         }
+    //         rendezVousDTO.setDermatologues(dermatologue);
+
+    //         // Add the patient user information
+    //         Patient patient = rendezVous.getPatients();
+    //         Optional<User> user2 = userRepository.findById(patient.getId());
+    //         if (user.isPresent()) {
+    //             User userVM = new User();
+    //             userVM.setId(user.get().getId());
+    //             userVM.setFirstName(user.get().getFirstName());
+    //             userVM.setLastName(user.get().getLastName());
+    //             userVM.setEmail(user.get().getEmail());
+    //             patient.setUser(userVM);
+    //         }
+    //         rendezVousDTO.setPatients(patient);
+
+    //         rendezVousDTOList.add(rendezVousDTO);
+    //     }
+
+    //     return rendezVousDTOList;
+    // }
 
     /**
      * {@code GET  /rendez-vous/:id} : get the "id" rendezVous.

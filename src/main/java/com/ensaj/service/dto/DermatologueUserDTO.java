@@ -1,6 +1,7 @@
 package com.ensaj.service.dto;
 
 import com.ensaj.domain.Dermatologue;
+import com.ensaj.domain.Patient;
 import com.ensaj.web.rest.vm.ManagedUserVM;
 
 public class DermatologueUserDTO {
@@ -9,6 +10,11 @@ public class DermatologueUserDTO {
     private Dermatologue dermatologue;
 
     public DermatologueUserDTO() {}
+
+    public DermatologueUserDTO(Dermatologue dermatologue, ManagedUserVM user) {
+        this.dermatologue = dermatologue;
+        this.user = user;
+    }
 
     public ManagedUserVM getUser() {
         return user;

@@ -147,7 +147,7 @@ export const SecretaireUpdate = () => {
                 id="secretaire-genre"
                 name="genre"
                 data-cy="genre"
-                type="text"
+                type="select"
                 onChange={e => {
                   if (isNew) {
                     setFormData({
@@ -156,7 +156,10 @@ export const SecretaireUpdate = () => {
                     });
                   }
                 }}
-              />
+              >
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </ValidatedField>
               <ValidatedField
                 label={translate('assistanteDermatologueApp.secretaire.telephone')}
                 id="secretaire-telephone"
@@ -195,7 +198,7 @@ export const SecretaireUpdate = () => {
                   id="password"
                   name="user.passwword"
                   data-cy="user.password"
-                  type="text"
+                  type="password"
                   hidden={!isNew}
                   onChange={e => {
                     if (isNew) {

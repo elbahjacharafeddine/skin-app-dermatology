@@ -1,5 +1,7 @@
 package com.ensaj.domain;
 
+import com.ensaj.service.dto.DermatologueUserDTO;
+import com.ensaj.service.dto.PatientUserDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.Instant;
@@ -18,6 +20,27 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class RendezVous implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    private DermatologueUserDTO dermatologueUserDTO;
+    private PatientUserDTO patientUserDTO;
+
+    public DermatologueUserDTO getDermatologueUserDTO() {
+        return dermatologueUserDTO;
+    }
+
+    // Setter for dermatologueUserDTO
+    public void setDermatologueUserDTO(DermatologueUserDTO dermatologueUserDTO) {
+        this.dermatologueUserDTO = dermatologueUserDTO;
+    }
+
+    // Getter for patientUserDTO
+    public PatientUserDTO getPatientUserDTO() {
+        return patientUserDTO;
+    }
+
+    // Setter for patientUserDTO
+    public void setPatientUserDTO(PatientUserDTO patientUserDTO) {
+        this.patientUserDTO = patientUserDTO;
+    }
 
     @Id
     private String id;
@@ -45,6 +68,16 @@ public class RendezVous implements Serializable {
     @Field("consultation")
     @JsonIgnoreProperties(value = { "rendezVous", "diagnostics" }, allowSetters = true)
     private Set<Consultation> consultations = new HashSet<>();
+
+    // private RendezVous rendezVous;
+    // private Dermatologue dermatologue;
+    // private Patient patient;
+
+    // public RendezVous(RendezVous rendezVous, Dermatologue dermatologue, Patient patient) {
+    //     this.rendezVous = rendezVous;
+    //     this.dermatologue = dermatologue;
+    //     this.patient = patient;
+    // }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 

@@ -101,9 +101,7 @@ export const Secretaire = () => {
                   <Translate contentKey="assistanteDermatologueApp.secretaire.telephone">Telephone</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('telephone')} />
                 </th>
-                <th>
-                  <Translate contentKey="assistanteDermatologueApp.secretaire.user">User</Translate> <FontAwesomeIcon icon="sort" />
-                </th>
+                <th>Full Name</th>
                 <th />
               </tr>
             </thead>
@@ -118,7 +116,7 @@ export const Secretaire = () => {
                   <td>{secretaire.codeEmp}</td>
                   <td>{secretaire.genre}</td>
                   <td>{secretaire.telephone}</td>
-                  <td>{secretaire.user ? secretaire.user.id : ''}</td>
+                  <td>{secretaire.user ? secretaire.user.firstName + ' ' + secretaire.user.lastName : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/secretaire/${secretaire.id}`} color="info" size="sm" data-cy="entityDetailsButton">

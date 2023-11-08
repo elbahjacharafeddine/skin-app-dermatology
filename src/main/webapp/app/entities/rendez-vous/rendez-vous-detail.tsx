@@ -51,7 +51,7 @@ export const RendezVousDetail = () => {
               <Translate contentKey="assistanteDermatologueApp.rendezVous.statut">Statut</Translate>
             </span>
           </dt>
-          <dd>{rendezVousEntity.statut ? 'true' : 'false'}</dd>
+          <dd>{rendezVousEntity.statut ? 'Confirmed' : 'Waiting'}</dd>
           <dt>
             <Translate contentKey="assistanteDermatologueApp.rendezVous.dermatologues">Dermatologues</Translate>
           </dt>

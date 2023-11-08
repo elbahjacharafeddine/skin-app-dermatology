@@ -144,7 +144,7 @@ export const RendezVousUpdate = () => {
                 {dermatologues
                   ? dermatologues.map(otherEntity => (
                       <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.user.firstName + ' ' + otherEntity.user.lastName}
+                        {otherEntity.user ? otherEntity.user.firstName + ' ' + otherEntity.user.lastName : ''}
                       </option>
                     ))
                   : null}
@@ -160,7 +160,7 @@ export const RendezVousUpdate = () => {
                 {patients
                   ? patients.map(otherEntity => (
                       <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.user.firstName + ' ' + otherEntity.user.lastName}
+                        {otherEntity.user ? otherEntity.user.firstName + ' ' + otherEntity.user.lastName : ''}
                       </option>
                     ))
                   : null}

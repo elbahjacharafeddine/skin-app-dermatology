@@ -49,10 +49,8 @@ export const SecretaireDetail = () => {
             </span>
           </dt>
           <dd>{secretaireEntity.telephone}</dd>
-          <dt>
-            <Translate contentKey="assistanteDermatologueApp.secretaire.user">User</Translate>
-          </dt>
-          <dd>{secretaireEntity.user ? secretaireEntity.user.id : ''}</dd>
+          <dt>Full name</dt>
+          <dd>{secretaireEntity.user ? secretaireEntity.user.firstName + ' ' + secretaireEntity.user.lastName : ''}</dd>
         </dl>
         <Button tag={Link} to="/secretaire" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

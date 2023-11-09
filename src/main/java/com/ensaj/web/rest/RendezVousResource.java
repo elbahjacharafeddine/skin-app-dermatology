@@ -106,6 +106,26 @@ public class RendezVousResource {
             .body(result);
     }
 
+    @PutMapping("/{id}/change-status")
+    public ResponseEntity<RendezVous> changeRendezVousStatus(@PathVariable String id) throws URISyntaxException {
+        log.debug("REST request to change RendezVous status: {}", id);
+
+        Optional<RendezVous> existingRendezVous = rendezVousRepository.findById(id);
+
+        return existingRendezVous
+            .map(rendezVous -> {
+                // Set statut to true regardless of any parameter
+                rendezVous.setStatut(true);
+
+                RendezVous result = rendezVousRepository.save(rendezVous);
+                return ResponseEntity
+                    .ok()
+                    .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, rendezVous.getId()))
+                    .body(result);
+            })
+            .orElseThrow(() -> new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
+    }
+
     /**
      * {@code PATCH  /rendez-vous/:id} : Partial updates given fields of an existing rendezVous, field will ignore if it is null
      *
@@ -180,7 +200,7 @@ public class RendezVousResource {
                 rendezvousDTO.setId(rendezvous.getId());
                 rendezvousDTO.setDateDebut(rendezvous.getDateDebut());
                 rendezvousDTO.setDateFin(rendezvous.getDateFin());
-                // rendezvousDTO.setStatut(rendezvous.getStatut());
+                rendezvousDTO.setStatut(rendezvous.getStatut());
                 TransformedDermatologueUserDTO transformedDermatologueUserDTO = userService.findUserDermatologue(
                     rendezvous.getDermatologues().getId()
                 );

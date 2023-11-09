@@ -125,14 +125,14 @@ export const RendezVousUpdate = () => {
                 type="datetime-local"
                 placeholder="YYYY-MM-DD HH:mm"
               />
-              <ValidatedField
+              {/* <ValidatedField
                 label={translate('assistanteDermatologueApp.rendezVous.statut')}
                 id="rendez-vous-statut"
                 name="statut"
                 data-cy="statut"
                 check
                 type="checkbox"
-              />
+              /> */}
               <ValidatedField
                 id="rendez-vous-dermatologues"
                 name="dermatologues"

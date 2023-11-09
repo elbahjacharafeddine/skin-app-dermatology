@@ -8,8 +8,9 @@ import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import { ASC, DESC, SORT } from 'app/shared/util/pagination.constants';
 import { overrideSortStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { getEntities } from './rendez-vous.reducer';
+import axios from 'axios';
 
 export const RendezVous = () => {
   const dispatch = useAppDispatch();
@@ -48,6 +49,20 @@ export const RendezVous = () => {
       order: sortState.order === ASC ? DESC : ASC,
       sort: p,
     });
+  };
+
+  const handleChangeStatus = id => {
+    console.log('hhhhhhhhhh');
+
+    axios
+      .put(`/api/rendez-vous/${id}/change-status`)
+      .then(response => {
+        console.log('Status changed successfully', response.data);
+        getAllEntities();
+      })
+      .catch(error => {
+        console.error('Error changing status', error);
+      });
   };
 
   const handleSyncList = () => {
@@ -98,8 +113,7 @@ export const RendezVous = () => {
                   <FontAwesomeIcon icon={getSortIconByFieldName('dateFin')} />
                 </th>
                 <th className="hand" onClick={sort('statut')}>
-                  <Translate contentKey="assistanteDermatologueApp.rendezVous.statut">Statut</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('statut')} />
+                  Statut <FontAwesomeIcon icon={getSortIconByFieldName('statut')} />
                 </th>
                 <th>
                   <Translate contentKey="assistanteDermatologueApp.rendezVous.dermatologues">Dermatologues</Translate>{' '}
@@ -146,6 +160,9 @@ export const RendezVous = () => {
                   </td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
+                      <Button onClick={() => handleChangeStatus(rendezVous.id)} color="success" size="sm">
+                        <FontAwesomeIcon icon={faCheck} /> <span className="d-none d-md-inline">Change Status</span>
+                      </Button>
                       <Button tag={Link} to={`/rendez-vous/${rendezVous.id}`} color="info" size="sm" data-cy="entityDetailsButton">
                         <FontAwesomeIcon icon="eye" />{' '}
                         <span className="d-none d-md-inline">

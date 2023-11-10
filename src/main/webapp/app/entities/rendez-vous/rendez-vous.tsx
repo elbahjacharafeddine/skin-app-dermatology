@@ -52,8 +52,6 @@ export const RendezVous = () => {
   };
 
   const handleChangeStatus = id => {
-    console.log('hhhhhhhhhh');
-
     axios
       .put(`/api/rendez-vous/${id}/change-status`)
       .then(response => {
@@ -160,9 +158,11 @@ export const RendezVous = () => {
                   </td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
-                      <Button onClick={() => handleChangeStatus(rendezVous.id)} color="success" size="sm">
-                        <FontAwesomeIcon icon={faCheck} /> <span className="d-none d-md-inline">Confirm</span>
-                      </Button>
+                      {rendezVous.statut == false && (
+                        <Button onClick={() => handleChangeStatus(rendezVous.id)} color="success" size="sm">
+                          <FontAwesomeIcon icon={faCheck} /> <span className="d-none d-md-inline">Confirm</span>
+                        </Button>
+                      )}
                       <Button tag={Link} to={`/rendez-vous/${rendezVous.id}`} color="info" size="sm" data-cy="entityDetailsButton">
                         <FontAwesomeIcon icon="eye" />{' '}
                         <span className="d-none d-md-inline">

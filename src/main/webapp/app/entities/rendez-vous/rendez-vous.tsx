@@ -161,7 +161,7 @@ export const RendezVous = () => {
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button onClick={() => handleChangeStatus(rendezVous.id)} color="success" size="sm">
-                        <FontAwesomeIcon icon={faCheck} /> <span className="d-none d-md-inline">Change Status</span>
+                        <FontAwesomeIcon icon={faCheck} /> <span className="d-none d-md-inline">Confirm</span>
                       </Button>
                       <Button tag={Link} to={`/rendez-vous/${rendezVous.id}`} color="info" size="sm" data-cy="entityDetailsButton">
                         <FontAwesomeIcon icon="eye" />{' '}

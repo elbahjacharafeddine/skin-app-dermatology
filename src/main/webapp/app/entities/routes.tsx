@@ -20,6 +20,7 @@ export default () => {
     <div>
       <ErrorBoundaryRoutes>
         {/* prettier-ignore */}
+
         <Route path="dermatologue/*" element={<Dermatologue />} />
         <Route path="patient/*" element={<Patient />} />
         <Route path="secretaire/*" element={<Secretaire />} />

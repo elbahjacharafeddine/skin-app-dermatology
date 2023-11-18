@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { redirect, useParams } from 'react-router-dom';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import PageNotFound from 'app/shared/error/page-not-found';
-import { CircularProgressbar } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
-
+import axios from 'axios';
+import $ from 'jquery';
+import 'jquery';
+import 'datatables.net-dt/js/dataTables.dataTables';
+import 'datatables.net-responsive-dt/js/responsive.dataTables';
+import 'datatables.net-dt/css/jquery.dataTables.css';
+import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
+import { useParams } from 'react-router-dom';
+import '../style/styleTable.css';
 interface ListPatientProps {
   nom: string;
   isAuthen: boolean;
@@ -16,61 +22,86 @@ const Listpatient: React.FC<ListPatientProps> = props => {
   const [data, setData] = useState([]);
   const [progress, setProgress] = useState(0);
 
+  const [doctor, setDoctor] = useState('');
+
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    const fetchData = async () => {
-      try {
-        const response = await fetch('https://api.github.com/', {
-          method: 'GET',
-          signal: signal,
-        });
+    if (data.length > 0) {
+      const table = $('#myTable').DataTable();
+      return () => {
+        table.destroy();
+      };
+    }
+  }, [data]);
 
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
+  useEffect(() => {
+    axios
+      .get('api/dermatologuePatients/' + dermatologue_id)
+      .then(response => {
+        console.log(response.data);
+        setData(response.data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.log(error.data);
+      });
+  }, [dermatologue_id]);
 
-        const reader = response.body?.getReader();
-        if (!reader) {
-          throw new Error('ReadableStream not supported');
-        }
-
-        const contentLength = Number(response.headers.get('Content-Length'));
-        let receivedLength = 0;
-
-        while (true) {
-          const { done, value } = await reader.read();
-
-          if (done) {
-            break;
-          }
-
-          receivedLength += value.length;
-          const newProgress = (receivedLength / contentLength) * 100;
-          setProgress(Math.min(100, newProgress));
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setLoading(false);
-    };
-
-    fetchData();
-    return () => controller.abort();
+  useEffect(() => {
+    axios
+      .get('api/dermatologues/' + dermatologue_id)
+      .then(response => {
+        console.log(response.data.user);
+        setDoctor(response.data.user.lastName + ' ' + response.data.user.firstName);
+      })
+      .catch(error => {
+        console.log(error.data);
+      });
   }, [dermatologue_id]);
 
   if (props.isAuthen && (props.role.includes('ROLE_ADMIN') || props.role.includes('ROLE_SECRETAIRE'))) {
     return (
       <div>
-        {loading && (
-          <div style={{ width: 200, height: 200 }}>
-            <CircularProgressbar value={progress} text={`${progress}%`} />
+        {loading ? (
+          <div className="card flex justify-content-center">
+            <ProgressSpinner />
+          </div>
+        ) : (
+          <div className="card mt-2 p-2">
+            <h4>Patient list for doctor : {doctor}</h4>
+            <div className="mt-1 table-responsive">
+              <table className="table card-table table-vcenter text-nowrap datatable" id="myTable">
+                <thead>
+                  <tr>
+                    <th>First name</th>
+                    <th>Last name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.length > 0 ? (
+                    data.map((u, i) => (
+                      <tr key={i}>
+                        <td>{u.patient.user.firstName}</td>
+                        <td>{u.patient.user.lastName}</td>
+                        <td>{u.patient.user.email}</td>
+                        <td>{u.patient.telephone}</td>
+                        <td>{u.patient.adress}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td className="text-center" colSpan={5}>
+                        No data available
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
-        <p>
-          Bienvenue, {props.nom}! Dermatologue ID: {dermatologue_id}
-        </p>
       </div>
     );
   }

@@ -8,13 +8,16 @@ import com.ensaj.repository.RendezVousRepository;
 import com.ensaj.repository.UserRepository;
 import com.ensaj.security.AuthoritiesConstants;
 import com.ensaj.service.UserService;
+import com.ensaj.service.dto.DermatologuePatientsDTO;
 import com.ensaj.service.dto.DermatologueUserDTO;
+import com.ensaj.service.dto.RendezVousDTO;
 import com.ensaj.service.dto.TransformedDermatologueUserDTO;
 import com.ensaj.web.rest.errors.BadRequestAlertException;
 import com.ensaj.web.rest.vm.ManagedUserVM;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -219,6 +222,69 @@ public class DermatologueResource {
             }
         }
         return liste;
+    }
+
+    //
+    // @GetMapping("/dermatologuePatients/{id}")
+    // public ResponseEntity<TransformedDermatologueUserDTO> getDermatologuePatients(@PathVariable String id) {
+    //     log.debug("REST request to get Dermatologue : {}", id);
+    //     Optional<Dermatologue> dermatologue = dermatologueRepository.findById(id);
+
+    //     if (dermatologue.isPresent()) {
+    //         TransformedDermatologueUserDTO transformedDermatologueUserDTO = userService.findUserDermatologue(id);
+
+    //         // Fetch and set the patients for the dermatologist
+    //         List<RendezVous> dermatologuePatients = rendezVousRepository.findByDermatologues(dermatologue.get());
+    //         transformedDermatologueUserDTO.setDermatologuePatients(dermatologuePatients);
+
+    //         return ResponseEntity.ok().body(transformedDermatologueUserDTO);
+    //     } else {
+    //         return ResponseEntity.notFound().build();
+    //     }
+    // }
+
+    @GetMapping("/dermatologuePatients/{id}")
+    public ResponseEntity<List<DermatologuePatientsDTO>> getDermatologuePatients(@PathVariable String id) {
+        log.debug("REST request to get Dermatologue : {}", id);
+        Optional<Dermatologue> dermatologue = dermatologueRepository.findById(id);
+
+        if (dermatologue.isPresent()) {
+            TransformedDermatologueUserDTO transformedDermatologueUserDTO = userService.findUserDermatologue(id);
+
+            // Fetch and set the patients for the dermatologist
+            List<RendezVous> dermatologuePatients = rendezVousRepository.findByDermatologues(dermatologue.get());
+
+            // Construct a list of RendezVousDTO with the required structure
+            List<DermatologuePatientsDTO> rendezVousDTOList = dermatologuePatients
+                .stream()
+                .map(rendezvous -> mapRendezVousToDTOWithUser(rendezvous))
+                .collect(Collectors.toList());
+
+            // Set the transformed dermatologist user information
+            // rendezVousDTOList.forEach(rendezvousDTO -> rendezvousDTO.getDermatologue().setUser(transformedDermatologueUserDTO.getUser()));
+
+            return ResponseEntity.ok().body(rendezVousDTOList);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    private DermatologuePatientsDTO mapRendezVousToDTOWithUser(RendezVous rendezvous) {
+        DermatologuePatientsDTO rendezvousDTO = new DermatologuePatientsDTO();
+        // rendezvousDTO.setId(rendezvous.getId());
+        // rendezvousDTO.setDateDebut(rendezvous.getDateDebut());
+        // rendezvousDTO.setDateFin(rendezvous.getDateFin());
+        // rendezvousDTO.setStatut(rendezvous.getStatut());
+
+        // Add the dermatologist's user to the RendezVousDTO
+        // String dermatologueId = rendezvous.getDermatologues().getId();
+        // TransformedDermatologueUserDTO transformedDermatologueUserDTO = userService.findUserDermatologue(dermatologueId);
+        // rendezvousDTO.setDermatologue(transformedDermatologueUserDTO);
+
+        // Add the patient's user to the RendezVousDTO
+        rendezvousDTO.setPatient(rendezvous.getPatients());
+
+        return rendezvousDTO;
     }
 
     //    @GetMapping("/dermatologues")

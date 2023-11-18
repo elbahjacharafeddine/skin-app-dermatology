@@ -12,5 +12,5 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface RendezVousRepository extends MongoRepository<RendezVous, String> {
-    List<RendezVous> findByDermatologues(Dermatologue dermatologueEntity);
+    List<RendezVous> findByDermatologues(Dermatologue dermatologue);
 }

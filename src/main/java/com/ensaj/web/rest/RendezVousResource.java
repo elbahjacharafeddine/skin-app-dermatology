@@ -224,6 +224,32 @@ public class RendezVousResource {
         return rendezvousDTOList;
     }
 
+    @GetMapping("rdvs")
+    public List<RendezVousDTO> getAllRendezVousNew() {
+        log.debug("REST request to get all RendezVous");
+        List<RendezVous> rendezvousList = rendezVousRepository.findAll();
+
+        return rendezvousList.stream().map(rendezvous -> mapRendezVousToDTO(rendezvous)).collect(Collectors.toList());
+    }
+
+    private RendezVousDTO mapRendezVousToDTO(RendezVous rendezvous) {
+        RendezVousDTO rendezvousDTO = new RendezVousDTO();
+        rendezvousDTO.setId(rendezvous.getId());
+        rendezvousDTO.setDateDebut(rendezvous.getDateDebut());
+        rendezvousDTO.setDateFin(rendezvous.getDateFin());
+        rendezvousDTO.setStatut(rendezvous.getStatut());
+
+        // Add the dermatologist's user to the RendezVousDTO
+        String dermatologueId = rendezvous.getDermatologues().getId();
+        TransformedDermatologueUserDTO transformedDermatologueUserDTO = userService.findUserDermatologue(dermatologueId);
+        rendezvousDTO.setDermatologue(transformedDermatologueUserDTO);
+
+        // Add the patient's user to the RendezVousDTO
+        rendezvousDTO.setPatient(rendezvous.getPatients());
+
+        return rendezvousDTO;
+    }
+
     //  @GetMapping("")
     // public List<RendezVousDTO> getAllRendezVous() {
     //     log.debug("REST request to get all RendezVous");

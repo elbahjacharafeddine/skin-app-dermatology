@@ -371,6 +371,7 @@ public class UserService {
                 t.setGenre(dermatologue.get().getGenre());
                 t.setTelephone(dermatologue.get().getTelephone());
                 t.setUser(managedUserVM);
+                // t.setDermatologuePatients(dermatologue.get().getDermatologuePatients());
 
                 return t;
             }

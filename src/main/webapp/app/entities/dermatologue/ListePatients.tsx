@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { getEntities } from './dermatologue.reducer';
 
-export const Dermatologue = () => {
+export const ListePatients = () => {
   const dispatch = useAppDispatch();
 
   const pageLocation = useLocation();
@@ -79,7 +79,7 @@ export const Dermatologue = () => {
           <Link to="/dermatologue/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
             <FontAwesomeIcon icon="plus" />
             &nbsp;
-            <Translate contentKey="assistanteDermatologueApp.dermatologue.home.createLabel">Create new Dermatologue</Translate>
+            <Translate contentKey="assistanteDermatologueApp.dermatologue.home.createLabel">Create new ListePatients</Translate>
           </Link>
         </div>
       </h2>
@@ -88,10 +88,10 @@ export const Dermatologue = () => {
           <Table responsive>
             <thead>
               <tr>
-                {/*<th className="hand" onClick={sort('id')}>*/}
-                {/*  <Translate contentKey="assistanteDermatologueApp.dermatologue.id">ID</Translate>{' '}*/}
-                {/*  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />*/}
-                {/*</th>*/}
+                <th className="hand" onClick={sort('id')}>
+                  <Translate contentKey="assistanteDermatologueApp.dermatologue.id">ID</Translate>{' '}
+                  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
+                </th>
                 <th className="hand" onClick={sort('codeEmp')}>
                   <Translate contentKey="assistanteDermatologueApp.dermatologue.codeEmp">Code Emp</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('codeEmp')} />
@@ -111,11 +111,11 @@ export const Dermatologue = () => {
             <tbody>
               {dermatologueList.map((dermatologue, i) => (
                 <tr key={`entity-${i}`} data-cy="entityTable">
-                  {/*<td>*/}
-                  {/*  <Button tag={Link} to={`/dermatologue/${dermatologue.id}`} color="link" size="sm">*/}
-                  {/*    {dermatologue.id}*/}
-                  {/*  </Button>*/}
-                  {/*</td>*/}
+                  <td>
+                    <Button tag={Link} to={`/dermatologue/${dermatologue.id}`} color="link" size="sm">
+                      {dermatologue.id}
+                    </Button>
+                  </td>
                   <td>{dermatologue.codeEmp}</td>
                   <td>{dermatologue.genre}</td>
                   <td>{dermatologue.telephone}</td>
@@ -135,10 +135,6 @@ export const Dermatologue = () => {
                           <Translate contentKey="entity.action.edit">Edit</Translate>
                         </span>
                       </Button>
-                      <Button tag={Link} to={`/dermatologue/all-patient/${dermatologue.id}`} color="warning" size="sm">
-                        <FontAwesomeIcon icon="eye" /> <span className="d-none d-md-inline m-1">Patients info</span>
-                      </Button>
-
                       <Button
                         onClick={() => (location.href = `/dermatologue/${dermatologue.id}/delete`)}
                         color="danger"
@@ -168,4 +164,4 @@ export const Dermatologue = () => {
   );
 };
 
-export default Dermatologue;
+export default ListePatients;

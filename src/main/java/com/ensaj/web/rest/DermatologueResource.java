@@ -1,8 +1,10 @@
 package com.ensaj.web.rest;
 
 import com.ensaj.domain.Dermatologue;
+import com.ensaj.domain.RendezVous;
 import com.ensaj.domain.User;
 import com.ensaj.repository.DermatologueRepository;
+import com.ensaj.repository.RendezVousRepository;
 import com.ensaj.repository.UserRepository;
 import com.ensaj.security.AuthoritiesConstants;
 import com.ensaj.service.UserService;
@@ -16,6 +18,7 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
@@ -36,11 +39,18 @@ public class DermatologueResource {
     private String applicationName;
 
     private final DermatologueRepository dermatologueRepository;
+    private final RendezVousRepository rendezVousRepository;
     private final UserService userService;
     private final UserRepository userRepository;
 
-    public DermatologueResource(DermatologueRepository dermatologueRepository, UserService userService, UserRepository userRepository) {
+    public DermatologueResource(
+        DermatologueRepository dermatologueRepository,
+        RendezVousRepository rendezVousRepository,
+        UserService userService,
+        UserRepository userRepository
+    ) {
         this.dermatologueRepository = dermatologueRepository;
+        this.rendezVousRepository = rendezVousRepository;
         this.userService = userService;
         this.userRepository = userRepository;
     }

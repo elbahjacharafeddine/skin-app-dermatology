@@ -88,10 +88,10 @@ export const Dermatologue = () => {
           <Table responsive>
             <thead>
               <tr>
-                <th className="hand" onClick={sort('id')}>
-                  <Translate contentKey="assistanteDermatologueApp.dermatologue.id">ID</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
-                </th>
+                {/*<th className="hand" onClick={sort('id')}>*/}
+                {/*  <Translate contentKey="assistanteDermatologueApp.dermatologue.id">ID</Translate>{' '}*/}
+                {/*  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />*/}
+                {/*</th>*/}
                 <th className="hand" onClick={sort('codeEmp')}>
                   <Translate contentKey="assistanteDermatologueApp.dermatologue.codeEmp">Code Emp</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('codeEmp')} />
@@ -111,11 +111,11 @@ export const Dermatologue = () => {
             <tbody>
               {dermatologueList.map((dermatologue, i) => (
                 <tr key={`entity-${i}`} data-cy="entityTable">
-                  <td>
-                    <Button tag={Link} to={`/dermatologue/${dermatologue.id}`} color="link" size="sm">
-                      {dermatologue.id}
-                    </Button>
-                  </td>
+                  {/*<td>*/}
+                  {/*  <Button tag={Link} to={`/dermatologue/${dermatologue.id}`} color="link" size="sm">*/}
+                  {/*    {dermatologue.id}*/}
+                  {/*  </Button>*/}
+                  {/*</td>*/}
                   <td>{dermatologue.codeEmp}</td>
                   <td>{dermatologue.genre}</td>
                   <td>{dermatologue.telephone}</td>
@@ -135,6 +135,10 @@ export const Dermatologue = () => {
                           <Translate contentKey="entity.action.edit">Edit</Translate>
                         </span>
                       </Button>
+                      <Button tag={Link} to={`/dermatologue/all-patient/${dermatologue.id}`} color="info" size="sm">
+                        <FontAwesomeIcon icon="pencil-alt" /> <span className="d-none d-md-inline m-1">Patients info</span>
+                      </Button>
+
                       <Button
                         onClick={() => (location.href = `/dermatologue/${dermatologue.id}/delete`)}
                         color="danger"

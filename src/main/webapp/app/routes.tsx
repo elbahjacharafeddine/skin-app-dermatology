@@ -14,8 +14,8 @@ import PrivateRoute from 'app/shared/auth/private-route';
 import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
 import PageNotFound from 'app/shared/error/page-not-found';
 import { AUTHORITIES } from 'app/config/constants';
-import Elbahja from 'app/modules/login/Elbahja';
-
+import { useAppSelector } from 'app/config/store';
+import Listpatient from 'app/components/medecin/ListPatient';
 const loading = <div>loading ...</div>;
 
 const Account = Loadable({
@@ -28,6 +28,9 @@ const Admin = Loadable({
   loading: () => loading,
 });
 const AppRoutes = () => {
+  const isAuthenicated = useAppSelector(state => state.authentication.isAuthenticated);
+  const data: any = sessionStorage.getItem('user_data');
+  const userData = data ? JSON.parse(data) : null;
   return (
     <div className="view-routes">
       <ErrorBoundaryRoutes>
@@ -67,6 +70,12 @@ const AppRoutes = () => {
             </PrivateRoute>
           }
         />
+
+        <Route
+          path="/dermatologue/all-patient/:dermatologue_id"
+          element={<Listpatient nom={'elbahja'} isAuthen={isAuthenicated} role={data ? userData.authorities : null} />}
+        />
+
         <Route path="*" element={<PageNotFound />} />
       </ErrorBoundaryRoutes>
     </div>

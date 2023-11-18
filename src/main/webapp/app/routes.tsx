@@ -14,6 +14,7 @@ import PrivateRoute from 'app/shared/auth/private-route';
 import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
 import PageNotFound from 'app/shared/error/page-not-found';
 import { AUTHORITIES } from 'app/config/constants';
+import Elbahja from 'app/modules/login/Elbahja';
 
 const loading = <div>loading ...</div>;
 
@@ -32,6 +33,7 @@ const AppRoutes = () => {
       <ErrorBoundaryRoutes>
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
+
         <Route path="logout" element={<Logout />} />
         <Route path="account">
           <Route

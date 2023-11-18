@@ -143,6 +143,7 @@ export const AuthenticationSlice = createSlice({
         const isAuthenticated = action.payload && action.payload.data && action.payload.data.activated;
         console.log('ELBAHJA Charafeddine hello world !!');
         console.log(action.payload.data);
+        Storage.session.set('role', action.payload.data);
         return {
           ...state,
           isAuthenticated,

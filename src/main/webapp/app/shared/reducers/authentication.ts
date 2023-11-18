@@ -141,9 +141,8 @@ export const AuthenticationSlice = createSlice({
       }))
       .addCase(getAccount.fulfilled, (state, action) => {
         const isAuthenticated = action.payload && action.payload.data && action.payload.data.activated;
-        console.log('ELBAHJA Charafeddine hello world !!');
-        console.log(action.payload.data);
-        Storage.session.set('role', action.payload.data);
+
+        Storage.session.set('user_data', action.payload.data);
         return {
           ...state,
           isAuthenticated,

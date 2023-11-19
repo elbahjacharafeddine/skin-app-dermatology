@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
@@ -41,20 +42,20 @@ public class DermatologueResource {
     private String applicationName;
 
     private final DermatologueRepository dermatologueRepository;
+    private final RendezVousRepository rendezVousRepository;
     private final UserService userService;
     private final UserRepository userRepository;
-    private final RendezVousRepository rendezVousRepository;
 
     public DermatologueResource(
         DermatologueRepository dermatologueRepository,
+        RendezVousRepository rendezVousRepository,
         UserService userService,
-        UserRepository userRepository,
-        RendezVousRepository rendezVousRepository
+        UserRepository userRepository
     ) {
         this.dermatologueRepository = dermatologueRepository;
+        this.rendezVousRepository = rendezVousRepository;
         this.userService = userService;
         this.userRepository = userRepository;
-        this.rendezVousRepository = rendezVousRepository;
     }
 
     /**

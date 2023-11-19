@@ -8,6 +8,7 @@ import Health from './health/health';
 import Metrics from './metrics/metrics';
 import Configuration from './configuration/configuration';
 import Docs from './docs/docs';
+import ListPatient from 'app/components/medecin/ListPatient';
 
 const AdministrationRoutes = () => (
   <div>

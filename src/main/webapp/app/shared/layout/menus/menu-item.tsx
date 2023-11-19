@@ -10,16 +10,21 @@ export interface IMenuItem {
   to: string;
   id?: string;
   'data-cy'?: string;
+  role: string[];
+  forWho: string[];
 }
 
 const MenuItem = (props: IMenuItem) => {
-  const { to, icon, id, children } = props;
+  const { to, icon, id, children, role, forWho } = props;
+  const isVisible = forWho.some(who => role.includes(who));
 
-  return (
-    <DropdownItem tag={Link} to={to} id={id} data-cy={props['data-cy']}>
-      <FontAwesomeIcon icon={icon} fixedWidth /> {children}
-    </DropdownItem>
-  );
+  if (isVisible) {
+    return (
+      <DropdownItem tag={Link} to={to} id={id} data-cy={props['data-cy']}>
+        <FontAwesomeIcon icon={icon} fixedWidth /> {children}
+      </DropdownItem>
+    );
+  }
 };
 
 export default MenuItem;

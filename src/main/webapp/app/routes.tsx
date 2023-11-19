@@ -14,8 +14,14 @@ import PrivateRoute from 'app/shared/auth/private-route';
 import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
 import PageNotFound from 'app/shared/error/page-not-found';
 import { AUTHORITIES } from 'app/config/constants';
+
 import Elbahja from 'app/modules/login/Elbahja';
 import ListePatients from './entities/dermatologue/ListePatients';
+
+import { useAppSelector } from 'app/config/store';
+import Listpatient from 'app/components/medecin/ListPatient';
+import PaginatorBasicDemo from 'app/components/medecin/PaginatorBasicDemo';
+// import Test from "app/components/medecin/Test";
 
 const loading = <div>loading ...</div>;
 
@@ -29,6 +35,10 @@ const Admin = Loadable({
   loading: () => loading,
 });
 const AppRoutes = () => {
+  const isAuthenicated = useAppSelector(state => state.authentication.isAuthenticated);
+  const data: any = sessionStorage.getItem('user_data');
+  const userData = data ? JSON.parse(data) : null;
+
   return (
     <div className="view-routes">
       <ErrorBoundaryRoutes>
@@ -42,12 +52,12 @@ const AppRoutes = () => {
           <Route
             path="*"
             element={
-              <PrivateRoute hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER]}>
+              <PrivateRoute hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.USER, AUTHORITIES.SECRETAIRE, AUTHORITIES.DERMATOLOGUE]}>
                 <Account />
               </PrivateRoute>
             }
           />
-          <Route path="register" element={<Register />} />
+          {/*<Route path="register" element={<Register />} />*/}
           <Route path="activate" element={<Activate />} />
           <Route path="reset">
             <Route path="request" element={<PasswordResetInit />} />
@@ -70,6 +80,13 @@ const AppRoutes = () => {
             </PrivateRoute>
           }
         />
+
+        <Route
+          path="/dermatologue/all-patient/:dermatologue_id"
+          element={<Listpatient nom={'elbahja'} isAuthen={isAuthenicated} role={data ? userData.authorities : null} />}
+        />
+        <Route path="/elbahjaa" element={<Listpatient isAuthen={true} role={['ROLE_ADMIN']} nom={'ELBAHJA'} />} />
+
         <Route path="*" element={<PageNotFound />} />
       </ErrorBoundaryRoutes>
     </div>

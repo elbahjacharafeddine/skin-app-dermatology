@@ -9,23 +9,16 @@ const EntitiesMenu = () => {
   const dataJson = data ? JSON.parse(data) : null;
   return (
     <>
-      {/* prettier-ignore */}
-
-      <MenuItem icon="asterisk" to="/dermatologue" role={data ? dataJson.authorities : []} forWho={["ROLE_ADMIN","ROLE_ADMIN"]} >
-          <Translate contentKey="global.menu.entities.dermatologue" />
-        </MenuItem>
+      <MenuItem icon="asterisk" to="/dermatologue" role={data ? dataJson.authorities : []} forWho={['ROLE_ADMIN', 'ROLE_ADMIN']}>
+        <Translate contentKey="global.menu.entities.dermatologue" />
+      </MenuItem>
       <MenuItem icon="asterisk" to="/patient" role={data ? dataJson.authorities : []} forWho={['ROLE_ADMIN', 'ROLE_SECRETAIRE']}>
         <Translate contentKey="global.menu.entities.patient" />
       </MenuItem>
       <MenuItem icon="asterisk" to="/secretaire" role={data ? dataJson.authorities : []} forWho={['ROLE_ADMIN']}>
         <Translate contentKey="global.menu.entities.secretaire" />
       </MenuItem>
-      <MenuItem
-        icon="asterisk"
-        to="/rendez-vous"
-        role={data ? dataJson.authorities : []}
-        forWho={['ROLE_ADMIN', 'ROLE_DERMATOLOGUE', 'ROLE_SECRETAIRE']}
-      >
+      <MenuItem icon="asterisk" to="/rendez-vous" role={data ? dataJson.authorities : []} forWho={['ROLE_ADMIN', 'ROLE_SECRETAIRE']}>
         <Translate contentKey="global.menu.entities.rendezVous" />
       </MenuItem>
       <MenuItem icon="asterisk" to="/consultation" role={data ? dataJson.authorities : []} forWho={['ROLE_DERMATOLOGUE']}>

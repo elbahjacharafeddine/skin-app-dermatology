@@ -1,86 +1,126 @@
-import React, { Fragment, useRef, useState } from 'react';
-// import Scheduler from "react-mui-scheduler"
+import format from 'date-fns/format';
+import getDay from 'date-fns/getDay';
+import parse from 'date-fns/parse';
+import startOfWeek from 'date-fns/startOfWeek';
+import React, { useEffect, useState } from 'react';
+import { Calendar, dateFnsLocalizer, Event } from 'react-big-calendar';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import axios from 'axios';
+import { redirect } from 'react-router';
+import PageNotFound from 'app/shared/error/page-not-found';
 
-import { Scheduler } from '@aldabil/react-scheduler';
-import type { SchedulerRef } from '@aldabil/react-scheduler/types';
-import { Button } from 'reactstrap';
+const locales = {
+  'en-US': require('date-fns/locale/en-US'),
+};
+const localizer = dateFnsLocalizer({
+  format,
+  parse,
+  startOfWeek,
+  getDay,
+  locales,
+});
 
-function Elbahja(isAuthenticate) {
-  const calendarRef = useRef<SchedulerRef>(null);
-  const [state] = useState({
-    options: {
-      transitionMode: 'zoom',
-      startWeekOn: 'mon',
-      defaultMode: 'month',
-      minWidth: 540,
-      maxWidth: 540,
-      minHeight: 540,
-      maxHeight: 540,
-    },
-    alertProps: {
-      open: true,
-      color: 'info', // info | success | warning | error
-      severity: 'info', // info | success | warning | error
-      message: "🚀 Let's start with awesome react-mui-scheduler 🔥 🔥 🔥",
-      showActionButton: true,
-      showNotification: true,
-      delay: 1500,
-    },
-    toolbarProps: {
-      showSearchBar: true,
-      showSwitchModeButtons: true,
-      showDatePicker: true,
-    },
-  });
+const today = new Date();
+console.log('today is' + today);
+const tomorrow = new Date(today);
+tomorrow.setDate(today.getDate() + 1);
+const dayAfterTomorrow = new Date(today);
+dayAfterTomorrow.setDate(today.getDate() + 2);
 
-  const events = [
-    {
-      event_id: 1,
-      title: 'Event 1',
-      start: new Date('2023/11/18 09:00'),
-      end: new Date('2023/11/18 10:00'),
-      allDay: true,
-    },
-    {
-      event_id: 2,
-      title: 'Event 2',
-      start: new Date('2023/11/19 10:00'),
-      end: new Date('2023/11/19 11:30'),
-    },
-  ];
-
-  const handleCellClick = (event, row, day) => {
-    // Do something...
-  };
-
-  const handleEventClick = (event, item) => {
-    // Do something...
-  };
-
-  const handleEventsChange = item => {
-    // Do something...
-  };
-
-  const handleAlertCloseButtonClicked = item => {
-    // Do something...
-  };
-
-  return (
-    <Fragment>
-      <Scheduler
-        month={{
-          weekDays: [0, 1, 2, 3, 4, 5],
-          weekStartOn: 6,
-          startHour: 9,
-          endHour: 20,
-        }}
-        ref={calendarRef}
-        // month={month}
-        events={events}
-        //...
-      />
-    </Fragment>
-  );
+interface ElbahjaProps {
+  isAuthenticated: boolean;
+  role: string;
 }
+
+const Elbahja: React.FC<ElbahjaProps> = ({ isAuthenticated, role }) => {
+  const [events, setEvents] = useState([]);
+  useEffect(() => {
+    axios
+      .get('/api/rendez-vous/dermatologue/6547cb2707c44a7f9323eaff')
+      .then(response => {
+        console.log(response.data);
+        // se(response.data);
+        const convertedData = response.data.map(item => {
+          return {
+            id: item.id,
+            title: item.patients.adress,
+            start: new Date(item.dateDebut),
+            end: new Date(item.dateFin),
+          };
+        });
+
+        setEvents([...events, ...convertedData]);
+      })
+      .catch(error => {
+        console.log(error.data);
+      });
+  }, []);
+
+  const [newEvent, setNewEvent] = useState({
+    title: '',
+    start: new Date(),
+    end: new Date(),
+  });
+  const [allEvents, setAllEvents] = useState(events);
+
+  function handleAddEvent() {
+    for (let i = 0; i < allEvents.length; i++) {
+      const d1 = new Date(allEvents[i].start);
+      const d2 = new Date(newEvent.start);
+      const d3 = new Date(allEvents[i].end);
+      const d4 = new Date(newEvent.end);
+
+      if ((d1 <= d2 && d2 <= d3) || (d1 <= d4 && d4 <= d3)) {
+        alert('CLASH');
+        break;
+      }
+    }
+
+    setAllEvents([...allEvents, newEvent]);
+  }
+
+  if (role == 'ROLE_DERMATOLOGUE') {
+    return (
+      <div className="App">
+        <h1>Calendar</h1>
+        {/*<h2>Add New Event</h2>*/}
+        {/*<div>*/}
+        {/*  <input*/}
+        {/*      type="text"*/}
+        {/*      placeholder="Add Title"*/}
+        {/*      style={{ width: "20%", marginRight: "10px" }}*/}
+        {/*      value={newEvent.title}*/}
+        {/*      onChange={(e) =>*/}
+        {/*          setNewEvent({ ...newEvent, title: e.target.value })*/}
+        {/*      }*/}
+        {/*  />*/}
+        {/*  <DatePicker*/}
+        {/*      placeholderText="Start Date"*/}
+        {/*      style={{ marginRight: "10px" }}*/}
+        {/*      selected={newEvent.start}*/}
+        {/*      showTimeSelect*/}
+        {/*      dateFormat="yyyy-MM-dd HH:mm:ss"*/}
+        {/*      onChange={(start) => setNewEvent({ ...newEvent, start })}*/}
+        {/*  />*/}
+        {/*  <DatePicker*/}
+        {/*      placeholderText="End Date"*/}
+        {/*      selected={newEvent.end}*/}
+        {/*      showTimeSelect*/}
+        {/*      dateFormat="yyyy-MM-dd HH:mm:ss"*/}
+        {/*      onChange={(end) => setNewEvent({ ...newEvent, end })}*/}
+        {/*  />*/}
+        {/*  <button style={{ marginTop: "10px" }} onClick={handleAddEvent}>*/}
+        {/*    Add Event*/}
+        {/*  </button>*/}
+        {/*</div>*/}
+        <Calendar localizer={localizer} events={events} startAccessor="start" endAccessor="end" style={{ height: 500, margin: '50px' }} />
+      </div>
+    );
+  } else {
+    return <PageNotFound />;
+  }
+};
 
 export default Elbahja;

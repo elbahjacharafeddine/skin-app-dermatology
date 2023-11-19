@@ -10,7 +10,12 @@ import { overrideSortStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { getEntities } from './consultation.reducer';
-
+import $ from 'jquery';
+import 'jquery';
+import 'datatables.net-dt/js/dataTables.dataTables';
+import 'datatables.net-responsive-dt/js/responsive.dataTables';
+import 'datatables.net-dt/css/jquery.dataTables.css';
+import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
 export const Consultation = () => {
   const dispatch = useAppDispatch();
 
@@ -40,6 +45,14 @@ export const Consultation = () => {
   };
 
   useEffect(() => {
+    if (consultationList.length > 0) {
+      const table = $('#myTable').DataTable();
+      return () => {
+        table.destroy();
+      };
+    }
+  }, [consultationList]);
+  useEffect(() => {
     sortEntities();
   }, [sortState.order, sortState.sort]);
 
@@ -66,14 +79,14 @@ export const Consultation = () => {
   };
 
   return (
-    <div>
+    <div className="p-2">
       <h2 id="consultation-heading" data-cy="ConsultationHeading">
         <Translate contentKey="assistanteDermatologueApp.consultation.home.title">Consultations</Translate>
         <div className="d-flex justify-content-end">
-          <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
-            <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-            <Translate contentKey="assistanteDermatologueApp.consultation.home.refreshListLabel">Refresh List</Translate>
-          </Button>
+          {/*<Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>*/}
+          {/*  <FontAwesomeIcon icon="sync" spin={loading} />{' '}*/}
+          {/*  <Translate contentKey="assistanteDermatologueApp.consultation.home.refreshListLabel">Refresh List</Translate>*/}
+          {/*</Button>*/}
           <Link to="/consultation/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
             <FontAwesomeIcon icon="plus" />
             &nbsp;
@@ -83,15 +96,16 @@ export const Consultation = () => {
       </h2>
       <div className="table-responsive">
         {consultationList && consultationList.length > 0 ? (
-          <Table responsive>
+          <table className="table table-responsive p-3" id="myTable">
             <thead>
               <tr>
                 <th className="hand" onClick={sort('dateConsultation')}>
                   <Translate contentKey="assistanteDermatologueApp.consultation.dateConsultation">Date Consultation</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('dateConsultation')} />
+                  {/*<FontAwesomeIcon icon={getSortIconByFieldName('dateConsultation')} />*/}
                 </th>
+                <th>Hour</th>
                 <th>Patient</th>
-                <th>Patient Tel</th>
+                <th>Patient phone</th>
                 <th>Doctor</th>
 
                 <th />
@@ -101,11 +115,13 @@ export const Consultation = () => {
               {consultationList.map((consultation, i) =>
                 consultation.rendezVous.dermatologue.user.id === userData.id ? (
                   <tr key={`entity-${i}`} data-cy="entityTable">
+                    <td>{consultation.dateConsultation ? new Date(consultation.dateConsultation).toLocaleDateString() : null}</td>
                     <td>
-                      {consultation.dateConsultation ? (
-                        <TextFormat type="date" value={consultation.dateConsultation} format={APP_DATE_FORMAT} />
-                      ) : null}
+                      {consultation.dateConsultation
+                        ? new Date(consultation.dateConsultation).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                        : null}
                     </td>
+
                     <td>
                       {consultation.rendezVous ? (
                         <Link to={`/rendez-vous/${consultation.rendezVous.id}`}>
@@ -166,7 +182,7 @@ export const Consultation = () => {
                 ) : null,
               )}
             </tbody>
-          </Table>
+          </table>
         ) : (
           !loading && (
             <div className="alert alert-warning">

@@ -10,6 +10,7 @@ import 'datatables.net-dt/css/jquery.dataTables.css';
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
 import { useParams } from 'react-router-dom';
 import '../style/styleTable.css';
+
 interface ListPatientProps {
   nom: string;
   isAuthen: boolean;
@@ -58,6 +59,14 @@ const Listpatient: React.FC<ListPatientProps> = props => {
       });
   }, [dermatologue_id]);
 
+  useEffect(() => {
+    if (data.length > 0) {
+      const table = $('#myTable').DataTable();
+      return () => {
+        table.destroy();
+      };
+    }
+  }, [data]);
   if (props.isAuthen && (props.role.includes('ROLE_ADMIN') || props.role.includes('ROLE_SECRETAIRE'))) {
     return (
       <div>
@@ -67,9 +76,9 @@ const Listpatient: React.FC<ListPatientProps> = props => {
           </div>
         ) : (
           <div className="card mt-2 p-2">
-            <h4>Patient list for doctor : {doctor}</h4>
+            <h4>Patients list for doctor : {doctor}</h4>
             <div className="mt-1 table-responsive">
-              <table className="table card-table table-vcenter text-nowrap datatable" id="myTable">
+              <table className="table card-table table-vcenter text-nowrap table-responsive" id="myTable">
                 <thead>
                   <tr>
                     <th>First name</th>

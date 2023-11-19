@@ -6,7 +6,8 @@ import EntitiesMenuItems from 'app/entities/menu';
 export const EntitiesMenu = () => (
   <NavDropdown
     icon="th-list"
-    name={translate('global.menu.entities.main')}
+    // name={translate('global.menu.entities.main')}
+    name={'Menu'}
     id="entity-menu"
     data-cy="entity"
     style={{ maxHeight: '80vh', overflow: 'auto' }}

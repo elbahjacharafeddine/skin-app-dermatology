@@ -9,7 +9,12 @@ import { overrideSortStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { getEntities } from './dermatologue.reducer';
-
+import $ from 'jquery';
+import 'jquery';
+import 'datatables.net-dt/js/dataTables.dataTables';
+import 'datatables.net-responsive-dt/js/responsive.dataTables';
+import 'datatables.net-dt/css/jquery.dataTables.css';
+import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
 export const Dermatologue = () => {
   const dispatch = useAppDispatch();
 
@@ -41,6 +46,15 @@ export const Dermatologue = () => {
     sortEntities();
   }, [sortState.order, sortState.sort]);
 
+  useEffect(() => {
+    if (dermatologueList.length > 0) {
+      const table = $('#myTable').DataTable();
+      return () => {
+        table.destroy();
+      };
+    }
+  }, [dermatologueList]);
+
   const sort = p => () => {
     setSortState({
       ...sortState,
@@ -68,14 +82,14 @@ export const Dermatologue = () => {
   };
 
   return (
-    <div>
+    <div className="p-2">
       <h2 id="dermatologue-heading" data-cy="DermatologueHeading">
-        <Translate contentKey="assistanteDermatologueApp.dermatologue.home.title">Dermatologues</Translate>
+        Dermatologists
         <div className="d-flex justify-content-end">
-          <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
-            <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-            <Translate contentKey="assistanteDermatologueApp.dermatologue.home.refreshListLabel">Refresh List</Translate>
-          </Button>
+          {/*<Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>*/}
+          {/*  <FontAwesomeIcon icon="sync" spin={loading} />{' '}*/}
+          {/*  <Translate contentKey="assistanteDermatologueApp.dermatologue.home.refreshListLabel">Refresh List</Translate>*/}
+          {/*</Button>*/}
           <Link to="/dermatologue/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
             <FontAwesomeIcon icon="plus" />
             &nbsp;
@@ -83,26 +97,19 @@ export const Dermatologue = () => {
           </Link>
         </div>
       </h2>
-      <div className="table-responsive">
+      <div className="table-responsive p-3">
         {dermatologueList && dermatologueList.length > 0 ? (
-          <Table responsive>
+          <table className="table table-responsive p-2" id="myTable">
             <thead>
               <tr>
-                {/*<th className="hand" onClick={sort('id')}>*/}
-                {/*  <Translate contentKey="assistanteDermatologueApp.dermatologue.id">ID</Translate>{' '}*/}
-                {/*  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />*/}
-                {/*</th>*/}
                 <th className="hand" onClick={sort('codeEmp')}>
                   <Translate contentKey="assistanteDermatologueApp.dermatologue.codeEmp">Code Emp</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('codeEmp')} />
                 </th>
                 <th className="hand" onClick={sort('genre')}>
-                  <Translate contentKey="assistanteDermatologueApp.dermatologue.genre">Genre</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('genre')} />
+                  Gender
                 </th>
                 <th className="hand" onClick={sort('telephone')}>
-                  <Translate contentKey="assistanteDermatologueApp.dermatologue.telephone">Telephone</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('telephone')} />
+                  Phone
                 </th>
                 <th>Full name</th>
                 <th />
@@ -111,11 +118,6 @@ export const Dermatologue = () => {
             <tbody>
               {dermatologueList.map((dermatologue, i) => (
                 <tr key={`entity-${i}`} data-cy="entityTable">
-                  {/*<td>*/}
-                  {/*  <Button tag={Link} to={`/dermatologue/${dermatologue.id}`} color="link" size="sm">*/}
-                  {/*    {dermatologue.id}*/}
-                  {/*  </Button>*/}
-                  {/*</td>*/}
                   <td>{dermatologue.codeEmp}</td>
                   <td>{dermatologue.genre}</td>
                   <td>{dermatologue.telephone}</td>
@@ -155,7 +157,7 @@ export const Dermatologue = () => {
                 </tr>
               ))}
             </tbody>
-          </Table>
+          </table>
         ) : (
           !loading && (
             <div className="alert alert-warning">

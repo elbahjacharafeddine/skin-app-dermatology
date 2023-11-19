@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -435,5 +436,31 @@ public class RendezVousResource {
         log.debug("REST request to delete RendezVous : {}", id);
         rendezVousRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
+    }
+
+    @GetMapping("/dermatologue/{id}")
+    public List<RendezVous> getAllAppointement(@PathVariable String id) {
+        List<RendezVous> rdv = rendezVousRepository.findAll();
+        List<RendezVous> data = new ArrayList<>();
+        for (RendezVous r : rdv) {
+            if (r.getDermatologues().getId().equals(id)) {
+                Patient p = r.getPatients();
+
+                Optional<User> user = userRepository.findById(p.getUser().getId());
+                if (user.isPresent()) {
+                    PatientUserDTO patientUserDTO = new PatientUserDTO();
+                    ManagedUserVM managedUserVM = new ManagedUserVM();
+                    managedUserVM.setEmail(user.get().getEmail());
+                    managedUserVM.setFirstName(user.get().getFirstName());
+                    managedUserVM.setLastName(user.get().getLastName());
+
+                    //                    p.setUser(user.get());
+                    patientUserDTO.setPatient(p);
+                    r.setPatientUserDTO(patientUserDTO);
+                    data.add(r);
+                }
+            }
+        }
+        return data;
     }
 }

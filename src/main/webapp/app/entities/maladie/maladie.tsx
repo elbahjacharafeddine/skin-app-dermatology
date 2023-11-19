@@ -68,10 +68,10 @@ export const Maladie = () => {
       <h2 id="maladie-heading" data-cy="MaladieHeading">
         <Translate contentKey="assistanteDermatologueApp.maladie.home.title">Maladies</Translate>
         <div className="d-flex justify-content-end">
-          <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
-            <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-            <Translate contentKey="assistanteDermatologueApp.maladie.home.refreshListLabel">Refresh List</Translate>
-          </Button>
+          {/*<Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>*/}
+          {/*  <FontAwesomeIcon icon="sync" spin={loading} />{' '}*/}
+          {/*  <Translate contentKey="assistanteDermatologueApp.maladie.home.refreshListLabel">Refresh List</Translate>*/}
+          {/*</Button>*/}
           <Link to="/maladie/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
             <FontAwesomeIcon icon="plus" />
             &nbsp;
@@ -84,10 +84,10 @@ export const Maladie = () => {
           <Table responsive>
             <thead>
               <tr>
-                <th className="hand" onClick={sort('id')}>
-                  <Translate contentKey="assistanteDermatologueApp.maladie.id">ID</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
-                </th>
+                {/*<th className="hand" onClick={sort('id')}>*/}
+                {/*  <Translate contentKey="assistanteDermatologueApp.maladie.id">ID</Translate>{' '}*/}
+                {/*  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />*/}
+                {/*</th>*/}
                 <th className="hand" onClick={sort('fullName')}>
                   <Translate contentKey="assistanteDermatologueApp.maladie.fullName">Full Name</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('fullName')} />

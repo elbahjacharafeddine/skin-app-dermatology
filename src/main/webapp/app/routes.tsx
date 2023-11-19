@@ -21,6 +21,8 @@ import ListePatients from './entities/dermatologue/ListePatients';
 import { useAppSelector } from 'app/config/store';
 import Listpatient from 'app/components/medecin/ListPatient';
 import PaginatorBasicDemo from 'app/components/medecin/PaginatorBasicDemo';
+
+// import Elbahja from "app/modules/login/Elbahja";
 // import Test from "app/components/medecin/Test";
 
 const loading = <div>loading ...</div>;
@@ -75,7 +77,7 @@ const AppRoutes = () => {
         <Route
           path="*"
           element={
-            <PrivateRoute>
+            <PrivateRoute hasAnyAuthorities={[AUTHORITIES.ADMIN, AUTHORITIES.DERMATOLOGUE, AUTHORITIES.SECRETAIRE]}>
               <EntitiesRoutes />
             </PrivateRoute>
           }
@@ -85,7 +87,7 @@ const AppRoutes = () => {
           path="/dermatologue/all-patient/:dermatologue_id"
           element={<Listpatient nom={'elbahja'} isAuthen={isAuthenicated} role={data ? userData.authorities : null} />}
         />
-        <Route path="/elbahjaa" element={<Listpatient isAuthen={true} role={['ROLE_ADMIN']} nom={'ELBAHJA'} />} />
+        <Route path={'/dermatologue/my-scheduler'} element={<Elbahja isAuthenticated={true} role={data ? userData.authorities : null} />} />
 
         <Route path="*" element={<PageNotFound />} />
       </ErrorBoundaryRoutes>

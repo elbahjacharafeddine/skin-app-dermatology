@@ -14,12 +14,17 @@ import PrivateRoute from 'app/shared/auth/private-route';
 import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
 import PageNotFound from 'app/shared/error/page-not-found';
 import { AUTHORITIES } from 'app/config/constants';
+
+import Elbahja from 'app/modules/login/Elbahja';
+import ListePatients from './entities/dermatologue/ListePatients';
+
 import { useAppSelector } from 'app/config/store';
 import Listpatient from 'app/components/medecin/ListPatient';
 import PaginatorBasicDemo from 'app/components/medecin/PaginatorBasicDemo';
 import Elbahja from './modules/login/Elbahja';
 // import Elbahja from "app/modules/login/Elbahja";
 // import Test from "app/components/medecin/Test";
+
 const loading = <div>loading ...</div>;
 
 const Account = Loadable({
@@ -41,6 +46,8 @@ const AppRoutes = () => {
       <ErrorBoundaryRoutes>
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
+        {/* Dermatologue patients Liste */}
+        <Route path="patientsliste" element={<ListePatients />} />
 
         <Route path="logout" element={<Logout />} />
         <Route path="account">

@@ -443,7 +443,7 @@ public class RendezVousResource {
         List<RendezVous> rdv = rendezVousRepository.findAll();
         List<RendezVous> data = new ArrayList<>();
         for (RendezVous r : rdv) {
-            if (r.getDermatologues().getId().equals(id) && r.getStatut().equals(true)) {
+            if (r.getDermatologues().getId().equals(id)) {
                 Patient p = r.getPatients();
 
                 Optional<User> user = userRepository.findById(p.getUser().getId());

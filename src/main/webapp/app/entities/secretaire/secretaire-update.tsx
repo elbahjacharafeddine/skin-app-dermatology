@@ -96,13 +96,6 @@ export const SecretaireUpdate = () => {
   //
   return (
     <div>
-      <button
-        onClick={() => {
-          showData();
-        }}
-      >
-        Show data
-      </button>
       <Row className="justify-content-center">
         <Col md="8">
           <h2 id="assistanteDermatologueApp.secretaire.home.createOrEditLabel" data-cy="SecretaireCreateUpdateHeading">
@@ -143,7 +136,7 @@ export const SecretaireUpdate = () => {
                 }}
               />
               <ValidatedField
-                label={translate('assistanteDermatologueApp.secretaire.genre')}
+                label="Gender"
                 id="secretaire-genre"
                 name="genre"
                 data-cy="genre"
@@ -161,7 +154,7 @@ export const SecretaireUpdate = () => {
                 <option value="female">Female</option>
               </ValidatedField>
               <ValidatedField
-                label={translate('assistanteDermatologueApp.secretaire.telephone')}
+                label="Phone"
                 id="secretaire-telephone"
                 name="telephone"
                 data-cy="telephone"

@@ -9,7 +9,12 @@ import { overrideSortStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { getEntities } from './secretaire.reducer';
-
+import $ from 'jquery';
+import 'jquery';
+import 'datatables.net-dt/js/dataTables.dataTables';
+import 'datatables.net-responsive-dt/js/responsive.dataTables';
+import 'datatables.net-dt/css/jquery.dataTables.css';
+import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
 export const Secretaire = () => {
   const dispatch = useAppDispatch();
 
@@ -28,6 +33,15 @@ export const Secretaire = () => {
       }),
     );
   };
+
+  useEffect(() => {
+    if (secretaireList.length > 0) {
+      const table = $('#myTable').DataTable();
+      return () => {
+        table.destroy();
+      };
+    }
+  }, [secretaireList]);
 
   const sortEntities = () => {
     getAllEntities();
@@ -65,14 +79,14 @@ export const Secretaire = () => {
   // const storedUser = JSON.parse(localStorage.getItem('SecretaireUser'));
 
   return (
-    <div>
+    <div className="p-2">
       <h2 id="secretaire-heading" data-cy="SecretaireHeading">
-        <Translate contentKey="assistanteDermatologueApp.secretaire.home.title">Secretaires</Translate>
+        Secretaries
         <div className="d-flex justify-content-end">
-          <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
-            <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-            <Translate contentKey="assistanteDermatologueApp.secretaire.home.refreshListLabel">Refresh List</Translate>
-          </Button>
+          {/*<Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>*/}
+          {/*  <FontAwesomeIcon icon="sync" spin={loading} />{' '}*/}
+          {/*  <Translate contentKey="assistanteDermatologueApp.secretaire.home.refreshListLabel">Refresh List</Translate>*/}
+          {/*</Button>*/}
           <Link to="/secretaire/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
             <FontAwesomeIcon icon="plus" />
             &nbsp;
@@ -82,24 +96,22 @@ export const Secretaire = () => {
       </h2>
       <div className="table-responsive">
         {secretaireList && secretaireList.length > 0 ? (
-          <Table responsive>
+          <table className="table table-responsive p-3" id="myTable">
             <thead>
               <tr>
-                <th className="hand" onClick={sort('id')}>
-                  <Translate contentKey="assistanteDermatologueApp.secretaire.id">ID</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
-                </th>
+                {/*<th className="hand" onClick={sort('id')}>*/}
+                {/*  <Translate contentKey="assistanteDermatologueApp.secretaire.id">ID</Translate>{' '}*/}
+                {/*  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />*/}
+                {/*</th>*/}
                 <th className="hand" onClick={sort('codeEmp')}>
                   <Translate contentKey="assistanteDermatologueApp.secretaire.codeEmp">Code Emp</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('codeEmp')} />
                 </th>
                 <th className="hand" onClick={sort('genre')}>
-                  <Translate contentKey="assistanteDermatologueApp.secretaire.genre">Genre</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('genre')} />
+                  Gender
+                  {/*<FontAwesomeIcon icon={getSortIconByFieldName('genre')} />*/}
                 </th>
                 <th className="hand" onClick={sort('telephone')}>
-                  <Translate contentKey="assistanteDermatologueApp.secretaire.telephone">Telephone</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('telephone')} />
+                  Phone
                 </th>
                 <th>Full Name</th>
                 <th />
@@ -108,11 +120,11 @@ export const Secretaire = () => {
             <tbody>
               {secretaireList.map((secretaire, i) => (
                 <tr key={`entity-${i}`} data-cy="entityTable">
-                  <td>
-                    <Button tag={Link} to={`/secretaire/${secretaire.id}`} color="link" size="sm">
-                      {secretaire.id}
-                    </Button>
-                  </td>
+                  {/*<td>*/}
+                  {/*  <Button tag={Link} to={`/secretaire/${secretaire.id}`} color="link" size="sm">*/}
+                  {/*    {secretaire.id}*/}
+                  {/*  </Button>*/}
+                  {/*</td>*/}
                   <td>{secretaire.codeEmp}</td>
                   <td>{secretaire.genre}</td>
                   <td>{secretaire.telephone}</td>
@@ -147,7 +159,7 @@ export const Secretaire = () => {
                 </tr>
               ))}
             </tbody>
-          </Table>
+          </table>
         ) : (
           !loading && (
             <div className="alert alert-warning">

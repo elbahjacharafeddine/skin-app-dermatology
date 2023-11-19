@@ -7,7 +7,7 @@ import RendezVous from './rendez-vous';
 import RendezVousDetail from './rendez-vous-detail';
 import RendezVousUpdate from './rendez-vous-update';
 import RendezVousDeleteDialog from './rendez-vous-delete-dialog';
-
+import RendezVousUpdat from 'app/components/rendezVous/RendezVousUpdat';
 const RendezVousRoutes = () => (
   <ErrorBoundaryRoutes>
     <Route index element={<RendezVous />} />

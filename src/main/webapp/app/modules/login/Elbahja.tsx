@@ -11,6 +11,23 @@ import axios from 'axios';
 import { redirect } from 'react-router';
 import PageNotFound from 'app/shared/error/page-not-found';
 
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
 const locales = {
   'en-US': require('date-fns/locale/en-US'),
 };
@@ -35,19 +52,34 @@ interface ElbahjaProps {
 }
 
 const Elbahja: React.FC<ElbahjaProps> = ({ isAuthenticated, role }) => {
+  const userData = sessionStorage.getItem('user_data') ? sessionStorage.getItem('user_data') : null;
+  const userDataJson = JSON.parse(userData);
+  const id = userData ? userDataJson.id : undefined;
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   const [events, setEvents] = useState([]);
   useEffect(() => {
     axios
-      .get('/api/rendez-vous/dermatologue/6547cb2707c44a7f9323eaff')
+      .get('/api/rendez-vous/dermatologue/' + id)
       .then(response => {
         console.log(response.data);
         // se(response.data);
         const convertedData = response.data.map(item => {
+          console.log(item);
+          const dateObject = new Date(item.dateDebut);
+          const timeString = dateObject.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          console.log(timeString);
           return {
             id: item.id,
-            title: item.patients.adress,
+            hour: timeString,
+            adress: item.patients.adress,
+            user: `${item.patientUserDTO.patient.user.firstName} ${item.patientUserDTO.patient.user.lastName}`,
+            title: `${timeString} / ${item.patientUserDTO.patient.user.firstName}  ${item.patientUserDTO.patient.user.lastName}`,
             start: new Date(item.dateDebut),
             end: new Date(item.dateFin),
+            status: item.statut,
           };
         });
 
@@ -64,6 +96,29 @@ const Elbahja: React.FC<ElbahjaProps> = ({ isAuthenticated, role }) => {
     end: new Date(),
   });
   const [allEvents, setAllEvents] = useState(events);
+  const eventStyleGetter = (event: Event, start: Date, end: Date, isSelected: boolean) => {
+    const backgroundColor = event.status ? 'green' : '#EC770F';
+    return {
+      style: {
+        backgroundColor: backgroundColor,
+      },
+    };
+  };
+
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+
+  // Function to open modal
+  const openModal = (event: Event) => {
+    setSelectedEvent(event);
+    setOpen(true);
+  };
+
+  // Function to close modal
+  const closeModal = () => {
+    setSelectedEvent(null);
+    setModalOpen(false);
+  };
 
   function handleAddEvent() {
     for (let i = 0; i < allEvents.length; i++) {
@@ -115,7 +170,45 @@ const Elbahja: React.FC<ElbahjaProps> = ({ isAuthenticated, role }) => {
         {/*    Add Event*/}
         {/*  </button>*/}
         {/*</div>*/}
-        <Calendar localizer={localizer} events={events} startAccessor="start" endAccessor="end" style={{ height: 500, margin: '50px' }} />
+        <Calendar
+          localizer={localizer}
+          events={events}
+          startAccessor="start"
+          endAccessor="end"
+          style={{ height: 500, margin: '50px' }}
+          eventPropGetter={eventStyleGetter}
+          onSelectEvent={openModal}
+        />
+
+        <Modal
+          keepMounted
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="keep-mounted-modal-title"
+          aria-describedby="keep-mounted-modal-description"
+        >
+          <Box sx={style}>
+            <Typography
+              id="keep-mounted-modal-title"
+              variant="h6"
+              component="h2"
+              style={{ textAlign: 'center', backgroundColor: selectedEvent && selectedEvent.status ? 'green' : '#EC770F' }}
+            >
+              Appointment {selectedEvent && !selectedEvent.status && 'is not'} confirmed
+            </Typography>
+            <br />
+            <hr />
+            <Typography id="keep-mounted-modal-description" sx={{ mt: 2 }}>
+              {selectedEvent && (
+                <div>
+                  <p>Patient : {selectedEvent.user}</p>
+                  <p>Hour : {selectedEvent.hour}</p>
+                  {/* Add more details as needed */}
+                </div>
+              )}
+            </Typography>
+          </Box>
+        </Modal>
       </div>
     );
   } else {

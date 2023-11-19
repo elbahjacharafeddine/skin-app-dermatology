@@ -21,7 +21,7 @@ import ListePatients from './entities/dermatologue/ListePatients';
 import { useAppSelector } from 'app/config/store';
 import Listpatient from 'app/components/medecin/ListPatient';
 import PaginatorBasicDemo from 'app/components/medecin/PaginatorBasicDemo';
-import Elbahja from './modules/login/Elbahja';
+
 // import Elbahja from "app/modules/login/Elbahja";
 // import Test from "app/components/medecin/Test";
 
@@ -88,6 +88,7 @@ const AppRoutes = () => {
           element={<Listpatient nom={'elbahja'} isAuthen={isAuthenicated} role={data ? userData.authorities : null} />}
         />
         <Route path={'/dermatologue/my-scheduler'} element={<Elbahja isAuthenticated={true} role={data ? userData.authorities : null} />} />
+
         <Route path="*" element={<PageNotFound />} />
       </ErrorBoundaryRoutes>
     </div>

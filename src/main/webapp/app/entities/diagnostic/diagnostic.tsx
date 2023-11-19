@@ -21,6 +21,10 @@ export const Diagnostic = () => {
 
   const diagnosticList = useAppSelector(state => state.diagnostic.entities);
   const loading = useAppSelector(state => state.diagnostic.loading);
+  // const location = useLocation();
+  const searchParams = new URLSearchParams(pageLocation.search);
+  const consultationId = searchParams.get('consultationId');
+  const patientName = searchParams.get('patientName');
 
   const getAllEntities = () => {
     dispatch(
@@ -32,10 +36,10 @@ export const Diagnostic = () => {
 
   const sortEntities = () => {
     getAllEntities();
-    const endURL = `?sort=${sortState.sort},${sortState.order}`;
-    if (pageLocation.search !== endURL) {
-      navigate(`${pageLocation.pathname}${endURL}`);
-    }
+    // const endURL = `?sort=${sortState.sort},${sortState.order}`;
+    // if (pageLocation.search !== endURL) {
+    //   navigate(`${pageLocation.pathname}${endURL}`);
+    // }
   };
 
   useEffect(() => {
@@ -67,7 +71,7 @@ export const Diagnostic = () => {
   return (
     <div>
       <h2 id="diagnostic-heading" data-cy="DiagnosticHeading">
-        <Translate contentKey="assistanteDermatologueApp.diagnostic.home.title">Diagnostics</Translate>
+        Diagnostics for Patient : {patientName}
         <div className="d-flex justify-content-end">
           <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
             <FontAwesomeIcon icon="sync" spin={loading} />{' '}

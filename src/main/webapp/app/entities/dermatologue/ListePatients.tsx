@@ -9,6 +9,7 @@ import { overrideSortStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { getEntities } from './dermatologue.reducer';
+import axios from 'axios';
 
 export const ListePatients = () => {
   const dispatch = useAppDispatch();
@@ -18,8 +19,19 @@ export const ListePatients = () => {
 
   const [sortState, setSortState] = useState(overrideSortStateWithQueryParams(getSortState(pageLocation, 'id'), pageLocation.search));
 
-  const dermatologueList = useAppSelector(state => state.dermatologue.entities);
+  const [ListePatients, setListePatients] = useState([]);
   const loading = useAppSelector(state => state.dermatologue.loading);
+
+  const fetchPatientData = id => {
+    axios
+      .get(`/api/dermatologuePatients/${id}`)
+      .then(response => {
+        setListePatients(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching patient data', error);
+      });
+  };
 
   const getAllEntities = () => {
     dispatch(
@@ -37,8 +49,17 @@ export const ListePatients = () => {
     }
   };
 
+  //   useEffect(() => {
+  //     sortEntities();
+  //   }, [sortState.order, sortState.sort]);
   useEffect(() => {
-    sortEntities();
+    getAllEntities();
+    const userData = JSON.parse(sessionStorage.getItem('user_data'));
+    const dermatologueId = userData ? userData.id : null;
+
+    if (dermatologueId) {
+      fetchPatientData(dermatologueId);
+    }
   }, [sortState.order, sortState.sort]);
 
   const sort = p => () => {
@@ -64,64 +85,48 @@ export const ListePatients = () => {
   };
 
   const showData = () => {
-    console.log(dermatologueList);
+    console.log(ListePatients);
   };
 
   return (
     <div>
       <h2 id="dermatologue-heading" data-cy="DermatologueHeading">
-        <Translate contentKey="assistanteDermatologueApp.dermatologue.home.title">Dermatologues</Translate>
+        Patients Liste
         <div className="d-flex justify-content-end">
           <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
             <FontAwesomeIcon icon="sync" spin={loading} />{' '}
             <Translate contentKey="assistanteDermatologueApp.dermatologue.home.refreshListLabel">Refresh List</Translate>
           </Button>
-          <Link to="/dermatologue/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
+          {/* <Link to="/dermatologue/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
             <FontAwesomeIcon icon="plus" />
             &nbsp;
-            <Translate contentKey="assistanteDermatologueApp.dermatologue.home.createLabel">Create new ListePatients</Translate>
-          </Link>
+            <Translate contentKey="assistanteDermatologueApp.dermatologue.home.createLabel"></Translate>
+          </Link> */}
         </div>
       </h2>
       <div className="table-responsive">
-        {dermatologueList && dermatologueList.length > 0 ? (
+        {ListePatients && ListePatients.length > 0 ? (
           <Table responsive>
             <thead>
               <tr>
-                <th className="hand" onClick={sort('id')}>
-                  <Translate contentKey="assistanteDermatologueApp.dermatologue.id">ID</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
-                </th>
-                <th className="hand" onClick={sort('codeEmp')}>
-                  <Translate contentKey="assistanteDermatologueApp.dermatologue.codeEmp">Code Emp</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('codeEmp')} />
-                </th>
-                <th className="hand" onClick={sort('genre')}>
-                  <Translate contentKey="assistanteDermatologueApp.dermatologue.genre">Genre</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('genre')} />
-                </th>
-                <th className="hand" onClick={sort('telephone')}>
-                  <Translate contentKey="assistanteDermatologueApp.dermatologue.telephone">Telephone</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('telephone')} />
-                </th>
-                <th>Full name</th>
-                <th />
+                <th>First name</th>
+                <th>Last name</th>
               </tr>
             </thead>
             <tbody>
-              {dermatologueList.map((dermatologue, i) => (
+              {ListePatients.map((patient, i) => (
                 <tr key={`entity-${i}`} data-cy="entityTable">
-                  <td>
+                  {/* <td>
                     <Button tag={Link} to={`/dermatologue/${dermatologue.id}`} color="link" size="sm">
                       {dermatologue.id}
                     </Button>
-                  </td>
-                  <td>{dermatologue.codeEmp}</td>
-                  <td>{dermatologue.genre}</td>
-                  <td>{dermatologue.telephone}</td>
+                  </td> */}
+                  <td>{patient.patient.user.firstName}</td>
+                  <td>{patient.patient.user.lastName}</td>
+
                   {/*<td>{dermatologue.user ? dermatologue.user : ''}</td>*/}
-                  <td>{dermatologue.user ? dermatologue.user.firstName + ' ' + dermatologue.user.lastName : ''}</td>
-                  <td className="text-end">
+                  {/* <td>{patient.user ? dermatologue.user.firstName + ' ' + dermatologue.user.lastName : ''}</td> */}
+                  {/* <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/dermatologue/${dermatologue.id}`} color="info" size="sm" data-cy="entityDetailsButton">
                         <FontAwesomeIcon icon="eye" />{' '}
@@ -147,7 +152,7 @@ export const ListePatients = () => {
                         </span>
                       </Button>
                     </div>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>
@@ -155,7 +160,7 @@ export const ListePatients = () => {
         ) : (
           !loading && (
             <div className="alert alert-warning">
-              <Translate contentKey="assistanteDermatologueApp.dermatologue.home.notFound">No Dermatologues found</Translate>
+              <Translate contentKey="assistanteDermatologueApp.dermatologue.home.notFound">No Patients found</Translate>
             </div>
           )
         )}

@@ -1,13 +1,20 @@
 package com.ensaj.web.rest;
 
 import com.ensaj.domain.Consultation;
+import com.ensaj.domain.RendezVous;
 import com.ensaj.repository.ConsultationRepository;
+import com.ensaj.repository.UserRepository;
+import com.ensaj.service.UserService;
+import com.ensaj.service.dto.ConsultationDTO;
+import com.ensaj.service.dto.RendezVousDTO;
+import com.ensaj.service.dto.TransformedDermatologueUserDTO;
 import com.ensaj.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,9 +38,12 @@ public class ConsultationResource {
     private String applicationName;
 
     private final ConsultationRepository consultationRepository;
+    // private final UserRepository userRepository;
+    private final UserService userService;
 
-    public ConsultationResource(ConsultationRepository consultationRepository) {
+    public ConsultationResource(ConsultationRepository consultationRepository, UserService userService) {
         this.consultationRepository = consultationRepository;
+        this.userService = userService;
     }
 
     /**
@@ -140,10 +150,44 @@ public class ConsultationResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of consultations in body.
      */
+    // @GetMapping("")
+    // public List<Consultation> getAllConsultations() {
+    //     log.debug("REST request to get all Consultations");
+    //     return consultationRepository.findAll();
+    // }
     @GetMapping("")
-    public List<Consultation> getAllConsultations() {
+    public List<ConsultationDTO> getAllConsultations() {
         log.debug("REST request to get all Consultations");
-        return consultationRepository.findAll();
+
+        List<Consultation> consultationList = consultationRepository.findAll();
+
+        return consultationList
+            .stream()
+            .map(consultation -> {
+                ConsultationDTO consultationDTO = new ConsultationDTO();
+                consultationDTO.setId(consultation.getId());
+                consultationDTO.setDateConsultation(consultation.getDateConsultation());
+
+                RendezVousDTO rendezVousDTO = new RendezVousDTO();
+                RendezVous rendezVous = consultation.getRendezVous();
+                rendezVousDTO.setId(rendezVous.getId());
+                rendezVousDTO.setDateDebut(rendezVous.getDateDebut());
+                rendezVousDTO.setDateFin(rendezVous.getDateFin());
+                rendezVousDTO.setStatut(rendezVous.getStatut());
+
+                if (rendezVous.getDermatologues() != null) {
+                    TransformedDermatologueUserDTO transformedDermatologueUserDTO = userService.findUserDermatologue(
+                        rendezVous.getDermatologues().getId()
+                    );
+                    rendezVousDTO.setDermatologue(transformedDermatologueUserDTO);
+                }
+
+                rendezVousDTO.setPatient(rendezVous.getPatients());
+                consultationDTO.setRendezVous(rendezVousDTO);
+
+                return consultationDTO;
+            })
+            .collect(Collectors.toList());
     }
 
     /**

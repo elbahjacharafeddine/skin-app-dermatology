@@ -1,9 +1,11 @@
 package com.ensaj.web.rest;
 
+import com.ensaj.domain.Consultation;
 import com.ensaj.domain.Dermatologue;
 import com.ensaj.domain.Patient;
 import com.ensaj.domain.RendezVous;
 import com.ensaj.domain.User;
+import com.ensaj.repository.ConsultationRepository;
 import com.ensaj.repository.RendezVousRepository;
 import com.ensaj.repository.UserRepository;
 import com.ensaj.service.UserService;
@@ -15,6 +17,7 @@ import com.ensaj.web.rest.errors.BadRequestAlertException;
 import com.ensaj.web.rest.vm.ManagedUserVM;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -45,11 +48,18 @@ public class RendezVousResource {
     private final RendezVousRepository rendezVousRepository;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final ConsultationRepository consultationRepository;
 
-    public RendezVousResource(RendezVousRepository rendezVousRepository, UserRepository userRepository, UserService userService) {
+    public RendezVousResource(
+        RendezVousRepository rendezVousRepository,
+        UserRepository userRepository,
+        UserService userService,
+        ConsultationRepository consultationRepository
+    ) {
         this.rendezVousRepository = rendezVousRepository;
         this.userRepository = userRepository;
         this.userService = userService;
+        this.consultationRepository = consultationRepository;
     }
 
     /**
@@ -66,6 +76,11 @@ public class RendezVousResource {
             throw new BadRequestAlertException("A new rendezVous cannot already have an ID", ENTITY_NAME, "idexists");
         }
         RendezVous result = rendezVousRepository.save(rendezVous);
+        // Create a corresponding Consultation
+        Consultation consultation = new Consultation();
+        consultation.setDateConsultation(rendezVous.getDateDebut()); // Set the date of the consultation as the current time
+        consultation.setRendezVous(result);
+        Consultation savedConsultation = consultationRepository.save(consultation);
         return ResponseEntity
             .created(new URI("/api/rendez-vous/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId()))

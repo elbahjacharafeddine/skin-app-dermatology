@@ -15,6 +15,7 @@ import ErrorBoundaryRoutes from 'app/shared/error/error-boundary-routes';
 import PageNotFound from 'app/shared/error/page-not-found';
 import { AUTHORITIES } from 'app/config/constants';
 import Elbahja from 'app/modules/login/Elbahja';
+import ListePatients from './entities/dermatologue/ListePatients';
 
 const loading = <div>loading ...</div>;
 
@@ -33,6 +34,8 @@ const AppRoutes = () => {
       <ErrorBoundaryRoutes>
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
+        {/* Dermatologue patients Liste */}
+        <Route path="patientsliste" element={<ListePatients />} />
 
         <Route path="logout" element={<Logout />} />
         <Route path="account">

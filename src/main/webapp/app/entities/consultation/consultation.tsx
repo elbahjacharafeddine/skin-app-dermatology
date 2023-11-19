@@ -21,6 +21,7 @@ export const Consultation = () => {
 
   const consultationList = useAppSelector(state => state.consultation.entities);
   const loading = useAppSelector(state => state.consultation.loading);
+  const userData = JSON.parse(sessionStorage.getItem('user_data'));
 
   const getAllEntities = () => {
     dispatch(
@@ -85,70 +86,85 @@ export const Consultation = () => {
           <Table responsive>
             <thead>
               <tr>
-                <th className="hand" onClick={sort('id')}>
-                  <Translate contentKey="assistanteDermatologueApp.consultation.id">ID</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
-                </th>
                 <th className="hand" onClick={sort('dateConsultation')}>
                   <Translate contentKey="assistanteDermatologueApp.consultation.dateConsultation">Date Consultation</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('dateConsultation')} />
                 </th>
-                <th>
-                  <Translate contentKey="assistanteDermatologueApp.consultation.rendezVous">Rendez Vous</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
-                </th>
+                <th>Patient</th>
+                <th>Patient Tel</th>
+                <th>Doctor</th>
+
                 <th />
               </tr>
             </thead>
             <tbody>
-              {consultationList.map((consultation, i) => (
-                <tr key={`entity-${i}`} data-cy="entityTable">
-                  <td>
-                    <Button tag={Link} to={`/consultation/${consultation.id}`} color="link" size="sm">
-                      {consultation.id}
-                    </Button>
-                  </td>
-                  <td>
-                    {consultation.dateConsultation ? (
-                      <TextFormat type="date" value={consultation.dateConsultation} format={APP_DATE_FORMAT} />
-                    ) : null}
-                  </td>
-                  <td>
-                    {consultation.rendezVous ? (
-                      <Link to={`/rendez-vous/${consultation.rendezVous.id}`}>{consultation.rendezVous.id}</Link>
-                    ) : (
-                      ''
-                    )}
-                  </td>
-                  <td className="text-end">
-                    <div className="btn-group flex-btn-group-container">
-                      <Button tag={Link} to={`/consultation/${consultation.id}`} color="info" size="sm" data-cy="entityDetailsButton">
-                        <FontAwesomeIcon icon="eye" />{' '}
-                        <span className="d-none d-md-inline">
-                          <Translate contentKey="entity.action.view">View</Translate>
-                        </span>
-                      </Button>
-                      <Button tag={Link} to={`/consultation/${consultation.id}/edit`} color="primary" size="sm" data-cy="entityEditButton">
+              {consultationList.map((consultation, i) =>
+                consultation.rendezVous.dermatologue.user.id === userData.id ? (
+                  <tr key={`entity-${i}`} data-cy="entityTable">
+                    <td>
+                      {consultation.dateConsultation ? (
+                        <TextFormat type="date" value={consultation.dateConsultation} format={APP_DATE_FORMAT} />
+                      ) : null}
+                    </td>
+                    <td>
+                      {consultation.rendezVous ? (
+                        <Link to={`/rendez-vous/${consultation.rendezVous.id}`}>
+                          {consultation.rendezVous.patient.user.firstName + ' ' + consultation.rendezVous.patient.user.lastName}
+                        </Link>
+                      ) : (
+                        ''
+                      )}
+                    </td>
+                    <td>
+                      {consultation.rendezVous ? (
+                        <Link to={`/rendez-vous/${consultation.rendezVous.id}`}>{consultation.rendezVous.patient.telephone}</Link>
+                      ) : (
+                        ''
+                      )}
+                    </td>
+                    <td>
+                      {consultation.rendezVous ? (
+                        <Link to={`/rendez-vous/${consultation.rendezVous.id}`}>
+                          {consultation.rendezVous.dermatologue.user.firstName + ' ' + consultation.rendezVous.dermatologue.user.lastName}
+                        </Link>
+                      ) : (
+                        ''
+                      )}
+                    </td>
+                    <td className="text-end">
+                      <div className="btn-group flex-btn-group-container">
+                        <Button
+                          tag={Link}
+                          to={`/diagnostic?consultationId=${consultation.id}&patientName=${consultation.rendezVous.patient.user.firstName} ${consultation.rendezVous.patient.user.lastName}`}
+                          color="primary"
+                          size="sm"
+                          data-cy="entityEditButton"
+                        >
+                          <FontAwesomeIcon icon="pencil-alt" /> <span className="d-none d-md-inline">Diagnostic</span>
+                        </Button>
+
+                        {/* <Button tag={Link} to={`/consultation/${consultation.id}/edit`} color="primary" size="sm" data-cy="entityEditButton">
                         <FontAwesomeIcon icon="pencil-alt" />{' '}
                         <span className="d-none d-md-inline">
-                          <Translate contentKey="entity.action.edit">Edit</Translate>
+                          Diagnostic
                         </span>
-                      </Button>
-                      <Button
-                        onClick={() => (location.href = `/consultation/${consultation.id}/delete`)}
-                        color="danger"
-                        size="sm"
-                        data-cy="entityDeleteButton"
-                      >
-                        <FontAwesomeIcon icon="trash" />{' '}
-                        <span className="d-none d-md-inline">
-                          <Translate contentKey="entity.action.delete">Delete</Translate>
-                        </span>
-                      </Button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                      </Button> */}
+                        <Button
+                          onClick={() => (location.href = `/consultation/${consultation.id}/delete`)}
+                          color="danger"
+                          size="sm"
+                          data-cy="entityDeleteButton"
+                        >
+                          <FontAwesomeIcon icon="trash" />{' '}
+                          <span className="d-none d-md-inline">
+                            <Translate contentKey="entity.action.delete">Delete</Translate>
+                          </span>
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ) : null,
+              )}
             </tbody>
           </Table>
         ) : (

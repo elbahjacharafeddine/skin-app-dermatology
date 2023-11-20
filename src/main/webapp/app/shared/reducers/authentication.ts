@@ -76,6 +76,7 @@ export const clearAuthToken = () => {
   }
   if (Storage.session.get(AUTH_TOKEN_KEY)) {
     Storage.session.remove(AUTH_TOKEN_KEY);
+    sessionStorage.clear();
   }
 };
 

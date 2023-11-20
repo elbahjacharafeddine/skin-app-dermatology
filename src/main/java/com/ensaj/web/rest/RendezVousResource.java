@@ -78,10 +78,10 @@ public class RendezVousResource {
         }
         RendezVous result = rendezVousRepository.save(rendezVous);
         // Create a corresponding Consultation
-        Consultation consultation = new Consultation();
-        consultation.setDateConsultation(rendezVous.getDateDebut()); // Set the date of the consultation as the current time
-        consultation.setRendezVous(result);
-        Consultation savedConsultation = consultationRepository.save(consultation);
+        //        Consultation consultation = new Consultation();
+        //        consultation.setDateConsultation(rendezVous.getDateDebut()); // Set the date of the consultation as the current time
+        //        consultation.setRendezVous(result);
+        //        Consultation savedConsultation = consultationRepository.save(consultation);
         return ResponseEntity
             .created(new URI("/api/rendez-vous/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId()))
@@ -134,6 +134,10 @@ public class RendezVousResource {
                 rendezVous.setStatut(true);
 
                 RendezVous result = rendezVousRepository.save(rendezVous);
+                Consultation consultation = new Consultation();
+                consultation.setDateConsultation(rendezVous.getDateDebut()); // Set the date of the consultation as the current time
+                consultation.setRendezVous(result);
+                Consultation savedConsultation = consultationRepository.save(consultation);
                 return ResponseEntity
                     .ok()
                     .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, rendezVous.getId()))

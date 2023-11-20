@@ -1,13 +1,16 @@
 package com.ensaj.web.rest;
 
+import com.ensaj.domain.Consultation;
 import com.ensaj.domain.Diagnostic;
 import com.ensaj.repository.DiagnosticRepository;
 import com.ensaj.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import jdk.jshell.Diag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -185,5 +188,17 @@ public class DiagnosticResource {
         log.debug("REST request to delete Diagnostic : {}", id);
         diagnosticRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
+    }
+
+    @GetMapping("/consultations/{consultation_id}")
+    public List<Diagnostic> getAllDiagnostics(@PathVariable String consultation_id) {
+        List<Diagnostic> liste = diagnosticRepository.findAll();
+        List<Diagnostic> data = new ArrayList<>();
+        for (Diagnostic d : liste) {
+            if (d.getConsultations().getId().equals(consultation_id)) {
+                data.add(d);
+            }
+        }
+        return data;
     }
 }

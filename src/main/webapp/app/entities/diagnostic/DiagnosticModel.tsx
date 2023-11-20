@@ -180,7 +180,7 @@ const DiagnosticModel: React.FC<DiagnosticModelProps> = ({ isOpen, toggle, isNew
                 id="diagnostic-symptoms"
                 name="symptoms"
                 data-cy="symptoms"
-                label={translate('assistanteDermatologueApp.diagnostic.symptoms')}
+                label="Symptoms"
                 type="select"
                 multiple
                 value={selectedSymptoms}

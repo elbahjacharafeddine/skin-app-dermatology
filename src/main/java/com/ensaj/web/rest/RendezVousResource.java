@@ -450,6 +450,9 @@ public class RendezVousResource {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+
+        //Text
+        //elbahja
         //elbahja
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
     }

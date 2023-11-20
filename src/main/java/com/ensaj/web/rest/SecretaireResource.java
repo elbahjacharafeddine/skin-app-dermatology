@@ -231,6 +231,7 @@ public class SecretaireResource {
     public ResponseEntity<Void> deleteSecretaire(@PathVariable String id) {
         log.debug("REST request to delete Secretaire : {}", id);
         secretaireRepository.deleteById(id);
+        userRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
     }
 }

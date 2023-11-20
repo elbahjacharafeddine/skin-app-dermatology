@@ -438,6 +438,12 @@ public class RendezVousResource {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRendezVous(@PathVariable String id) {
         log.debug("REST request to delete RendezVous : {}", id);
+        List<Consultation> consultations = consultationRepository.findAll();
+        for (Consultation consultation : consultations) {
+            if (consultation.getRendezVous() != null && consultation.getRendezVous().getId().equals(id)) {
+                consultationRepository.deleteById(consultation.getId());
+            }
+        }
         rendezVousRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
     }

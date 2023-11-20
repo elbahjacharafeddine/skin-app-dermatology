@@ -343,6 +343,7 @@ public class DermatologueResource {
     public ResponseEntity<Void> deleteDermatologue(@PathVariable String id) {
         log.debug("REST request to delete Dermatologue : {}", id);
         dermatologueRepository.deleteById(id);
+        userRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
     }
 }

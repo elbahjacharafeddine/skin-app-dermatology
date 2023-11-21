@@ -15,6 +15,7 @@ import { getEntities } from '../../entities/diagnostic/diagnostic.reducer';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import axios from 'axios';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -55,6 +56,7 @@ export const UserDiagnostics = () => {
   const consultationId = sessionStorage.getItem('consultation_id');
   const patientName = sessionStorage.getItem('patientName');
 
+  const [data, setData] = useState([]);
   const getAllEntities = () => {
     dispatch(
       getEntities({
@@ -100,6 +102,23 @@ export const UserDiagnostics = () => {
     }
   };
 
+  const loadDiagnosticsById = id => {
+    console.log(id);
+    axios
+      .get(`/api/diagnostics/consultations/${consultationId}`)
+      .then(response => {
+        console.log(response.data);
+        setData(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    loadDiagnosticsById(consultationId);
+  }, [consultationId]);
+
   if (consultationId != undefined && consultationId != null) {
     return (
       <div>
@@ -123,7 +142,7 @@ export const UserDiagnostics = () => {
           </div>
         </h2>
         <div className="table-responsive">
-          {diagnosticList && diagnosticList.length > 0 ? (
+          {data && data.length > 0 ? (
             <Table responsive>
               <thead>
                 <tr>
@@ -135,6 +154,8 @@ export const UserDiagnostics = () => {
                     <Translate contentKey="assistanteDermatologueApp.diagnostic.dateDiagnostic">Date Diagnostic</Translate>{' '}
                     <FontAwesomeIcon icon={getSortIconByFieldName('dateDiagnostic')} />
                   </th>
+                  <th className="hand">Disease</th>
+
                   <th className="hand" onClick={sort('picture')}>
                     <Translate contentKey="assistanteDermatologueApp.diagnostic.picture">Picture</Translate>{' '}
                     <FontAwesomeIcon icon={getSortIconByFieldName('picture')} />
@@ -159,7 +180,7 @@ export const UserDiagnostics = () => {
                 </tr>
               </thead>
               <tbody>
-                {diagnosticList.map((diagnostic, i) => (
+                {data.map((diagnostic, i) => (
                   <tr key={`entity-${i}`} data-cy="entityTable">
                     {/* <td>
                     <Button tag={Link} to={`/diagnostic/${diagnostic.id}`} color="link" size="sm">
@@ -171,6 +192,7 @@ export const UserDiagnostics = () => {
                         <TextFormat type="date" value={diagnostic.dateDiagnostic} format={APP_DATE_FORMAT} />
                       ) : null}
                     </td>
+                    <td>-</td>
                     <td>
                       {diagnostic.picture ? (
                         <div>

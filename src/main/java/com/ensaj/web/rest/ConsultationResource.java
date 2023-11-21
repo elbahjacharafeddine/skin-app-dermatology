@@ -1,9 +1,10 @@
 package com.ensaj.web.rest;
 
 import com.ensaj.domain.Consultation;
+import com.ensaj.domain.Diagnostic;
 import com.ensaj.domain.RendezVous;
 import com.ensaj.repository.ConsultationRepository;
-import com.ensaj.repository.UserRepository;
+import com.ensaj.repository.DiagnosticRepository;
 import com.ensaj.service.UserService;
 import com.ensaj.service.dto.ConsultationDTO;
 import com.ensaj.service.dto.RendezVousDTO;
@@ -38,11 +39,16 @@ public class ConsultationResource {
     private String applicationName;
 
     private final ConsultationRepository consultationRepository;
-    // private final UserRepository userRepository;
+    private final DiagnosticRepository diagnosticRepository;
     private final UserService userService;
 
-    public ConsultationResource(ConsultationRepository consultationRepository, UserService userService) {
+    public ConsultationResource(
+        ConsultationRepository consultationRepository,
+        DiagnosticRepository diagnosticRepository,
+        UserService userService
+    ) {
         this.consultationRepository = consultationRepository;
+        this.diagnosticRepository = diagnosticRepository;
         this.userService = userService;
     }
 
@@ -212,6 +218,12 @@ public class ConsultationResource {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteConsultation(@PathVariable String id) {
         log.debug("REST request to delete Consultation : {}", id);
+        List<Diagnostic> liste = diagnosticRepository.findAll();
+        for (Diagnostic d : liste) {
+            if (d.getConsultations().getId().equals(id)) {
+                diagnosticRepository.deleteById(d.getId());
+            }
+        }
         consultationRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
     }

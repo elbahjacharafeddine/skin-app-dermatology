@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useNavigation } from 'react-router-dom';
 import { Button, Table } from 'reactstrap';
 import { Translate, TextFormat, getSortState } from 'react-jhipster';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,6 +16,7 @@ import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-responsive-dt/js/responsive.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.css';
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
+import { redirect } from 'react-router';
 export const Consultation = () => {
   const dispatch = useAppDispatch();
 
@@ -78,6 +79,13 @@ export const Consultation = () => {
     }
   };
 
+  const toNavigate = (id, patient) => {
+    console.log(id);
+    sessionStorage.setItem('consultation_id', id);
+    sessionStorage.setItem('patientName', patient);
+    navigate('/diagnostic');
+  };
+
   return (
     <div className="p-2">
       <h2 id="consultation-heading" data-cy="ConsultationHeading">
@@ -87,11 +95,11 @@ export const Consultation = () => {
           {/*  <FontAwesomeIcon icon="sync" spin={loading} />{' '}*/}
           {/*  <Translate contentKey="assistanteDermatologueApp.consultation.home.refreshListLabel">Refresh List</Translate>*/}
           {/*</Button>*/}
-          <Link to="/consultation/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
-            <FontAwesomeIcon icon="plus" />
-            &nbsp;
-            <Translate contentKey="assistanteDermatologueApp.consultation.home.createLabel">Create new Consultation</Translate>
-          </Link>
+          {/*<Link to="/consultation/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">*/}
+          {/*  <FontAwesomeIcon icon="plus" />*/}
+          {/*  &nbsp;*/}
+          {/*  <Translate contentKey="assistanteDermatologueApp.consultation.home.createLabel">Create new Consultation</Translate>*/}
+          {/*</Link>*/}
         </div>
       </h2>
       <div className="table-responsive">
@@ -150,11 +158,17 @@ export const Consultation = () => {
                     <td className="text-end">
                       <div className="btn-group flex-btn-group-container">
                         <Button
-                          tag={Link}
-                          to={`/diagnostic?consultationId=${consultation.id}&patientName=${consultation.rendezVous.patient.user.firstName} ${consultation.rendezVous.patient.user.lastName}`}
+                          // tag={Link}
+                          // to={`/diagnostic?consultationId=${consultation.id}&patientName=${consultation.rendezVous.patient.user.firstName} ${consultation.rendezVous.patient.user.lastName}`}
                           color="primary"
                           size="sm"
                           data-cy="entityEditButton"
+                          onClick={() => {
+                            toNavigate(
+                              consultation.id,
+                              consultation.rendezVous.patient.user.firstName + ' ' + consultation.rendezVous.patient.user.lastName,
+                            );
+                          }}
                         >
                           <FontAwesomeIcon icon="pencil-alt" /> <span className="d-none d-md-inline">Diagnostic</span>
                         </Button>

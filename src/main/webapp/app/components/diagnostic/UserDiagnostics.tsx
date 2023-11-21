@@ -11,7 +11,12 @@ import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import DiagnosticModel from '../../entities/diagnostic/DiagnosticModel';
 import { getEntities } from '../../entities/diagnostic/diagnostic.reducer';
-
+import $ from 'jquery';
+import 'jquery';
+import 'datatables.net-dt/js/dataTables.dataTables';
+import 'datatables.net-responsive-dt/js/responsive.dataTables';
+import 'datatables.net-dt/css/jquery.dataTables.css';
+import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
@@ -119,9 +124,18 @@ export const UserDiagnostics = () => {
     loadDiagnosticsById(consultationId);
   }, [consultationId]);
 
+  useEffect(() => {
+    if (data.length > 0) {
+      const table = $('#myTable').DataTable();
+      return () => {
+        table.destroy();
+      };
+    }
+  }, [data]);
+
   if (consultationId != undefined && consultationId != null) {
     return (
-      <div>
+      <div className="p-2">
         <h2 id="diagnostic-heading" data-cy="DiagnosticHeading">
           Diagnostics for Patient : {patientName}
           <div className="d-flex justify-content-end">
@@ -143,7 +157,7 @@ export const UserDiagnostics = () => {
         </h2>
         <div className="table-responsive">
           {data && data.length > 0 ? (
-            <Table responsive>
+            <table className="table table-responsive p-3" id="myTable">
               <thead>
                 <tr>
                   {/* <th className="hand" onClick={sort('id')}>
@@ -251,7 +265,7 @@ export const UserDiagnostics = () => {
                   </tr>
                 ))}
               </tbody>
-            </Table>
+            </table>
           ) : (
             !loading && (
               <div className="alert alert-warning">

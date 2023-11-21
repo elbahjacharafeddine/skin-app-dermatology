@@ -28,9 +28,9 @@ const EntitiesMenu = () => {
         {/*<Translate contentKey="global.menu.entities.consultation" />*/}
         Consultations
       </MenuItem>
-      <MenuItem icon="asterisk" to="/diagnostic" role={data ? dataJson.authorities : []} forWho={['ROLE_DERMATOLOGUE']}>
-        <Translate contentKey="global.menu.entities.diagnostic" />
-      </MenuItem>
+      {/*<MenuItem icon="asterisk" to="/diagnostic" role={data ? dataJson.authorities : []} forWho={['ROLE_DERMATOLOGUE']}>*/}
+      {/*  <Translate contentKey="global.menu.entities.diagnostic" />*/}
+      {/*</MenuItem>*/}
       <MenuItem icon="asterisk" to="/maladie" role={data ? dataJson.authorities : []} forWho={['ROLE_ADMIN', 'ROLE_DERMATOLOGUE']}>
         {/*<Translate contentKey="global.menu.entities.maladie" />*/}
         Diseases

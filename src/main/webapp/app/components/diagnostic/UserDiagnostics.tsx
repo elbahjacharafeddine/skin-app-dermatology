@@ -256,10 +256,11 @@ export const UserDiagnostics = () => {
             <Typography id="modal-modal-title" variant="h6" component="h2" style={{ background: 'yellow', textAlign: 'center' }}>
               Warning
             </Typography>
-            <hr />
-            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            {/*<hr />*/}
+            <Typography id="modal-modal-description" sx={{ mt: 2, fontWeight: 'bold' }}>
               You must select a consultation
             </Typography>
+            <br />
             <Button
               style={buttonStyle}
               onClick={() => {

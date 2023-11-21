@@ -17,6 +17,7 @@ import 'datatables.net-responsive-dt/js/responsive.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.css';
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
 import { redirect } from 'react-router';
+
 export const Consultation = () => {
   const dispatch = useAppDispatch();
 
@@ -80,7 +81,6 @@ export const Consultation = () => {
   };
 
   const toNavigate = (id, patient) => {
-    console.log(id);
     sessionStorage.setItem('consultation_id', id);
     sessionStorage.setItem('patientName', patient);
     navigate('/diagnostic');

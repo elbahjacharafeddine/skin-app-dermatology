@@ -1,16 +1,21 @@
 package com.ensaj.web.rest;
 
+import com.ensaj.domain.ImageStade;
 import com.ensaj.domain.Maladie;
+import com.ensaj.domain.Stade;
+import com.ensaj.repository.ImageStadeRepository;
 import com.ensaj.repository.MaladieRepository;
+import com.ensaj.repository.StadeRepository;
+import com.ensaj.service.dto.StadeMaladie;
+import com.ensaj.service.dto.StadeMaladieImage;
 import com.ensaj.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
@@ -31,9 +36,17 @@ public class MaladieResource {
     private String applicationName;
 
     private final MaladieRepository maladieRepository;
+    private final StadeRepository stadeRepository;
+    private final ImageStadeRepository imageStadeRepository;
 
-    public MaladieResource(MaladieRepository maladieRepository) {
+    public MaladieResource(
+        MaladieRepository maladieRepository,
+        StadeRepository stadeRepository,
+        ImageStadeRepository imageStadeRepository
+    ) {
         this.maladieRepository = maladieRepository;
+        this.stadeRepository = stadeRepository;
+        this.imageStadeRepository = imageStadeRepository;
     }
 
     /**
@@ -152,12 +165,12 @@ public class MaladieResource {
      * @param id the id of the maladie to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the maladie, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<Maladie> getMaladie(@PathVariable String id) {
-        log.debug("REST request to get Maladie : {}", id);
-        Optional<Maladie> maladie = maladieRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(maladie);
-    }
+    //    @GetMapping("/{id}")
+    //    public ResponseEntity<Maladie> getMaladie(@PathVariable String id) {
+    //        log.debug("REST request to get Maladie : {}", id);
+    //        Optional<Maladie> maladie = maladieRepository.findById(id);
+    //        return ResponseUtil.wrapOrNotFound(maladie);
+    //    }
 
     /**
      * {@code DELETE  /maladies/:id} : delete the "id" maladie.
@@ -170,5 +183,64 @@ public class MaladieResource {
         log.debug("REST request to delete Maladie : {}", id);
         maladieRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
+    }
+
+    @PostMapping("/save")
+    public String saveMaladieWithStade(@RequestBody StadeMaladie stadeMaladie) {
+        Maladie maladie = stadeMaladie.getMaladie();
+        Maladie m = new Maladie();
+        m.setFullName(maladie.getFullName());
+        m.setAbbr(maladie.getAbbr());
+
+        Set<Stade> stades = stadeMaladie.getMaladie().getStades();
+        List<Stade> stadesList = new ArrayList<>(stades);
+        Set<Stade> stadesMaladies = new HashSet<>();
+
+        for (Stade s : stadesList) {
+            List<ImageStade> images = new ArrayList<>(s.getImageStades());
+
+            Stade stade = new Stade();
+            stade.setDescription(s.getDescription());
+            stade.setStade(s.getStade());
+            stadesMaladies.add(stade);
+
+            Set<ImageStade> imageStades = new HashSet<>();
+            for (ImageStade image : images) {
+                ImageStade i = new ImageStade();
+                i.setPicture(image.getPicture());
+                i.setPictureContentType(image.getPictureContentType());
+                imageStades.add(i);
+                imageStadeRepository.save(i);
+            }
+            stade.setImageStades(imageStades);
+            stadeRepository.save(stade);
+        }
+        m.setStades(stadesMaladies);
+        maladieRepository.save(m);
+
+        return "the disease has saved with succes ...";
+    }
+
+    @GetMapping("/all")
+    public List<StadeMaladieImage> getMaladies() {
+        List<Maladie> maladies = maladieRepository.findAll();
+        List<StadeMaladieImage> stadeMaladies = new ArrayList<>();
+        for (Maladie m : maladies) {
+            StadeMaladieImage stadeMaladie = new StadeMaladieImage();
+            stadeMaladie.setMaladie(m);
+            stadeMaladie.setStades(new ArrayList<>(m.getStades()));
+            stadeMaladies.add(stadeMaladie);
+        }
+        return stadeMaladies;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<StadeMaladieImage> getMaladie(@PathVariable String id) {
+        log.debug("REST request to get Maladie : {}", id);
+        Optional<Maladie> maladie = maladieRepository.findById(id);
+        StadeMaladieImage stadeMaladieImage = new StadeMaladieImage();
+        stadeMaladieImage.setMaladie(maladie.get());
+        stadeMaladieImage.setStades(new ArrayList<>(maladie.get().getStades()));
+        return ResponseUtil.wrapOrNotFound(Optional.of(stadeMaladieImage));
     }
 }

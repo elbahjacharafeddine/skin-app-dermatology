@@ -6,9 +6,7 @@ import com.ensaj.domain.RendezVous;
 import com.ensaj.repository.ConsultationRepository;
 import com.ensaj.repository.DiagnosticRepository;
 import com.ensaj.service.UserService;
-import com.ensaj.service.dto.ConsultationDTO;
-import com.ensaj.service.dto.RendezVousDTO;
-import com.ensaj.service.dto.TransformedDermatologueUserDTO;
+import com.ensaj.service.dto.*;
 import com.ensaj.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -187,6 +185,45 @@ public class ConsultationResource {
                     );
                     rendezVousDTO.setDermatologue(transformedDermatologueUserDTO);
                 }
+
+                rendezVousDTO.setPatient(rendezVous.getPatients());
+                consultationDTO.setRendezVous(rendezVousDTO);
+
+                return consultationDTO;
+            })
+            .collect(Collectors.toList());
+    }
+
+    //Liste des consultations par dermatologue
+    @GetMapping("/listeConsultations/dematologue/{id}")
+    public List<ConsultationDTOSimplifie> getAllConsultationsByDermatologueID(@PathVariable(value = "id") final String id) {
+        log.debug("REST request to get all Consultations for dermatologist with ID: {}", id);
+
+        List<Consultation> consultationList = consultationRepository.findAll();
+
+        return consultationList
+            .stream()
+            .filter(consultation -> {
+                RendezVous rendezVous = consultation.getRendezVous();
+                return rendezVous != null && rendezVous.getDermatologues() != null && rendezVous.getDermatologues().getId().equals(id);
+            })
+            .map(consultation -> {
+                ConsultationDTOSimplifie consultationDTO = new ConsultationDTOSimplifie();
+                consultationDTO.setId(consultation.getId());
+                consultationDTO.setDateConsultation(consultation.getDateConsultation());
+                //                DermatologueConsultations
+
+                DermatologueConsultations rendezVousDTO = new DermatologueConsultations();
+                RendezVous rendezVous = consultation.getRendezVous();
+                rendezVousDTO.setId(rendezVous.getId());
+                rendezVousDTO.setDateDebut(rendezVous.getDateDebut());
+                rendezVousDTO.setDateFin(rendezVous.getDateFin());
+                rendezVousDTO.setStatut(rendezVous.getStatut());
+
+                TransformedDermatologueUserDTO transformedDermatologueUserDTO = userService.findUserDermatologue(
+                    rendezVous.getDermatologues().getId()
+                );
+                //                rendezVousDTO.setDermatologue(transformedDermatologueUserDTO);
 
                 rendezVousDTO.setPatient(rendezVous.getPatients());
                 consultationDTO.setRendezVous(rendezVousDTO);

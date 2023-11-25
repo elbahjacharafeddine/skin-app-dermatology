@@ -72,11 +72,11 @@ export const Maladie = () => {
           {/*  <FontAwesomeIcon icon="sync" spin={loading} />{' '}*/}
           {/*  <Translate contentKey="assistanteDermatologueApp.maladie.home.refreshListLabel">Refresh List</Translate>*/}
           {/*</Button>*/}
-          {/*<Link to="/maladie/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">*/}
-          {/*  <FontAwesomeIcon icon="plus" />*/}
-          {/*  &nbsp;*/}
-          {/*  <Translate contentKey="assistanteDermatologueApp.maladie.home.createLabel">Create new Maladie</Translate>*/}
-          {/*</Link>*/}
+          <Link to="/maladie/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
+            <FontAwesomeIcon icon="plus" />
+            &nbsp;
+            <Translate contentKey="assistanteDermatologueApp.maladie.home.createLabel">Create new Maladie</Translate>
+          </Link>
         </div>
       </h2>
       <div className="table-responsive">
@@ -106,11 +106,11 @@ export const Maladie = () => {
             <tbody>
               {maladieList.map((maladie, i) => (
                 <tr key={`entity-${i}`} data-cy="entityTable">
-                  <td>
-                    <Button tag={Link} to={`/maladie/${maladie.id}`} color="link" size="sm">
-                      {maladie.id}
-                    </Button>
-                  </td>
+                  {/*<td>*/}
+                  {/*  <Button tag={Link} to={`/maladie/${maladie.id}`} color="link" size="sm">*/}
+                  {/*    {maladie.id}*/}
+                  {/*  </Button>*/}
+                  {/*</td>*/}
                   <td>{maladie.fullName}</td>
                   <td>{maladie.abbr}</td>
                   <td>{maladie.diagnostics ? <Link to={`/diagnostic/${maladie.diagnostics.id}`}>{maladie.diagnostics.id}</Link> : ''}</td>

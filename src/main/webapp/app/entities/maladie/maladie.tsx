@@ -72,11 +72,11 @@ export const Maladie = () => {
           {/*  <FontAwesomeIcon icon="sync" spin={loading} />{' '}*/}
           {/*  <Translate contentKey="assistanteDermatologueApp.maladie.home.refreshListLabel">Refresh List</Translate>*/}
           {/*</Button>*/}
-          <Link to="/maladie/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
-            <FontAwesomeIcon icon="plus" />
-            &nbsp;
-            <Translate contentKey="assistanteDermatologueApp.maladie.home.createLabel">Create new Maladie</Translate>
-          </Link>
+          {/*<Link to="/maladie/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">*/}
+          {/*  <FontAwesomeIcon icon="plus" />*/}
+          {/*  &nbsp;*/}
+          {/*  <Translate contentKey="assistanteDermatologueApp.maladie.home.createLabel">Create new Maladie</Translate>*/}
+          {/*</Link>*/}
         </div>
       </h2>
       <div className="table-responsive">

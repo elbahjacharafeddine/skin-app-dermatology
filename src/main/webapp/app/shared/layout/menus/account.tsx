@@ -2,16 +2,17 @@ import React from 'react';
 import MenuItem from 'app/shared/layout/menus/menu-item';
 import { Translate, translate } from 'react-jhipster';
 import { NavDropdown } from './menu-components';
-
+const data = sessionStorage.getItem('user_data');
+const dataJson = data ? JSON.parse(data) : null;
 const accountMenuItemsAuthenticated = () => (
   <>
-    <MenuItem icon="wrench" to="/account/settings" data-cy="settings">
+    <MenuItem icon="wrench" to="/account/settings" data-cy="settings" role={['ROLE_ADMIN']} forWho={['ROLE_ADMIN']}>
       <Translate contentKey="global.menu.account.settings">Settings</Translate>
     </MenuItem>
-    <MenuItem icon="lock" to="/account/password" data-cy="passwordItem">
+    <MenuItem icon="lock" to="/account/password" data-cy="passwordItem" role={['ROLE_ADMIN']} forWho={['ROLE_ADMIN']}>
       <Translate contentKey="global.menu.account.password">Password</Translate>
     </MenuItem>
-    <MenuItem icon="sign-out-alt" to="/logout" data-cy="logout">
+    <MenuItem icon="sign-out-alt" to="/logout" data-cy="logout" role={['ROLE_ADMIN']} forWho={['ROLE_ADMIN']}>
       <Translate contentKey="global.menu.account.logout">Sign out</Translate>
     </MenuItem>
   </>
@@ -19,10 +20,10 @@ const accountMenuItemsAuthenticated = () => (
 
 const accountMenuItems = () => (
   <>
-    <MenuItem id="login-item" icon="sign-in-alt" to="/login" data-cy="login">
+    <MenuItem id="login-item" icon="sign-in-alt" to="/login" data-cy="login" role={['ROLE_ADMIN']} forWho={['ROLE_ADMIN']}>
       <Translate contentKey="global.menu.account.login">Sign in</Translate>
     </MenuItem>
-    <MenuItem icon="user-plus" to="/account/register" data-cy="register">
+    <MenuItem icon="user-plus" to="/account/register" data-cy="register" role={['ROLE_ADMIN']} forWho={['']}>
       <Translate contentKey="global.menu.account.register">Register</Translate>
     </MenuItem>
   </>

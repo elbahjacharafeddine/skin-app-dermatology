@@ -234,6 +234,7 @@ public class PatientResource {
     public ResponseEntity<Void> deletePatient(@PathVariable String id) {
         log.debug("REST request to delete Patient : {}", id);
         patientRepository.deleteById(id);
+        userRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
     }
 }

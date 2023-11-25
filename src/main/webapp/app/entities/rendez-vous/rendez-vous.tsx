@@ -8,9 +8,15 @@ import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import { ASC, DESC, SORT } from 'app/shared/util/pagination.constants';
 import { overrideSortStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { getEntities } from './rendez-vous.reducer';
-
+import axios from 'axios';
+import $ from 'jquery';
+import 'jquery';
+import 'datatables.net-dt/js/dataTables.dataTables';
+import 'datatables.net-responsive-dt/js/responsive.dataTables';
+import 'datatables.net-dt/css/jquery.dataTables.css';
+import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
 export const RendezVous = () => {
   const dispatch = useAppDispatch();
 
@@ -41,13 +47,32 @@ export const RendezVous = () => {
   useEffect(() => {
     sortEntities();
   }, [sortState.order, sortState.sort]);
-
+  useEffect(() => {
+    if (rendezVousList.length > 0) {
+      const table = $('#myTable').DataTable();
+      return () => {
+        table.destroy();
+      };
+    }
+  }, [rendezVousList]);
   const sort = p => () => {
     setSortState({
       ...sortState,
       order: sortState.order === ASC ? DESC : ASC,
       sort: p,
     });
+  };
+
+  const handleChangeStatus = id => {
+    axios
+      .put(`/api/rendez-vous/${id}/change-status`)
+      .then(response => {
+        console.log('Status changed successfully', response.data);
+        getAllEntities();
+      })
+      .catch(error => {
+        console.error('Error changing status', error);
+      });
   };
 
   const handleSyncList = () => {
@@ -65,41 +90,39 @@ export const RendezVous = () => {
   };
 
   return (
-    <div>
+    <div className="p-2">
       <h2 id="rendez-vous-heading" data-cy="RendezVousHeading">
-        <Translate contentKey="assistanteDermatologueApp.rendezVous.home.title">Rendez Vous {rendezVousList}</Translate>
+        Appointments
         <div className="d-flex justify-content-end">
-          <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
-            <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-            <Translate contentKey="assistanteDermatologueApp.rendezVous.home.refreshListLabel">Refresh List</Translate>
-          </Button>
+          {/*<Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>*/}
+          {/*  <FontAwesomeIcon icon="sync" spin={loading} />{' '}*/}
+          {/*  <Translate contentKey="assistanteDermatologueApp.rendezVous.home.refreshListLabel">Refresh List</Translate>*/}
+          {/*</Button>*/}
           <Link to="/rendez-vous/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
             <FontAwesomeIcon icon="plus" />
-            &nbsp;
-            <Translate contentKey="assistanteDermatologueApp.rendezVous.home.createLabel">Create new Rendez Vous</Translate>
+            &nbsp; Create new appointment
           </Link>
         </div>
       </h2>
       <div className="table-responsive">
         {rendezVousList && rendezVousList.length > 0 ? (
-          <Table responsive>
+          <table className="table table-responsive p-3" id="myTable">
             <thead>
               <tr>
-                <th className="hand" onClick={sort('id')}>
-                  <Translate contentKey="assistanteDermatologueApp.rendezVous.id">ID</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
-                </th>
+                {/*<th className="hand" onClick={sort('id')}>*/}
+                {/*  <Translate contentKey="assistanteDermatologueApp.rendezVous.id">ID</Translate>{' '}*/}
+                {/*  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />*/}
+                {/*</th>*/}
                 <th className="hand" onClick={sort('dateDebut')}>
-                  <Translate contentKey="assistanteDermatologueApp.rendezVous.dateDebut">Date Debut</Translate>{' '}
+                  Date
                   <FontAwesomeIcon icon={getSortIconByFieldName('dateDebut')} />
                 </th>
                 <th className="hand" onClick={sort('dateFin')}>
-                  <Translate contentKey="assistanteDermatologueApp.rendezVous.dateFin">Date Fin</Translate>{' '}
+                  Hour
                   <FontAwesomeIcon icon={getSortIconByFieldName('dateFin')} />
                 </th>
                 <th className="hand" onClick={sort('statut')}>
-                  <Translate contentKey="assistanteDermatologueApp.rendezVous.statut">Statut</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('statut')} />
+                  Status <FontAwesomeIcon icon={getSortIconByFieldName('statut')} />
                 </th>
                 <th>
                   <Translate contentKey="assistanteDermatologueApp.rendezVous.dermatologues">Dermatologues</Translate>{' '}
@@ -114,13 +137,18 @@ export const RendezVous = () => {
             <tbody>
               {rendezVousList.map((rendezVous, i) => (
                 <tr key={`entity-${i}`} data-cy="entityTable">
+                  {/*<td>*/}
+                  {/*  <Button tag={Link} to={`/rendez-vous/${rendezVous.id}`} color="link" size="sm">*/}
+                  {/*    {rendezVous.id}*/}
+                  {/*  </Button>*/}
+                  {/*</td>*/}
+                  <td>{rendezVous.dateFin ? new Date(rendezVous.dateFin).toLocaleDateString() : null}</td>
                   <td>
-                    <Button tag={Link} to={`/rendez-vous/${rendezVous.id}`} color="link" size="sm">
-                      {rendezVous.id}
-                    </Button>
+                    {rendezVous.dateFin
+                      ? new Date(rendezVous.dateDebut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                      : null}
                   </td>
-                  <td>{rendezVous.dateDebut ? <TextFormat type="date" value={rendezVous.dateDebut} format={APP_DATE_FORMAT} /> : null}</td>
-                  <td>{rendezVous.dateFin ? <TextFormat type="date" value={rendezVous.dateFin} format={APP_DATE_FORMAT} /> : null}</td>
+
                   <td>{rendezVous.statut ? 'Confirmed' : 'Waiting'}</td>
                   <td>
                     {/* {rendezVous.dermatologues.id} */}
@@ -146,6 +174,11 @@ export const RendezVous = () => {
                   </td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
+                      {rendezVous.statut == false && (
+                        <Button onClick={() => handleChangeStatus(rendezVous.id)} color="success" size="sm">
+                          <FontAwesomeIcon icon={faCheck} /> <span className="d-none d-md-inline">Confirm</span>
+                        </Button>
+                      )}
                       <Button tag={Link} to={`/rendez-vous/${rendezVous.id}`} color="info" size="sm" data-cy="entityDetailsButton">
                         <FontAwesomeIcon icon="eye" />{' '}
                         <span className="d-none d-md-inline">
@@ -174,7 +207,7 @@ export const RendezVous = () => {
                 </tr>
               ))}
             </tbody>
-          </Table>
+          </table>
         ) : (
           !loading && (
             <div className="alert alert-warning">

@@ -204,4 +204,9 @@ public class UserResource {
         userService.deleteUser(login);
         return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "userManagement.deleted", login)).build();
     }
+    //    @GetMapping("/get/user/{login}")
+    //    public ResponseEntity<AdminUserDTO> getUserByLogin(@PathVariable @Pattern(regexp = Constants.LOGIN_REGEX) String login) {
+    //        log.debug("REST request to get User : {}", login);
+    //        return ResponseUtil.wrapOrNotFound(userService.getUserWithAuthoritiesByLogin(login).map(AdminUserDTO::new));
+    //    }
 }

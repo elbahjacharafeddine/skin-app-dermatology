@@ -1,6 +1,8 @@
 package com.ensaj.repository;
 
 import com.ensaj.domain.Maladie;
+import com.ensaj.domain.User;
+import java.util.Optional;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +11,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface MaladieRepository extends MongoRepository<Maladie, String> {}
+public interface MaladieRepository extends MongoRepository<Maladie, String> {
+    Optional<Maladie> findOneByAbbr(String abbr);
+}

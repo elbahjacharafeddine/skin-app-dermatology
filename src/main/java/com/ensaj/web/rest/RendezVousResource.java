@@ -1,9 +1,11 @@
 package com.ensaj.web.rest;
 
+import com.ensaj.domain.Consultation;
 import com.ensaj.domain.Dermatologue;
 import com.ensaj.domain.Patient;
 import com.ensaj.domain.RendezVous;
 import com.ensaj.domain.User;
+import com.ensaj.repository.ConsultationRepository;
 import com.ensaj.repository.RendezVousRepository;
 import com.ensaj.repository.UserRepository;
 import com.ensaj.service.UserService;
@@ -15,6 +17,7 @@ import com.ensaj.web.rest.errors.BadRequestAlertException;
 import com.ensaj.web.rest.vm.ManagedUserVM;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -24,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -45,11 +49,18 @@ public class RendezVousResource {
     private final RendezVousRepository rendezVousRepository;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final ConsultationRepository consultationRepository;
 
-    public RendezVousResource(RendezVousRepository rendezVousRepository, UserRepository userRepository, UserService userService) {
+    public RendezVousResource(
+        RendezVousRepository rendezVousRepository,
+        UserRepository userRepository,
+        UserService userService,
+        ConsultationRepository consultationRepository
+    ) {
         this.rendezVousRepository = rendezVousRepository;
         this.userRepository = userRepository;
         this.userService = userService;
+        this.consultationRepository = consultationRepository;
     }
 
     /**
@@ -66,6 +77,11 @@ public class RendezVousResource {
             throw new BadRequestAlertException("A new rendezVous cannot already have an ID", ENTITY_NAME, "idexists");
         }
         RendezVous result = rendezVousRepository.save(rendezVous);
+        // Create a corresponding Consultation
+        //        Consultation consultation = new Consultation();
+        //        consultation.setDateConsultation(rendezVous.getDateDebut()); // Set the date of the consultation as the current time
+        //        consultation.setRendezVous(result);
+        //        Consultation savedConsultation = consultationRepository.save(consultation);
         return ResponseEntity
             .created(new URI("/api/rendez-vous/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId()))
@@ -104,6 +120,30 @@ public class RendezVousResource {
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, rendezVous.getId()))
             .body(result);
+    }
+
+    @PutMapping("/{id}/change-status")
+    public ResponseEntity<RendezVous> changeRendezVousStatus(@PathVariable String id) throws URISyntaxException {
+        log.debug("REST request to change RendezVous status: {}", id);
+
+        Optional<RendezVous> existingRendezVous = rendezVousRepository.findById(id);
+
+        return existingRendezVous
+            .map(rendezVous -> {
+                // Set statut to true regardless of any parameter
+                rendezVous.setStatut(true);
+
+                RendezVous result = rendezVousRepository.save(rendezVous);
+                Consultation consultation = new Consultation();
+                consultation.setDateConsultation(rendezVous.getDateDebut()); // Set the date of the consultation as the current time
+                consultation.setRendezVous(result);
+                Consultation savedConsultation = consultationRepository.save(consultation);
+                return ResponseEntity
+                    .ok()
+                    .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, rendezVous.getId()))
+                    .body(result);
+            })
+            .orElseThrow(() -> new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound"));
     }
 
     /**
@@ -180,7 +220,7 @@ public class RendezVousResource {
                 rendezvousDTO.setId(rendezvous.getId());
                 rendezvousDTO.setDateDebut(rendezvous.getDateDebut());
                 rendezvousDTO.setDateFin(rendezvous.getDateFin());
-                // rendezvousDTO.setStatut(rendezvous.getStatut());
+                rendezvousDTO.setStatut(rendezvous.getStatut());
                 TransformedDermatologueUserDTO transformedDermatologueUserDTO = userService.findUserDermatologue(
                     rendezvous.getDermatologues().getId()
                 );
@@ -202,6 +242,32 @@ public class RendezVousResource {
             .collect(Collectors.toList());
 
         return rendezvousDTOList;
+    }
+
+    @GetMapping("rdvs")
+    public List<RendezVousDTO> getAllRendezVousNew() {
+        log.debug("REST request to get all RendezVous");
+        List<RendezVous> rendezvousList = rendezVousRepository.findAll();
+
+        return rendezvousList.stream().map(rendezvous -> mapRendezVousToDTO(rendezvous)).collect(Collectors.toList());
+    }
+
+    private RendezVousDTO mapRendezVousToDTO(RendezVous rendezvous) {
+        RendezVousDTO rendezvousDTO = new RendezVousDTO();
+        rendezvousDTO.setId(rendezvous.getId());
+        rendezvousDTO.setDateDebut(rendezvous.getDateDebut());
+        rendezvousDTO.setDateFin(rendezvous.getDateFin());
+        rendezvousDTO.setStatut(rendezvous.getStatut());
+
+        // Add the dermatologist's user to the RendezVousDTO
+        String dermatologueId = rendezvous.getDermatologues().getId();
+        TransformedDermatologueUserDTO transformedDermatologueUserDTO = userService.findUserDermatologue(dermatologueId);
+        rendezvousDTO.setDermatologue(transformedDermatologueUserDTO);
+
+        // Add the patient's user to the RendezVousDTO
+        rendezvousDTO.setPatient(rendezvous.getPatients());
+
+        return rendezvousDTO;
     }
 
     //  @GetMapping("")
@@ -372,7 +438,45 @@ public class RendezVousResource {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRendezVous(@PathVariable String id) {
         log.debug("REST request to delete RendezVous : {}", id);
-        rendezVousRepository.deleteById(id);
+        List<Consultation> consultations = consultationRepository.findAll();
+
+        try {
+            for (Consultation consultation : consultations) {
+                if (consultation.getRendezVous() != null && consultation.getRendezVous().getId().equals(id)) {
+                    consultationRepository.deleteById(consultation.getId());
+                }
+            }
+            rendezVousRepository.deleteById(id);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
+    }
+
+    @GetMapping("/dermatologue/{id}")
+    public List<RendezVous> getAllAppointement(@PathVariable String id) {
+        List<RendezVous> rdv = rendezVousRepository.findAll();
+        List<RendezVous> data = new ArrayList<>();
+        for (RendezVous r : rdv) {
+            if (r.getDermatologues().getId().equals(id)) {
+                Patient p = r.getPatients();
+
+                Optional<User> user = userRepository.findById(p.getUser().getId());
+                if (user.isPresent()) {
+                    PatientUserDTO patientUserDTO = new PatientUserDTO();
+                    ManagedUserVM managedUserVM = new ManagedUserVM();
+                    managedUserVM.setEmail(user.get().getEmail());
+                    managedUserVM.setFirstName(user.get().getFirstName());
+                    managedUserVM.setLastName(user.get().getLastName());
+
+                    //                    p.setUser(user.get());
+                    patientUserDTO.setPatient(p);
+                    r.setPatientUserDTO(patientUserDTO);
+                    data.add(r);
+                }
+            }
+        }
+        return data;
     }
 }

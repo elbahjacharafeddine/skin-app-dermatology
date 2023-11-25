@@ -64,6 +64,12 @@ export const RendezVousUpdate = () => {
     };
 
     if (isNew) {
+      console.log('ELBAHJA hahiya entity');
+      console.log(entity);
+      console.log(entity);
+      console.log(entity);
+      console.log(entity);
+      console.log(entity);
       dispatch(createEntity(entity));
     } else {
       dispatch(updateEntity(entity));
@@ -89,7 +95,7 @@ export const RendezVousUpdate = () => {
       <Row className="justify-content-center">
         <Col md="8">
           <h2 id="assistanteDermatologueApp.rendezVous.home.createOrEditLabel" data-cy="RendezVousCreateUpdateHeading">
-            <Translate contentKey="assistanteDermatologueApp.rendezVous.home.createOrEditLabel">Create or edit a RendezVous</Translate>
+            Create or edit a appointment
           </h2>
         </Col>
       </Row>
@@ -107,10 +113,11 @@ export const RendezVousUpdate = () => {
                   id="rendez-vous-id"
                   label={translate('global.field.id')}
                   validate={{ required: true }}
+                  hidden={true}
                 />
               ) : null}
               <ValidatedField
-                label={translate('assistanteDermatologueApp.rendezVous.dateDebut')}
+                label="Start date"
                 id="rendez-vous-dateDebut"
                 name="dateDebut"
                 data-cy="dateDebut"
@@ -118,49 +125,43 @@ export const RendezVousUpdate = () => {
                 placeholder="YYYY-MM-DD HH:mm"
               />
               <ValidatedField
-                label={translate('assistanteDermatologueApp.rendezVous.dateFin')}
+                label="End date"
                 id="rendez-vous-dateFin"
                 name="dateFin"
                 data-cy="dateFin"
                 type="datetime-local"
                 placeholder="YYYY-MM-DD HH:mm"
               />
-              <ValidatedField
+              {/* <ValidatedField
                 label={translate('assistanteDermatologueApp.rendezVous.statut')}
                 id="rendez-vous-statut"
                 name="statut"
                 data-cy="statut"
                 check
                 type="checkbox"
-              />
+              /> */}
               <ValidatedField
                 id="rendez-vous-dermatologues"
                 name="dermatologues"
                 data-cy="dermatologues"
-                label={translate('assistanteDermatologueApp.rendezVous.dermatologues')}
+                label="Dermatologist"
                 type="select"
               >
                 <option value="" key="0" />
                 {dermatologues
                   ? dermatologues.map(otherEntity => (
                       <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.user.firstName + ' ' + otherEntity.user.lastName}
+                        {otherEntity.user ? otherEntity.user.firstName + ' ' + otherEntity.user.lastName : ''}
                       </option>
                     ))
                   : null}
               </ValidatedField>
-              <ValidatedField
-                id="rendez-vous-patients"
-                name="patients"
-                data-cy="patients"
-                label={translate('assistanteDermatologueApp.rendezVous.patients')}
-                type="select"
-              >
+              <ValidatedField id="rendez-vous-patients" name="patients" data-cy="patients" label="Patient" type="select">
                 <option value="" key="0" />
                 {patients
                   ? patients.map(otherEntity => (
                       <option value={otherEntity.id} key={otherEntity.id}>
-                        {otherEntity.user.firstName + ' ' + otherEntity.user.lastName}
+                        {otherEntity.user ? otherEntity.user.firstName + ' ' + otherEntity.user.lastName : ''}
                       </option>
                     ))
                   : null}

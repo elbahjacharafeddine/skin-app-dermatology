@@ -1,21 +1,27 @@
 package com.ensaj.web.rest;
 
 import com.ensaj.domain.Dermatologue;
+import com.ensaj.domain.RendezVous;
 import com.ensaj.domain.User;
 import com.ensaj.repository.DermatologueRepository;
+import com.ensaj.repository.RendezVousRepository;
 import com.ensaj.repository.UserRepository;
 import com.ensaj.security.AuthoritiesConstants;
 import com.ensaj.service.UserService;
+import com.ensaj.service.dto.DermatologuePatientsDTO;
 import com.ensaj.service.dto.DermatologueUserDTO;
+import com.ensaj.service.dto.RendezVousDTO;
 import com.ensaj.service.dto.TransformedDermatologueUserDTO;
 import com.ensaj.web.rest.errors.BadRequestAlertException;
 import com.ensaj.web.rest.vm.ManagedUserVM;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
@@ -36,11 +42,18 @@ public class DermatologueResource {
     private String applicationName;
 
     private final DermatologueRepository dermatologueRepository;
+    private final RendezVousRepository rendezVousRepository;
     private final UserService userService;
     private final UserRepository userRepository;
 
-    public DermatologueResource(DermatologueRepository dermatologueRepository, UserService userService, UserRepository userRepository) {
+    public DermatologueResource(
+        DermatologueRepository dermatologueRepository,
+        RendezVousRepository rendezVousRepository,
+        UserService userService,
+        UserRepository userRepository
+    ) {
         this.dermatologueRepository = dermatologueRepository;
+        this.rendezVousRepository = rendezVousRepository;
         this.userService = userService;
         this.userRepository = userRepository;
     }
@@ -211,6 +224,69 @@ public class DermatologueResource {
         return liste;
     }
 
+    //
+    // @GetMapping("/dermatologuePatients/{id}")
+    // public ResponseEntity<TransformedDermatologueUserDTO> getDermatologuePatients(@PathVariable String id) {
+    //     log.debug("REST request to get Dermatologue : {}", id);
+    //     Optional<Dermatologue> dermatologue = dermatologueRepository.findById(id);
+
+    //     if (dermatologue.isPresent()) {
+    //         TransformedDermatologueUserDTO transformedDermatologueUserDTO = userService.findUserDermatologue(id);
+
+    //         // Fetch and set the patients for the dermatologist
+    //         List<RendezVous> dermatologuePatients = rendezVousRepository.findByDermatologues(dermatologue.get());
+    //         transformedDermatologueUserDTO.setDermatologuePatients(dermatologuePatients);
+
+    //         return ResponseEntity.ok().body(transformedDermatologueUserDTO);
+    //     } else {
+    //         return ResponseEntity.notFound().build();
+    //     }
+    // }
+
+    @GetMapping("/dermatologuePatients/{id}")
+    public ResponseEntity<List<DermatologuePatientsDTO>> getDermatologuePatients(@PathVariable String id) {
+        log.debug("REST request to get Dermatologue : {}", id);
+        Optional<Dermatologue> dermatologue = dermatologueRepository.findById(id);
+
+        if (dermatologue.isPresent()) {
+            TransformedDermatologueUserDTO transformedDermatologueUserDTO = userService.findUserDermatologue(id);
+
+            // Fetch and set the patients for the dermatologist
+            List<RendezVous> dermatologuePatients = rendezVousRepository.findByDermatologues(dermatologue.get());
+
+            // Construct a list of RendezVousDTO with the required structure
+            List<DermatologuePatientsDTO> rendezVousDTOList = dermatologuePatients
+                .stream()
+                .map(rendezvous -> mapRendezVousToDTOWithUser(rendezvous))
+                .collect(Collectors.toList());
+
+            // Set the transformed dermatologist user information
+            // rendezVousDTOList.forEach(rendezvousDTO -> rendezvousDTO.getDermatologue().setUser(transformedDermatologueUserDTO.getUser()));
+
+            return ResponseEntity.ok().body(rendezVousDTOList);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    private DermatologuePatientsDTO mapRendezVousToDTOWithUser(RendezVous rendezvous) {
+        DermatologuePatientsDTO rendezvousDTO = new DermatologuePatientsDTO();
+        // rendezvousDTO.setId(rendezvous.getId());
+        // rendezvousDTO.setDateDebut(rendezvous.getDateDebut());
+        // rendezvousDTO.setDateFin(rendezvous.getDateFin());
+        // rendezvousDTO.setStatut(rendezvous.getStatut());
+
+        // Add the dermatologist's user to the RendezVousDTO
+        // String dermatologueId = rendezvous.getDermatologues().getId();
+        // TransformedDermatologueUserDTO transformedDermatologueUserDTO = userService.findUserDermatologue(dermatologueId);
+        // rendezvousDTO.setDermatologue(transformedDermatologueUserDTO);
+
+        // Add the patient's user to the RendezVousDTO
+        rendezvousDTO.setPatient(rendezvous.getPatients());
+
+        return rendezvousDTO;
+    }
+
     //    @GetMapping("/dermatologues")
     //    public List<TransformedDermatologueUserDTO> getAllDermatologues() {
     //        log.debug("REST request to get all Dermatologues");
@@ -267,6 +343,7 @@ public class DermatologueResource {
     public ResponseEntity<Void> deleteDermatologue(@PathVariable String id) {
         log.debug("REST request to delete Dermatologue : {}", id);
         dermatologueRepository.deleteById(id);
+        userRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
     }
 }

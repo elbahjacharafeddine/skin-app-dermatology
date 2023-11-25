@@ -99,10 +99,11 @@ spring:
     active:
     group:
       dev:
-        - dev
-    #     - api-docs
-    # Uncomment to activate TLS for the dev profile
-    #- tls
+        prod
+        #  - dev
+        #  - api-docs
+  # Uncomment to activate TLS for the dev profile
+  #- tls
   jmx:
     enabled: false
   messages:

@@ -10,7 +10,12 @@ import { overrideSortStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import { getEntities } from './patient.reducer';
-
+import $ from 'jquery';
+import 'jquery';
+import 'datatables.net-dt/js/dataTables.dataTables';
+import 'datatables.net-responsive-dt/js/responsive.dataTables';
+import 'datatables.net-dt/css/jquery.dataTables.css';
+import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
 export const Patient = () => {
   const dispatch = useAppDispatch();
 
@@ -29,7 +34,14 @@ export const Patient = () => {
       }),
     );
   };
-
+  useEffect(() => {
+    if (patientList.length > 0) {
+      const table = $('#myTable').DataTable();
+      return () => {
+        table.destroy();
+      };
+    }
+  }, [patientList]);
   const sortEntities = () => {
     getAllEntities();
     const endURL = `?sort=${sortState.sort},${sortState.order}`;
@@ -65,14 +77,14 @@ export const Patient = () => {
   };
 
   return (
-    <div>
+    <div className="p-2">
       <h2 id="patient-heading" data-cy="PatientHeading">
         <Translate contentKey="assistanteDermatologueApp.patient.home.title">Patients</Translate>
         <div className="d-flex justify-content-end">
-          <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
-            <FontAwesomeIcon icon="sync" spin={loading} />{' '}
-            <Translate contentKey="assistanteDermatologueApp.patient.home.refreshListLabel">Refresh List</Translate>
-          </Button>
+          {/*<Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>*/}
+          {/*  <FontAwesomeIcon icon="sync" spin={loading} />{' '}*/}
+          {/*  <Translate contentKey="assistanteDermatologueApp.patient.home.refreshListLabel">Refresh List</Translate>*/}
+          {/*</Button>*/}
           <Link to="/patient/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
             <FontAwesomeIcon icon="plus" />
             &nbsp;
@@ -80,30 +92,30 @@ export const Patient = () => {
           </Link>
         </div>
       </h2>
-      <div className="table-responsive">
+      <div className="table-responsive p-3">
         {patientList && patientList.length > 0 ? (
-          <Table responsive>
+          <table className="table table-responsive" id="myTable">
             <thead>
               <tr>
-                <th className="hand" onClick={sort('id')}>
-                  <Translate contentKey="assistanteDermatologueApp.patient.id">ID</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
-                </th>
+                {/*<th className="hand" onClick={sort('id')}>*/}
+                {/*  <Translate contentKey="assistanteDermatologueApp.patient.id">ID</Translate>{' '}*/}
+                {/*  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />*/}
+                {/*</th>*/}
                 <th className="hand" onClick={sort('birthdate')}>
                   <Translate contentKey="assistanteDermatologueApp.patient.birthdate">Birthdate</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('birthdate')} />
+                  {/*<FontAwesomeIcon icon={getSortIconByFieldName('birthdate')} />*/}
                 </th>
                 <th className="hand" onClick={sort('adress')}>
                   <Translate contentKey="assistanteDermatologueApp.patient.adress">Adress</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('adress')} />
+                  {/*<FontAwesomeIcon icon={getSortIconByFieldName('adress')} />*/}
                 </th>
                 <th className="hand" onClick={sort('genre')}>
-                  <Translate contentKey="assistanteDermatologueApp.patient.genre">Genre</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('genre')} />
+                  Gender
+                  {/*<FontAwesomeIcon icon={getSortIconByFieldName('genre')} />*/}
                 </th>
                 <th className="hand" onClick={sort('telephone')}>
-                  <Translate contentKey="assistanteDermatologueApp.patient.telephone">Telephone</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('telephone')} />
+                  Phone
+                  {/*<FontAwesomeIcon icon={getSortIconByFieldName('telephone')} />*/}
                 </th>
                 <th>Full name</th>
                 <th />
@@ -112,12 +124,14 @@ export const Patient = () => {
             <tbody>
               {patientList.map((patient, i) => (
                 <tr key={`entity-${i}`} data-cy="entityTable">
-                  <td>
-                    <Button tag={Link} to={`/patient/${patient.id}`} color="link" size="sm">
-                      {patient.id}
-                    </Button>
-                  </td>
-                  <td>{patient.birthdate ? <TextFormat type="date" value={patient.birthdate} format={APP_DATE_FORMAT} /> : null}</td>
+                  {/*<td>*/}
+                  {/*  <Button tag={Link} to={`/patient/${patient.id}`} color="link" size="sm">*/}
+                  {/*    {patient.id}*/}
+                  {/*  </Button>*/}
+                  {/*</td>*/}
+                  {/*<td>{patient.birthdate ? <TextFormat type="date" value={patient.birthdate} format={APP_DATE_FORMAT} /> : null}</td>*/}
+                  <td>{patient.birthdate ? new Date(patient.birthdate).toLocaleDateString() : null}</td>
+
                   <td>{patient.adress}</td>
                   <td>{patient.genre}</td>
                   <td>{patient.telephone}</td>
@@ -152,7 +166,7 @@ export const Patient = () => {
                 </tr>
               ))}
             </tbody>
-          </Table>
+          </table>
         ) : (
           !loading && (
             <div className="alert alert-warning">

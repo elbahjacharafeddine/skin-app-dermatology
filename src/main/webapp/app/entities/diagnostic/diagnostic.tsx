@@ -8,11 +8,15 @@ import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import { ASC, DESC, SORT } from 'app/shared/util/pagination.constants';
 import { overrideSortStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-
+import DiagnosticModel from './DiagnosticModel';
 import { getEntities } from './diagnostic.reducer';
 
 export const Diagnostic = () => {
   const dispatch = useAppDispatch();
+  const [isModelOpen, setIsModelOpen] = useState(false);
+  const toggleModel = () => {
+    setIsModelOpen(!isModelOpen);
+  };
 
   const pageLocation = useLocation();
   const navigate = useNavigate();
@@ -21,6 +25,10 @@ export const Diagnostic = () => {
 
   const diagnosticList = useAppSelector(state => state.diagnostic.entities);
   const loading = useAppSelector(state => state.diagnostic.loading);
+  // const location = useLocation();
+  const searchParams = new URLSearchParams(pageLocation.search);
+  const consultationId = searchParams.get('consultationId');
+  const patientName = searchParams.get('patientName');
 
   const getAllEntities = () => {
     dispatch(
@@ -32,10 +40,12 @@ export const Diagnostic = () => {
 
   const sortEntities = () => {
     getAllEntities();
-    const endURL = `?sort=${sortState.sort},${sortState.order}`;
-    if (pageLocation.search !== endURL) {
-      navigate(`${pageLocation.pathname}${endURL}`);
-    }
+    setIsModelOpen(false);
+
+    // const endURL = `?sort=${sortState.sort},${sortState.order}`;
+    // if (pageLocation.search !== endURL) {
+    //   navigate(`${pageLocation.pathname}${endURL}`);
+    // }
   };
 
   useEffect(() => {
@@ -52,6 +62,7 @@ export const Diagnostic = () => {
 
   const handleSyncList = () => {
     sortEntities();
+    setIsModelOpen(false);
   };
 
   const getSortIconByFieldName = (fieldName: string) => {
@@ -67,17 +78,22 @@ export const Diagnostic = () => {
   return (
     <div>
       <h2 id="diagnostic-heading" data-cy="DiagnosticHeading">
-        <Translate contentKey="assistanteDermatologueApp.diagnostic.home.title">Diagnostics</Translate>
+        Diagnostics for Patient : {patientName}
         <div className="d-flex justify-content-end">
           <Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>
             <FontAwesomeIcon icon="sync" spin={loading} />{' '}
             <Translate contentKey="assistanteDermatologueApp.diagnostic.home.refreshListLabel">Refresh List</Translate>
           </Button>
-          <Link to="/diagnostic/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
+
+          <Button color="primary" onClick={toggleModel}>
+            New diagnostic
+          </Button>
+          <DiagnosticModel isOpen={isModelOpen} toggle={toggleModel} isNew={true} />
+          {/* <Link to="/diagnostic/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
             <FontAwesomeIcon icon="plus" />
             &nbsp;
             <Translate contentKey="assistanteDermatologueApp.diagnostic.home.createLabel">Create new Diagnostic</Translate>
-          </Link>
+          </Link> */}
         </div>
       </h2>
       <div className="table-responsive">
@@ -85,10 +101,10 @@ export const Diagnostic = () => {
           <Table responsive>
             <thead>
               <tr>
-                <th className="hand" onClick={sort('id')}>
+                {/* <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="assistanteDermatologueApp.diagnostic.id">ID</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
-                </th>
+                </th> */}
                 <th className="hand" onClick={sort('dateDiagnostic')}>
                   <Translate contentKey="assistanteDermatologueApp.diagnostic.dateDiagnostic">Date Diagnostic</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('dateDiagnostic')} />
@@ -109,21 +125,21 @@ export const Diagnostic = () => {
                   <Translate contentKey="assistanteDermatologueApp.diagnostic.probability">Probability</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('probability')} />
                 </th>
-                <th>
+                {/* <th>
                   <Translate contentKey="assistanteDermatologueApp.diagnostic.consultations">Consultations</Translate>{' '}
                   <FontAwesomeIcon icon="sort" />
-                </th>
+                </th> */}
                 <th />
               </tr>
             </thead>
             <tbody>
               {diagnosticList.map((diagnostic, i) => (
                 <tr key={`entity-${i}`} data-cy="entityTable">
-                  <td>
+                  {/* <td>
                     <Button tag={Link} to={`/diagnostic/${diagnostic.id}`} color="link" size="sm">
                       {diagnostic.id}
                     </Button>
-                  </td>
+                  </td> */}
                   <td>
                     {diagnostic.dateDiagnostic ? (
                       <TextFormat type="date" value={diagnostic.dateDiagnostic} format={APP_DATE_FORMAT} />
@@ -147,13 +163,13 @@ export const Diagnostic = () => {
                   <td>{diagnostic.description}</td>
                   <td>{diagnostic.prescription}</td>
                   <td>{diagnostic.probability}</td>
-                  <td>
+                  {/* <td>
                     {diagnostic.consultations ? (
                       <Link to={`/consultation/${diagnostic.consultations.id}`}>{diagnostic.consultations.id}</Link>
                     ) : (
                       ''
                     )}
-                  </td>
+                  </td> */}
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/diagnostic/${diagnostic.id}`} color="info" size="sm" data-cy="entityDetailsButton">

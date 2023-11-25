@@ -76,6 +76,7 @@ export const clearAuthToken = () => {
   }
   if (Storage.session.get(AUTH_TOKEN_KEY)) {
     Storage.session.remove(AUTH_TOKEN_KEY);
+    sessionStorage.clear();
   }
 };
 
@@ -141,6 +142,8 @@ export const AuthenticationSlice = createSlice({
       }))
       .addCase(getAccount.fulfilled, (state, action) => {
         const isAuthenticated = action.payload && action.payload.data && action.payload.data.activated;
+
+        Storage.session.set('user_data', action.payload.data);
         return {
           ...state,
           isAuthenticated,

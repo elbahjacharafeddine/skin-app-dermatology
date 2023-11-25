@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -39,6 +40,9 @@ public class Diagnostic implements Serializable {
 
     @Field("probability")
     private Float probability;
+
+    @Field("probabilities")
+    private List<Float> probabilities;
 
     @DBRef
     @Field("consultations")
@@ -141,6 +145,19 @@ public class Diagnostic implements Serializable {
 
     public void setProbability(Float probability) {
         this.probability = probability;
+    }
+
+    public List<Float> getProbabilities() {
+        return this.probabilities;
+    }
+
+    public Diagnostic probabilities(List<Float> probabilities) {
+        this.setProbabilities(probabilities);
+        return this;
+    }
+
+    public void setProbabilities(List<Float> probabilities) {
+        this.probabilities = probabilities;
     }
 
     public Consultation getConsultations() {

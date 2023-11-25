@@ -101,6 +101,7 @@ export const DiagnosticUpdate = () => {
                   id="diagnostic-id"
                   label={translate('global.field.id')}
                   validate={{ required: true }}
+                  hidden={true}
                 />
               ) : null}
               <ValidatedField
@@ -110,6 +111,7 @@ export const DiagnosticUpdate = () => {
                 data-cy="dateDiagnostic"
                 type="datetime-local"
                 placeholder="YYYY-MM-DD HH:mm"
+                hidden={true}
               />
               <ValidatedBlobField
                 label={translate('assistanteDermatologueApp.diagnostic.picture')}
@@ -118,6 +120,7 @@ export const DiagnosticUpdate = () => {
                 data-cy="picture"
                 isImage
                 accept="image/*"
+                readOnly={true}
               />
               <ValidatedField
                 label={translate('assistanteDermatologueApp.diagnostic.description')}
@@ -139,6 +142,7 @@ export const DiagnosticUpdate = () => {
                 name="probability"
                 data-cy="probability"
                 type="text"
+                hidden={true}
               />
               <ValidatedField
                 id="diagnostic-consultations"
@@ -146,6 +150,7 @@ export const DiagnosticUpdate = () => {
                 data-cy="consultations"
                 label={translate('assistanteDermatologueApp.diagnostic.consultations')}
                 type="select"
+                hidden={true}
               >
                 <option value="" key="0" />
                 {consultations

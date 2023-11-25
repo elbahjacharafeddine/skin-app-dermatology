@@ -13,6 +13,7 @@ import Maladie from './maladie';
 import Stade from './stade';
 import ImageStade from './image-stade';
 import Symptoms from './symptoms';
+import ListePatients from './dermatologue/ListePatients';
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 export default () => {
@@ -20,6 +21,7 @@ export default () => {
     <div>
       <ErrorBoundaryRoutes>
         {/* prettier-ignore */}
+
         <Route path="dermatologue/*" element={<Dermatologue />} />
         <Route path="patient/*" element={<Patient />} />
         <Route path="secretaire/*" element={<Secretaire />} />

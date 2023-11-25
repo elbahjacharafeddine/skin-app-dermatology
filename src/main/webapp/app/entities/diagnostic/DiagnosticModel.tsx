@@ -45,6 +45,7 @@ const DiagnosticModel: React.FC<DiagnosticModelProps> = ({ isOpen, toggle, isNew
   const loading = useAppSelector(state => state.diagnostic.loading);
   const updating = useAppSelector(state => state.diagnostic.updating);
   const updateSuccess = useAppSelector(state => state.diagnostic.updateSuccess);
+
   const [myImage, setMyImage] = useState(null);
   const [formData, setFormData] = useState(new FormData());
 
@@ -149,7 +150,35 @@ const DiagnosticModel: React.FC<DiagnosticModelProps> = ({ isOpen, toggle, isNew
     } catch (error) {
       console.error('Error in API request:', error);
     }
+
+    // Remove selected symptoms
+    setSelectedSymptoms([]);
   };
+
+  // const saveEntity = values => {
+  //   values.dateDiagnostic = convertDateTimeToServer(values.dateDiagnostic);
+  //   values.description = '';
+  //   values.prescription = '';
+  //   values.probability = '';
+
+  //   // if (values.probability !== undefined && typeof values.probability !== 'number') {
+  //   //   values.probability = Number(values.probability);
+  //   // }
+
+  //   const entity = {
+  //     ...diagnosticEntity,
+  //     ...values,
+  //     consultations: consultations.find(it => it.id.toString() === values.consultations.toString()),
+  //   };
+
+  //   if (isNew) {
+  //     dispatch(createEntity(entity));
+  //   } else {
+  //     dispatch(updateEntity(entity));
+  //   }
+  //   window.location.reload();
+
+  // };
 
   const defaultValues = () =>
     isNew
@@ -252,6 +281,7 @@ const DiagnosticModel: React.FC<DiagnosticModelProps> = ({ isOpen, toggle, isNew
                 accept="image/*"
               /> */}
               {/* <input type="file" name="picture" onChange={handleFileChange} /> */}
+
               <ValidatedBlobField
                 label={translate('assistanteDermatologueApp.diagnostic.picture')}
                 id="diagnostic-picture"

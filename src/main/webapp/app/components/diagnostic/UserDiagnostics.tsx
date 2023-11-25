@@ -21,6 +21,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import axios from 'axios';
+
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 
@@ -59,7 +60,13 @@ const chartstyle = {
 
 const buttonStyle = {
   marginTop: 'auto',
+  flexDirection: 'column', // Display children in a column
+  alignItems: 'center', // Center items horizontally
 };
+
+// const buttonStyle = {
+//   marginTop: 'auto', // Push the button to the bottom
+// };
 
 export const UserDiagnostics = () => {
   const dispatch = useAppDispatch();
@@ -178,6 +185,7 @@ export const UserDiagnostics = () => {
       };
     }
   }, [data]);
+
   // console.log('data16', data[16]?.maladies[0].fullName);
 
   const [isStatisticsModalOpen, setIsStatisticsModalOpen] = useState(false);
@@ -311,7 +319,9 @@ export const UserDiagnostics = () => {
                         <TextFormat type="date" value={diagnostic.dateDiagnostic} format={APP_DATE_FORMAT} />
                       ) : null}
                     </td>
+
                     <td>{diagnostic.maladies[0].fullName}</td>
+
                     <td>
                       {diagnostic.picture ? (
                         <div>
@@ -345,6 +355,7 @@ export const UserDiagnostics = () => {
                         <Button color="success" size="sm" onClick={() => toggleStatisticsModal(diagnostic.probabilities)}>
                           <FontAwesomeIcon icon="eye" /> <span className="d-none d-md-inline">Statistics</span>
                         </Button>
+
                         <Button tag={Link} to={`/diagnostic/${diagnostic.id}`} color="info" size="sm" data-cy="entityDetailsButton">
                           <FontAwesomeIcon icon="eye" />{' '}
                           <span className="d-none d-md-inline">
@@ -420,7 +431,7 @@ export const UserDiagnostics = () => {
             </Typography>
             <br />
             <Button
-              style={buttonStyle}
+              // style={buttonStyle}
               onClick={() => {
                 // Handle any additional logic here
                 navigate('/consultation');

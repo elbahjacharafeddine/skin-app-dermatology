@@ -2,7 +2,9 @@ package com.ensaj.web.rest;
 
 import com.ensaj.domain.Consultation;
 import com.ensaj.domain.Diagnostic;
+import com.ensaj.domain.Maladie;
 import com.ensaj.repository.DiagnosticRepository;
+import com.ensaj.repository.MaladieRepository;
 import com.ensaj.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -10,7 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import jdk.jshell.Diag;
+//import jdk.jshell.Diag;
+
+//import jdk.jshell.Diag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

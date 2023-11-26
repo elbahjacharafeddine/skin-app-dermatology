@@ -22,6 +22,11 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import axios from 'axios';
 
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Bar } from 'react-chartjs-2';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+
 const style = {
   position: 'absolute' as 'absolute',
   top: '50%',
@@ -34,13 +39,34 @@ const style = {
   p: 4,
   borderRadius: 8,
   display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+};
+const chartstyle = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 800,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+  borderRadius: 8,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+};
+
+const buttonStyle = {
+  marginTop: 'auto',
   flexDirection: 'column', // Display children in a column
   alignItems: 'center', // Center items horizontally
 };
 
-const buttonStyle = {
-  marginTop: 'auto', // Push the button to the bottom
-};
+// const buttonStyle = {
+//   marginTop: 'auto', // Push the button to the bottom
+// };
 
 export const UserDiagnostics = () => {
   const dispatch = useAppDispatch();
@@ -60,6 +86,33 @@ export const UserDiagnostics = () => {
   const searchParams = new URLSearchParams(pageLocation.search);
   const consultationId = sessionStorage.getItem('consultation_id');
   const patientName = sessionStorage.getItem('patientName');
+  const [statisticsData, setStatisticsData] = useState<{
+    labels: string[];
+    datasets: {
+      label: string;
+      data: number[];
+      backgroundColor: string[];
+      borderWidth: number;
+    }[];
+  }>({
+    labels: ['akiec', 'bcc', 'bkl', 'df', 'mel', 'nv', 'vasc'],
+    datasets: [
+      {
+        label: 'Probabilities',
+        data: [],
+        backgroundColor: [
+          'rgb(255, 99, 132)',
+          'rgb(54, 162, 235)',
+          'rgb(255, 205, 86)',
+          'rgb(75, 192, 192)',
+          'rgb(153, 102, 255)',
+          'rgb(255, 159, 64)',
+          'rgb(201, 203, 207)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  });
 
   const [data, setData] = useState([]);
   const getAllEntities = () => {
@@ -132,6 +185,66 @@ export const UserDiagnostics = () => {
       };
     }
   }, [data]);
+
+  // console.log('data16', data[16]?.maladies[0].fullName);
+
+  const [isStatisticsModalOpen, setIsStatisticsModalOpen] = useState(false);
+
+  const toggleStatisticsModal = probabilities => {
+    const circularReferenceReplacer = () => {
+      const seen = new WeakSet();
+      return (key, value) => {
+        if (typeof value === 'object' && value !== null) {
+          if (seen.has(value)) {
+            return;
+          }
+          seen.add(value);
+        }
+        return value;
+      };
+    };
+
+    const jsonString = JSON.stringify(probabilities, circularReferenceReplacer());
+    sessionStorage.setItem('statisticsData', jsonString);
+    setIsStatisticsModalOpen(!isStatisticsModalOpen);
+  };
+
+  const getSessionStorageData = () => {
+    const storedData = sessionStorage.getItem('statisticsData');
+    try {
+      return storedData ? JSON.parse(storedData.trim()) : [];
+    } catch (error) {
+      console.error('Error parsing JSON from sessionStorage:', error);
+
+      return [];
+    }
+  };
+  console.log('getSessionStorageData', getSessionStorageData());
+
+  useEffect(() => {
+    const originalData = getSessionStorageData();
+    const convertedData = Array.isArray(originalData) ? originalData.map(value => Number(value.toFixed(2))) : [];
+
+    setStatisticsData({
+      labels: ['akiec', 'bcc', 'bkl', 'df', 'mel', 'nv', 'vasc'],
+      datasets: [
+        {
+          label: 'Probabilities',
+          data: convertedData,
+          backgroundColor: [
+            'rgb(255, 99, 132)',
+            'rgb(54, 162, 235)',
+            'rgb(255, 205, 86)',
+            'rgb(75, 192, 192)',
+            'rgb(153, 102, 255)',
+            'rgb(255, 159, 64)',
+            'rgb(201, 203, 207)',
+          ],
+          borderWidth: 1,
+        },
+      ],
+    });
+  }, [isStatisticsModalOpen]);
 
   if (consultationId != undefined && consultationId != null) {
     return (
@@ -206,7 +319,9 @@ export const UserDiagnostics = () => {
                         <TextFormat type="date" value={diagnostic.dateDiagnostic} format={APP_DATE_FORMAT} />
                       ) : null}
                     </td>
-                    <td>-</td>
+
+                    <td>{diagnostic.maladies[0].fullName}</td>
+
                     <td>
                       {diagnostic.picture ? (
                         <div>
@@ -237,6 +352,10 @@ export const UserDiagnostics = () => {
                   </td> */}
                     <td className="text-end">
                       <div className="btn-group flex-btn-group-container">
+                        <Button color="success" size="sm" onClick={() => toggleStatisticsModal(diagnostic.probabilities)}>
+                          <FontAwesomeIcon icon="eye" /> <span className="d-none d-md-inline">Statistics</span>
+                        </Button>
+
                         <Button tag={Link} to={`/diagnostic/${diagnostic.id}`} color="info" size="sm" data-cy="entityDetailsButton">
                           <FontAwesomeIcon icon="eye" />{' '}
                           <span className="d-none d-md-inline">
@@ -274,6 +393,20 @@ export const UserDiagnostics = () => {
             )
           )}
         </div>
+        <Modal
+          open={isStatisticsModalOpen}
+          onClose={toggleStatisticsModal}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={chartstyle}>
+            <Typography id="modal-modal-title" variant="h6" component="h2" style={{ background: 'yellow', textAlign: 'center' }}>
+              Statistics
+            </Typography>
+
+            <Bar data={statisticsData} />
+          </Box>
+        </Modal>
       </div>
     );
   } else {
@@ -298,7 +431,7 @@ export const UserDiagnostics = () => {
             </Typography>
             <br />
             <Button
-              style={buttonStyle}
+              // style={buttonStyle}
               onClick={() => {
                 // Handle any additional logic here
                 navigate('/consultation');

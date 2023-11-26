@@ -3,10 +3,14 @@ package com.ensaj.web.rest;
 import static com.ensaj.security.SecurityUtils.AUTHORITIES_KEY;
 import static com.ensaj.security.SecurityUtils.JWT_ALGORITHM;
 
+import com.ensaj.config.Constants;
+import com.ensaj.service.UserService;
+import com.ensaj.service.dto.AdminUserDTO;
 import com.ensaj.web.rest.vm.LoginVM;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
@@ -26,6 +30,7 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.web.bind.annotation.*;
+import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * Controller to authenticate users.
@@ -44,11 +49,18 @@ public class AuthenticateController {
     @Value("${jhipster.security.authentication.jwt.token-validity-in-seconds-for-remember-me:0}")
     private long tokenValidityInSecondsForRememberMe;
 
+    UserService userService;
+
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    public AuthenticateController(JwtEncoder jwtEncoder, AuthenticationManagerBuilder authenticationManagerBuilder) {
+    public AuthenticateController(
+        JwtEncoder jwtEncoder,
+        AuthenticationManagerBuilder authenticationManagerBuilder,
+        UserService userService
+    ) {
         this.jwtEncoder = jwtEncoder;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
+        this.userService = userService;
     }
 
     @PostMapping("/authenticate")
@@ -120,5 +132,11 @@ public class AuthenticateController {
         void setIdToken(String idToken) {
             this.idToken = idToken;
         }
+    }
+
+    @GetMapping("/get/user/{login}")
+    public ResponseEntity<AdminUserDTO> getUserByLogin(@PathVariable @Pattern(regexp = Constants.LOGIN_REGEX) String login) {
+        log.debug("REST request to get User : {}", login);
+        return ResponseUtil.wrapOrNotFound(userService.getUserWithAuthoritiesByLogin(login).map(AdminUserDTO::new));
     }
 }

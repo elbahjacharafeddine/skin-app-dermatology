@@ -6,6 +6,7 @@ import com.ensaj.domain.Stade;
 import com.ensaj.repository.ImageStadeRepository;
 import com.ensaj.repository.MaladieRepository;
 import com.ensaj.repository.StadeRepository;
+import com.ensaj.service.dto.MaladieDTO;
 import com.ensaj.service.dto.StadeMaladie;
 import com.ensaj.service.dto.StadeMaladieImage;
 import com.ensaj.web.rest.errors.BadRequestAlertException;
@@ -242,5 +243,14 @@ public class MaladieResource {
         stadeMaladieImage.setMaladie(maladie.get());
         stadeMaladieImage.setStades(new ArrayList<>(maladie.get().getStades()));
         return ResponseUtil.wrapOrNotFound(Optional.of(stadeMaladieImage));
+    }
+
+    @GetMapping("/maladie/name/{abbr}")
+    public ResponseEntity<MaladieDTO> getMaladieByAbbr(@PathVariable String abbr) {
+        log.debug("REST request to get Maladie : {}", abbr);
+        Optional<Maladie> maladie = maladieRepository.findOneByAbbr(abbr);
+        MaladieDTO maladieDTO = new MaladieDTO();
+        maladieDTO.setMaladie(maladie.get());
+        return ResponseUtil.wrapOrNotFound(Optional.of(maladieDTO));
     }
 }

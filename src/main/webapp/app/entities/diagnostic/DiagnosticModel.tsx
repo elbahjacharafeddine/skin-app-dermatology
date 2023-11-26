@@ -14,6 +14,7 @@ import { IConsultation } from 'app/shared/model/consultation.model';
 import { getEntities as getConsultations } from 'app/entities/consultation/consultation.reducer';
 import { IDiagnostic } from 'app/shared/model/diagnostic.model';
 import { getEntity, updateEntity, createEntity, reset } from './diagnostic.reducer';
+import axios from 'axios';
 interface DiagnosticModelProps {
   isOpen: boolean;
   toggle: () => void;
@@ -44,6 +45,9 @@ const DiagnosticModel: React.FC<DiagnosticModelProps> = ({ isOpen, toggle, isNew
   const loading = useAppSelector(state => state.diagnostic.loading);
   const updating = useAppSelector(state => state.diagnostic.updating);
   const updateSuccess = useAppSelector(state => state.diagnostic.updateSuccess);
+
+  const [myImage, setMyImage] = useState(null);
+  const [formData, setFormData] = useState(new FormData());
 
   // const handleClose = () => {
   //   navigate('/diagnostic');
@@ -94,33 +98,87 @@ const DiagnosticModel: React.FC<DiagnosticModelProps> = ({ isOpen, toggle, isNew
   };
 
   const handleRemoveSelectedSymptoms = () => {
+    setSelectedSymptoms([]);
+  };
+
+  const handleFileChange = event => {
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append('image', file);
+    setFormData(formData);
+  };
+
+  const saveEntity = async values => {
+    try {
+      const response = await axios.post('http://localhost:5000/disease/predict', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const getMaladieName = await axios.get(`/api/maladies/maladie/name/${response.data.predicted_disease}`);
+
+      console.log(getMaladieName.data.maladie);
+
+      const maladie = {
+        id: getMaladieName.data.maladie.id,
+        fullName: getMaladieName.data.maladie.fullName,
+        abbr: getMaladieName.data.maladie.abbr,
+        stades: getMaladieName.data.maladie.stades,
+      };
+      const listeMaladies = [];
+      listeMaladies[0] = maladie;
+
+      console.log('Probability:', response.data.probability);
+      console.log('Values', values);
+
+      const entity = {
+        ...diagnosticEntity,
+        ...values,
+        maladies: listeMaladies,
+        probability: response.data.probability,
+        probabilities: response.data.probabilities,
+        consultations: consultations.find(it => it.id.toString() === values.consultations.toString()),
+      };
+
+      if (isNew) {
+        dispatch(createEntity(entity));
+      } else {
+        dispatch(updateEntity(entity));
+      }
+      window.location.reload();
+    } catch (error) {
+      console.error('Error in API request:', error);
+    }
+
     // Remove selected symptoms
     setSelectedSymptoms([]);
   };
 
-  const saveEntity = values => {
-    values.dateDiagnostic = convertDateTimeToServer(values.dateDiagnostic);
-    values.description = '';
-    values.prescription = '';
-    values.probability = '';
+  // const saveEntity = values => {
+  //   values.dateDiagnostic = convertDateTimeToServer(values.dateDiagnostic);
+  //   values.description = '';
+  //   values.prescription = '';
+  //   values.probability = '';
 
-    // if (values.probability !== undefined && typeof values.probability !== 'number') {
-    //   values.probability = Number(values.probability);
-    // }
+  //   // if (values.probability !== undefined && typeof values.probability !== 'number') {
+  //   //   values.probability = Number(values.probability);
+  //   // }
 
-    const entity = {
-      ...diagnosticEntity,
-      ...values,
-      consultations: consultations.find(it => it.id.toString() === values.consultations.toString()),
-    };
+  //   const entity = {
+  //     ...diagnosticEntity,
+  //     ...values,
+  //     consultations: consultations.find(it => it.id.toString() === values.consultations.toString()),
+  //   };
 
-    if (isNew) {
-      dispatch(createEntity(entity));
-    } else {
-      dispatch(updateEntity(entity));
-    }
-    window.location.reload();
-  };
+  //   if (isNew) {
+  //     dispatch(createEntity(entity));
+  //   } else {
+  //     dispatch(updateEntity(entity));
+  //   }
+  //   window.location.reload();
+
+  // };
 
   const defaultValues = () =>
     isNew
@@ -214,6 +272,16 @@ const DiagnosticModel: React.FC<DiagnosticModelProps> = ({ isOpen, toggle, isNew
                 </Button>
               </div>
 
+              {/* <ValidatedBlobField
+                label={translate('assistanteDermatologueApp.diagnostic.picture')}
+                id="diagnostic-picture"
+                name="picture"
+                data-cy="picture"
+                isImage
+                accept="image/*"
+              /> */}
+              {/* <input type="file" name="picture" onChange={handleFileChange} /> */}
+
               <ValidatedBlobField
                 label={translate('assistanteDermatologueApp.diagnostic.picture')}
                 id="diagnostic-picture"
@@ -221,13 +289,19 @@ const DiagnosticModel: React.FC<DiagnosticModelProps> = ({ isOpen, toggle, isNew
                 data-cy="picture"
                 isImage
                 accept="image/*"
+                onChange={e => {
+                  handleFileChange(e); // Your custom file change logic
+                  // Additional logic related to ValidatedBlobField if needed
+                }}
               />
+
               <ValidatedField
                 label={translate('assistanteDermatologueApp.diagnostic.description')}
                 id="diagnostic-description"
                 name="description"
                 data-cy="description"
                 type="text"
+                hidden={true}
               />
               <ValidatedField
                 label={translate('assistanteDermatologueApp.diagnostic.prescription')}
@@ -235,6 +309,7 @@ const DiagnosticModel: React.FC<DiagnosticModelProps> = ({ isOpen, toggle, isNew
                 name="prescription"
                 data-cy="prescription"
                 type="text"
+                hidden={true}
               />
               <ValidatedField
                 label={translate('assistanteDermatologueApp.diagnostic.probability')}
@@ -242,6 +317,7 @@ const DiagnosticModel: React.FC<DiagnosticModelProps> = ({ isOpen, toggle, isNew
                 name="probability"
                 data-cy="probability"
                 type="text"
+                hidden={true}
               />
               <ValidatedField
                 id="diagnostic-consultations"

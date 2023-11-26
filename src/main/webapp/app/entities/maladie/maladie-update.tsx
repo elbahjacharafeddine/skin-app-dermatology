@@ -26,7 +26,7 @@ export const MaladieUpdate = () => {
   const loading = useAppSelector(state => state.maladie.loading);
   const updating = useAppSelector(state => state.maladie.updating);
   const updateSuccess = useAppSelector(state => state.maladie.updateSuccess);
-
+  //
   const handleClose = () => {
     navigate('/maladie');
   };

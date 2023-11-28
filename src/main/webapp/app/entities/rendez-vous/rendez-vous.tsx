@@ -98,7 +98,12 @@ export const RendezVous = () => {
           {/*  <FontAwesomeIcon icon="sync" spin={loading} />{' '}*/}
           {/*  <Translate contentKey="assistanteDermatologueApp.rendezVous.home.refreshListLabel">Refresh List</Translate>*/}
           {/*</Button>*/}
-          <Link to="/rendez-vous/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
+          <Link
+            to="/rendez-vous/newRendezVous"
+            className="btn btn-primary jh-create-entity"
+            id="jh-create-entity"
+            data-cy="entityCreateButton"
+          >
             <FontAwesomeIcon icon="plus" />
             &nbsp; Create new appointment
           </Link>
@@ -145,7 +150,10 @@ export const RendezVous = () => {
                   <td>{rendezVous.dateFin ? new Date(rendezVous.dateFin).toLocaleDateString() : null}</td>
                   <td>
                     {rendezVous.dateFin
-                      ? new Date(rendezVous.dateDebut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                      ? new Date(new Date(rendezVous.dateDebut).getTime() - 60 * 60 * 1000).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })
                       : null}
                   </td>
 

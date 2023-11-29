@@ -237,4 +237,27 @@ public class PatientResource {
         userRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
     }
+
+    @PutMapping("/update/{id}")
+    public List<Patient> updatePatient(@RequestBody Patient p) {
+        System.out.println(p.getAdress());
+        System.out.println(p.getUser().getEmail());
+        System.out.println(p.getId());
+        Optional<Patient> patient = patientRepository.findById(p.getId());
+        if (patient.isPresent()) {
+            Patient patientFounded = patient.get();
+            patientFounded.setTelephone(p.getTelephone());
+            patientFounded.setAdress(p.getAdress());
+            patientFounded.setGenre(p.getGenre());
+            patientFounded.setBirthdate(p.getBirthdate());
+            Optional<User> user = Optional.ofNullable(patientFounded.getUser());
+
+            user.get().setEmail(p.getUser().getEmail());
+            user.get().setLastName(p.getUser().getLastName());
+            user.get().setFirstName(p.getUser().getFirstName());
+            patientRepository.save(patientFounded);
+            userRepository.save(user.get());
+        }
+        return patientRepository.findAll();
+    }
 }

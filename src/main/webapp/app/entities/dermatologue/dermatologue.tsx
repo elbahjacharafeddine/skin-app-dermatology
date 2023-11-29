@@ -15,7 +15,123 @@ import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-responsive-dt/js/responsive.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.css';
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
+
+import Avatar from '@mui/material/Avatar';
+
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import TextField from '@mui/material/TextField';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import axios from 'axios';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 500,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
 export const Dermatologue = () => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
+  const [codeEmp, setCodeEmpl] = useState('');
+  const [gender, setGender] = useState('');
+  const [dateToModal, setDate] = useState('');
+  const [visible, setVisible] = useState(false);
+  const [isupdate, setUpdate] = useState(false);
+  const [id, setId] = useState(1);
+  const handleClose = () => {
+    setVisible(false);
+    setUpdate(false);
+  };
+
+  const extractBirthdate = date => {
+    var birthDate = new Date(date);
+    var year = birthDate.getFullYear();
+    var month = birthDate.getMonth() + 1;
+    var day = birthDate.getDate();
+    return `${year}-${month}-${day}`;
+  };
+  const viewDermatologue = id => {
+    setVisible(true);
+    console.log(id + ' dermatologue id');
+    const element = dermatologueList.find(e => e.id === id);
+    if (element) {
+      console.log(element);
+      setFirstName(element.user.firstName);
+      setLastName(element.user.lastName);
+      setEmail(element.user.email);
+      setDate(extractBirthdate(element.birthdate));
+      setPhone(element.telephone);
+      setGender(element.genre);
+      setCodeEmpl(element.codeEmp);
+    } else {
+      console.log('error');
+    }
+  };
+
+  const editDermatologue = id => {
+    setVisible(true);
+    setUpdate(true);
+    const dermatologue = dermatologueList.find(e => e.id === id);
+    console.log(dermatologue);
+    if (dermatologue) {
+      console.log(dermatologue);
+      setFirstName(dermatologue.user.firstName);
+      setLastName(dermatologue.user.lastName);
+      setEmail(dermatologue.user.email);
+      setDate(extractBirthdate(dermatologue.birthdate));
+      setPhone(dermatologue.telephone);
+      setGender(dermatologue.genre);
+      setCodeEmpl(dermatologue.codeEmp);
+      setId(id);
+    } else {
+      console.log('patient not found');
+    }
+  };
+
+  const dataJson = {
+    id: id,
+    codeEmp: codeEmp,
+    genre: gender,
+    telephone: phone,
+    user: {
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+    },
+  };
+
+  const sendUpdate = () => {
+    axios
+      .put('/api/dermatologues/update/' + id, dataJson, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${sessionStorage.getItem('jhi-authenticationToken')}`,
+        },
+      })
+      .then(response => {
+        console.log(response.data);
+        getAllEntities();
+        setVisible(false);
+        setUpdate(false);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+
   const dispatch = useAppDispatch();
 
   const pageLocation = useLocation();
@@ -125,13 +241,25 @@ export const Dermatologue = () => {
                   <td>{dermatologue.user ? dermatologue.user.firstName + ' ' + dermatologue.user.lastName : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
-                      <Button tag={Link} to={`/dermatologue/${dermatologue.id}`} color="info" size="sm" data-cy="entityDetailsButton">
+                      <Button
+                        onClick={() => viewDermatologue(dermatologue.id)}
+                        // tag={Link} to={`/dermatologue/${dermatologue.id}`}
+                        color="info"
+                        size="sm"
+                        data-cy="entityDetailsButton"
+                      >
                         <FontAwesomeIcon icon="eye" />{' '}
                         <span className="d-none d-md-inline">
                           <Translate contentKey="entity.action.view">View</Translate>
                         </span>
                       </Button>
-                      <Button tag={Link} to={`/dermatologue/${dermatologue.id}/edit`} color="primary" size="sm" data-cy="entityEditButton">
+                      <Button
+                        onClick={() => editDermatologue(dermatologue.id)}
+                        // tag={Link} to={`/dermatologue/${dermatologue.id}/edit`}
+                        color="primary"
+                        size="sm"
+                        data-cy="entityEditButton"
+                      >
                         <FontAwesomeIcon icon="pencil-alt" />{' '}
                         <span className="d-none d-md-inline">
                           <Translate contentKey="entity.action.edit">Edit</Translate>
@@ -166,6 +294,121 @@ export const Dermatologue = () => {
           )
         )}
       </div>
+
+      <Modal open={visible} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+        <Box sx={style}>
+          <div className="card card-responsive">
+            <div className="card-header">Dermatologist data</div>
+            <div className="row">
+              <div className="col-2">
+                <Avatar
+                  className="m-1"
+                  alt="User Image"
+                  src="https://cdn-icons-png.flaticon.com/512/387/387561.png"
+                  sx={{ width: 100, height: 100 }}
+                />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-5">
+                <TextField
+                  aria-readonly={true}
+                  className="m-2"
+                  label="First Name"
+                  variant="outlined"
+                  fullWidth
+                  value={firstName}
+                  {...(isupdate && { onChange: e => setFirstName(e.target.value) })}
+                />
+              </div>
+
+              <div className="col-6">
+                <TextField
+                  className="m-2"
+                  label="Last Name"
+                  variant="outlined"
+                  fullWidth
+                  value={lastName}
+                  {...(isupdate && { onChange: e => setLastName(e.target.value) })}
+                />
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-5">
+                <TextField
+                  className="m-2"
+                  label="Phone"
+                  variant="outlined"
+                  fullWidth
+                  value={phone}
+                  {...(isupdate && { onChange: e => setPhone(e.target.value) })}
+                />
+              </div>
+
+              <div className="col-6">
+                <TextField
+                  className="m-2"
+                  label="Email"
+                  variant="outlined"
+                  fullWidth
+                  value={email}
+                  {...(isupdate && { onChange: e => setEmail(e.target.value) })}
+                />
+              </div>
+            </div>
+
+            <div className="row">
+              {!isupdate && (
+                <div className="col-5">
+                  <TextField className="m-2" label="Gender" variant="outlined" fullWidth value={gender} />
+                </div>
+              )}
+              {isupdate && (
+                <div className="col-5 mt-2" style={{ marginLeft: '10px' }}>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Gender</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={gender}
+                      label="Gender"
+                      onChange={e => {
+                        setGender(e.target.value);
+                      }}
+                    >
+                      <MenuItem value="male" selected={gender === 'male'}>
+                        Male
+                      </MenuItem>
+                      <MenuItem value="female" selected={gender === 'female'}>
+                        Female
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+              )}
+
+              <div className="col-6">
+                <TextField
+                  className="m-2"
+                  label="code Employee"
+                  variant="outlined"
+                  fullWidth
+                  value={codeEmp}
+                  {...(isupdate && { onChange: e => setCodeEmpl(e.target.value) })}
+                />
+              </div>
+            </div>
+            {isupdate && (
+              <div className="d-flex justufy-content-end">
+                <button className="m-2 btn btn-primary" onClick={sendUpdate}>
+                  Update
+                </button>
+              </div>
+            )}
+          </div>
+        </Box>
+      </Modal>
     </div>
   );
 };

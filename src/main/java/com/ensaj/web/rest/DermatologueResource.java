@@ -1,6 +1,7 @@
 package com.ensaj.web.rest;
 
 import com.ensaj.domain.Dermatologue;
+import com.ensaj.domain.Patient;
 import com.ensaj.domain.RendezVous;
 import com.ensaj.domain.User;
 import com.ensaj.repository.DermatologueRepository;
@@ -345,5 +346,23 @@ public class DermatologueResource {
         dermatologueRepository.deleteById(id);
         userRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
+    }
+
+    @PutMapping("/dermatologues/update/{id}")
+    public List<Dermatologue> updateDermatologue(@RequestBody Dermatologue p) {
+        Optional<Dermatologue> dermatologue = dermatologueRepository.findById(p.getId());
+        if (dermatologue.isPresent()) {
+            Dermatologue dermatologueFounded = dermatologue.get();
+            dermatologueFounded.setTelephone(p.getTelephone());
+            dermatologueFounded.setGenre(p.getGenre());
+            dermatologueFounded.setCodeEmp(p.getCodeEmp());
+            Optional<User> user = userRepository.findById(dermatologue.get().getId());
+            user.get().setEmail(p.getUser().getEmail());
+            user.get().setLastName(p.getUser().getLastName());
+            user.get().setFirstName(p.getUser().getFirstName());
+            dermatologueRepository.save(dermatologueFounded);
+            userRepository.save(user.get());
+        }
+        return dermatologueRepository.findAll();
     }
 }

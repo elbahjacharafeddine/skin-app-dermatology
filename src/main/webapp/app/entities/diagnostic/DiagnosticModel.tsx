@@ -138,6 +138,7 @@ const DiagnosticModel: React.FC<DiagnosticModelProps> = ({ isOpen, toggle, isNew
         maladies: listeMaladies,
         probability: response.data.probability,
         probabilities: response.data.probabilities,
+        symptomps: selectedSymptoms,
         consultations: consultations.find(it => it.id.toString() === values.consultations.toString()),
       };
 

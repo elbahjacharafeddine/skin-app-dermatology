@@ -21,7 +21,12 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import axios from 'axios';
-
+import { styled } from '@mui/material/styles';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+// import Typography from '@mui/material/Typography';
+import ButtonBase from '@mui/material/ButtonBase';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 
@@ -86,6 +91,20 @@ export const UserDiagnostics = () => {
   const searchParams = new URLSearchParams(pageLocation.search);
   const consultationId = sessionStorage.getItem('consultation_id');
   const patientName = sessionStorage.getItem('patientName');
+  // const [diagnosticInfos,setDiagnosticInfos]=useState();
+  const [diagnosticInfos, setDiagnosticInfos] = useState<{
+    description: string;
+    maladies: {
+      fullName: string;
+      abbr: string;
+    };
+    probability: string;
+    picture: string;
+    pictureContentType: string;
+    prescription: string;
+    symptoms: string[];
+  } | null>(null);
+
   const [statisticsData, setStatisticsData] = useState<{
     labels: string[];
     datasets: {
@@ -189,8 +208,16 @@ export const UserDiagnostics = () => {
   // console.log('data16', data[16]?.maladies[0].fullName);
 
   const [isStatisticsModalOpen, setIsStatisticsModalOpen] = useState(false);
+  const [isValidateModalOpen, setIsValidateModalOpen] = useState(false);
+  useEffect(() => {
+    const storedDiagnostic = JSON.parse(sessionStorage.getItem('diagnostic'));
+    if (storedDiagnostic) {
+      console.log('Diagnostic Information:', storedDiagnostic);
+    }
+    setDiagnosticInfos(storedDiagnostic);
+  }, [isStatisticsModalOpen]);
 
-  const toggleStatisticsModal = probabilities => {
+  const toggleStatisticsModal = (probabilities, diagnostic) => {
     const circularReferenceReplacer = () => {
       const seen = new WeakSet();
       return (key, value) => {
@@ -206,7 +233,28 @@ export const UserDiagnostics = () => {
 
     const jsonString = JSON.stringify(probabilities, circularReferenceReplacer());
     sessionStorage.setItem('statisticsData', jsonString);
+    const jsonStringDiagnostic = JSON.stringify(diagnostic, circularReferenceReplacer());
+    sessionStorage.setItem('diagnostic', jsonStringDiagnostic);
     setIsStatisticsModalOpen(!isStatisticsModalOpen);
+  };
+
+  const toggleValidateModal = diagnostic => {
+    const circularReferenceReplacer = () => {
+      const seen = new WeakSet();
+      return (key, value) => {
+        if (typeof value === 'object' && value !== null) {
+          if (seen.has(value)) {
+            return;
+          }
+          seen.add(value);
+        }
+        return value;
+      };
+    };
+
+    const jsonStringDiagnostic = JSON.stringify(diagnostic, circularReferenceReplacer());
+    // sessionStorage.setItem('Mydiagnostic', jsonStringDiagnostic);
+    setIsValidateModalOpen(!isValidateModalOpen);
   };
 
   const getSessionStorageData = () => {
@@ -245,6 +293,12 @@ export const UserDiagnostics = () => {
       ],
     });
   }, [isStatisticsModalOpen]);
+  const Img = styled('img')({
+    margin: 'auto',
+    display: 'block',
+    maxWidth: '100%',
+    maxHeight: '100%',
+  });
 
   if (consultationId != undefined && consultationId != null) {
     return (
@@ -352,7 +406,7 @@ export const UserDiagnostics = () => {
                   </td> */}
                     <td className="text-end">
                       <div className="btn-group flex-btn-group-container">
-                        <Button color="success" size="sm" onClick={() => toggleStatisticsModal(diagnostic.probabilities)}>
+                        <Button color="success" size="sm" onClick={() => toggleStatisticsModal(diagnostic.probabilities, diagnostic)}>
                           <FontAwesomeIcon icon="eye" /> <span className="d-none d-md-inline">Statistics</span>
                         </Button>
 
@@ -367,6 +421,9 @@ export const UserDiagnostics = () => {
                           <span className="d-none d-md-inline">
                             <Translate contentKey="entity.action.edit">Edit</Translate>
                           </span>
+                        </Button>
+                        <Button color="success" size="sm" onClick={() => toggleValidateModal(diagnostic)}>
+                          <FontAwesomeIcon icon="eye" /> <span className="d-none d-md-inline">Validate</span>
                         </Button>
                         <Button
                           onClick={() => (location.href = `/diagnostic/${diagnostic.id}/delete`)}
@@ -405,6 +462,139 @@ export const UserDiagnostics = () => {
             </Typography>
 
             <Bar data={statisticsData} />
+            {diagnosticInfos && (
+              <div>
+                <div style={{ display: 'flex', gap: '16px' }}>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      margin: 'auto',
+                      maxWidth: 500,
+                      flexGrow: 1,
+                      backgroundColor: theme => (theme.palette.mode === 'dark' ? '#1A2027' : '#fff'),
+                    }}
+                  >
+                    <Grid container spacing={2}>
+                      <Grid item>
+                        <ButtonBase sx={{ width: 128, height: 128 }}>
+                          {diagnosticInfos.picture ? (
+                            <div>
+                              {diagnosticInfos.pictureContentType ? (
+                                <a onClick={openFile(diagnosticInfos.pictureContentType, diagnosticInfos.picture)}>
+                                  <img
+                                    src={`data:${diagnosticInfos.pictureContentType};base64,${diagnosticInfos.picture}`}
+                                    style={{ maxHeight: '120px', maxWidth: '120px' }}
+                                  />
+                                  &nbsp;
+                                </a>
+                              ) : null}
+                            </div>
+                          ) : null}
+                        </ButtonBase>
+                      </Grid>
+                      <Grid item xs={12} sm container>
+                        <Grid item xs container direction="column" spacing={2}>
+                          <Grid item xs>
+                            <Typography gutterBottom variant="subtitle1" component="div">
+                              Predicted disease: {diagnosticInfos.maladies?.[0]?.fullName}
+                            </Typography>
+                            <Typography gutterBottom variant="subtitle1" component="div">
+                              Confidence: {diagnosticInfos.probability + ' %'}
+                            </Typography>
+                            <Typography variant="body2" gutterBottom>
+                              Disease Symptoms: {diagnosticInfos.symptoms?.map(symptom => symptom).join(', ')}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              Prescription: {diagnosticInfos.prescription}
+                            </Typography>
+                          </Grid>
+                          {/* <Grid item>
+                        <Typography sx={{ cursor: 'pointer' }} variant="body2">
+                          Remove
+                        </Typography>
+                      </Grid> */}
+                        </Grid>
+                        {/* <Grid item>
+                      <Typography variant="subtitle1" component="div">
+                        $19.00
+                      </Typography>
+                    </Grid> */}
+                      </Grid>
+                    </Grid>
+                  </Paper>
+
+                  <Paper
+                    sx={{
+                      p: 2,
+                      margin: 'auto',
+                      width: 320,
+                      maxWidth: 350,
+                      flexGrow: 2,
+                      backgroundColor: theme => (theme.palette.mode === 'dark' ? '#1A2027' : '#fff'),
+                    }}
+                  >
+                    <Grid container spacing={2}>
+                      <Grid item xs={8} sm container>
+                        <Grid item xs container direction="column" spacing={2}>
+                          <Grid item xs>
+                            <Typography gutterBottom variant="subtitle1" component="div">
+                              Disease Description
+                            </Typography>
+                            <Typography variant="body2" gutterBottom sx={{ whiteSpace: 'pre-line' }}>
+                              <p>{diagnosticInfos.description}</p>
+                            </Typography>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Paper>
+                </div>
+                {/* <p>Diagnostic ID: {diagnosticInfos.picture}</p> */}
+                {/* Add other properties as needed */}
+              </div>
+            )}
+          </Box>
+        </Modal>
+
+        <Modal
+          open={isValidateModalOpen}
+          onClose={toggleValidateModal}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={chartstyle}>
+            <Typography id="modal-modal-title" variant="h6" component="h2" style={{ background: 'yellow', textAlign: 'center' }}>
+              Diagnostic Validation
+            </Typography>
+            {/* <Container className='chat-container' style={{ alignContent: "stretch" }}>
+                        <Row>
+                            <Col>
+                                <div className="form-field">
+                                    <label>SELECT THE CORRECT DISEASE</label>
+                                    <select name="maladie_id" 
+                                        style={{ width: "200px", justifyContent: 'initial', fontSize: '20px', color: 'gray' }} required>
+                                        <option value="">choose</option>
+                                        {/* {diagnostic.maladies.map((maladie, index) => (
+                                            <option key={maladie._id} value={maladie._id}>
+                                                <span>{maladie.nom}</span> ========= <span>{diagnostic.probabilities[index]}%</span>
+                                            </option>
+                                        ))} */}
+            {/* </select>
+                                </div>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <Card>
+                                    <Card.Header>DISEASE DETECTED BY THE ALGORTHM</Card.Header>
+                                    <Card.Body>
+                                        <span>PREDICATED DISEASE : </span> 
+                                        CONFIDENCE 
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        </Row>
+                        </Container> */}
           </Box>
         </Modal>
       </div>

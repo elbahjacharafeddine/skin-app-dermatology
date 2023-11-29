@@ -44,6 +44,9 @@ public class Diagnostic implements Serializable {
     @Field("probabilities")
     private List<Float> probabilities;
 
+    @Field("symptoms")
+    private List<String> symptoms;
+
     @DBRef
     @Field("consultations")
     @JsonIgnoreProperties(value = { "rendezVous", "diagnostics" }, allowSetters = true)
@@ -159,6 +162,22 @@ public class Diagnostic implements Serializable {
     public void setProbabilities(List<Float> probabilities) {
         this.probabilities = probabilities;
     }
+
+    //debut
+    public List<String> getSymptoms() {
+        return this.symptoms;
+    }
+
+    public Diagnostic symptoms(List<String> symptoms) {
+        this.setSymptoms(symptoms);
+        return this;
+    }
+
+    public void setSymptoms(List<String> symptoms) {
+        this.symptoms = symptoms;
+    }
+
+    //fin
 
     public Consultation getConsultations() {
         return this.consultations;

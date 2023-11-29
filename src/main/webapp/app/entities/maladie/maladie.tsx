@@ -96,10 +96,17 @@ export const Maladie = () => {
                   <Translate contentKey="assistanteDermatologueApp.maladie.abbr">Abbr</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('abbr')} />
                 </th>
+
+                {/* <th>
+                  <Translate contentKey="assistanteDermatologueApp.maladie.diagnostics">Diagnostics</Translate>{' '}
+                  <FontAwesomeIcon icon="sort" />
+                </th> */}
+
                 {/*<th>*/}
                 {/*  <Translate contentKey="assistanteDermatologueApp.maladie.diagnostics">Diagnostics</Translate>{' '}*/}
                 {/*  <FontAwesomeIcon icon="sort" />*/}
                 {/*</th>*/}
+
                 <th />
               </tr>
             </thead>
@@ -113,7 +120,11 @@ export const Maladie = () => {
                   {/*</td>*/}
                   <td>{maladie.fullName}</td>
                   <td>{maladie.abbr}</td>
+
+                  {/* <td>{maladie.diagnostics ? <Link to={`/diagnostic/${maladie.diagnostics.id}`}>{maladie.diagnostics.id}</Link> : ''}</td> */}
+
                   {/*<td>{maladie.diagnostics ? <Link to={`/diagnostic/${maladie.diagnostics.id}`}>{maladie.diagnostics.id}</Link> : ''}</td>*/}
+
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       <Button tag={Link} to={`/maladie/${maladie.id}`} color="info" size="sm" data-cy="entityDetailsButton">

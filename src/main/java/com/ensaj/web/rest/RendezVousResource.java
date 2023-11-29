@@ -479,4 +479,30 @@ public class RendezVousResource {
         }
         return data;
     }
+
+    @GetMapping("confirmed/dermatologue/{id}")
+    public List<RendezVous> getAllAppointementConfirmed(@PathVariable String id) {
+        List<RendezVous> rdv = rendezVousRepository.findAll();
+        List<RendezVous> data = new ArrayList<>();
+        for (RendezVous r : rdv) {
+            if (r.getDermatologues().getId().equals(id) && r.getStatut() == true) {
+                Patient p = r.getPatients();
+
+                Optional<User> user = userRepository.findById(p.getUser().getId());
+                if (user.isPresent()) {
+                    PatientUserDTO patientUserDTO = new PatientUserDTO();
+                    ManagedUserVM managedUserVM = new ManagedUserVM();
+                    managedUserVM.setEmail(user.get().getEmail());
+                    managedUserVM.setFirstName(user.get().getFirstName());
+                    managedUserVM.setLastName(user.get().getLastName());
+
+                    //                    p.setUser(user.get());
+                    patientUserDTO.setPatient(p);
+                    r.setPatientUserDTO(patientUserDTO);
+                    data.add(r);
+                }
+            }
+        }
+        return data;
+    }
 }

@@ -57,6 +57,11 @@ public class Diagnostic implements Serializable {
     @JsonIgnoreProperties(value = { "stades", "diagnostics" }, allowSetters = true)
     private Set<Maladie> maladies = new HashSet<>();
 
+    @DBRef
+    @Field("maladieDetected")
+    @JsonIgnoreProperties(value = { "stades", "diagnostics" }, allowSetters = true)
+    private Set<Maladie> maladiesDetected = new HashSet<>();
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public String getId() {
@@ -219,6 +224,37 @@ public class Diagnostic implements Serializable {
 
     public Diagnostic removeMaladie(Maladie maladie) {
         this.maladies.remove(maladie);
+        maladie.setDiagnostics(null);
+        return this;
+    }
+
+    public Set<Maladie> getMaladiesDetected() {
+        return this.maladiesDetected;
+    }
+
+    public void setMaladiesDetected(Set<Maladie> maladiesDetected) {
+        if (this.maladiesDetected != null) {
+            this.maladiesDetected.forEach(i -> i.setDiagnostics(null));
+        }
+        if (maladiesDetected != null) {
+            maladiesDetected.forEach(i -> i.setDiagnostics(this));
+        }
+        this.maladiesDetected = maladiesDetected;
+    }
+
+    public Diagnostic maladiesDetected(Set<Maladie> maladiesDetected) {
+        this.setMaladiesDetected(maladiesDetected);
+        return this;
+    }
+
+    public Diagnostic addMaladiesDetected(Maladie maladie) {
+        this.maladiesDetected.add(maladie);
+        maladie.setDiagnostics(this);
+        return this;
+    }
+
+    public Diagnostic removeMaladieDetected(Maladie maladie) {
+        this.maladiesDetected.remove(maladie);
         maladie.setDiagnostics(null);
         return this;
     }

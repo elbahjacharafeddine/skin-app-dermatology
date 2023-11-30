@@ -136,6 +136,7 @@ const DiagnosticModel: React.FC<DiagnosticModelProps> = ({ isOpen, toggle, isNew
         ...diagnosticEntity,
         ...values,
         maladies: listeMaladies,
+        maladiesDetected: listeMaladies,
         probability: response.data.probability,
         probabilities: response.data.probabilities,
         symptomps: selectedSymptoms,

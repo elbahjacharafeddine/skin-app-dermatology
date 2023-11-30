@@ -26,12 +26,12 @@ export const DiagnosticDetail = () => {
           <Translate contentKey="assistanteDermatologueApp.diagnostic.detail.title">Diagnostic</Translate>
         </h2>
         <dl className="jh-entity-details">
-          <dt>
+          {/* <dt>
             <span id="id">
               <Translate contentKey="global.field.id">ID</Translate>
             </span>
           </dt>
-          <dd>{diagnosticEntity.id}</dd>
+          <dd>{diagnosticEntity.id}</dd> */}
           <dt>
             <span id="dateDiagnostic">
               <Translate contentKey="assistanteDermatologueApp.diagnostic.dateDiagnostic">Date Diagnostic</Translate>
@@ -82,10 +82,10 @@ export const DiagnosticDetail = () => {
             </span>
           </dt>
           <dd>{diagnosticEntity.probability}</dd>
-          <dt>
+          {/* <dt>
             <Translate contentKey="assistanteDermatologueApp.diagnostic.consultations">Consultations</Translate>
           </dt>
-          <dd>{diagnosticEntity.consultations ? diagnosticEntity.consultations.id : ''}</dd>
+          <dd>{diagnosticEntity.consultations ? diagnosticEntity.consultations.id : ''}</dd> */}
         </dl>
         <Button tag={Link} to="/diagnostic" replace color="info" data-cy="entityDetailsBackButton">
           <FontAwesomeIcon icon="arrow-left" />{' '}

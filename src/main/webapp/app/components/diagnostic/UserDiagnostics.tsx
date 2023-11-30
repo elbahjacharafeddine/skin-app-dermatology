@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, MouseEventHandler } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button, Table } from 'reactstrap';
 import { openFile, byteSize, Translate, TextFormat, getSortState } from 'react-jhipster';
@@ -8,9 +8,9 @@ import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
 import { ASC, DESC, SORT } from 'app/shared/util/pagination.constants';
 import { overrideSortStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-
+import { faChartLine } from '@fortawesome/free-solid-svg-icons';
 import DiagnosticModel from '../../entities/diagnostic/DiagnosticModel';
-import { getEntities } from '../../entities/diagnostic/diagnostic.reducer';
+import { getEntities, partialUpdateEntity } from '../../entities/diagnostic/diagnostic.reducer';
 import $ from 'jquery';
 import 'jquery';
 import 'datatables.net-dt/js/dataTables.dataTables';
@@ -19,6 +19,7 @@ import 'datatables.net-dt/css/jquery.dataTables.css';
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import Modal from '@mui/material/Modal';
 import axios from 'axios';
 import { styled } from '@mui/material/styles';
@@ -63,6 +64,22 @@ const chartstyle = {
   alignItems: 'center',
 };
 
+const validatestyle = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 800,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+  borderRadius: 2,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+};
+
 const buttonStyle = {
   marginTop: 'auto',
   flexDirection: 'column', // Display children in a column
@@ -93,8 +110,13 @@ export const UserDiagnostics = () => {
   const patientName = sessionStorage.getItem('patientName');
   // const [diagnosticInfos,setDiagnosticInfos]=useState();
   const [diagnosticInfos, setDiagnosticInfos] = useState<{
+    id: string;
     description: string;
     maladies: {
+      fullName: string;
+      abbr: string;
+    };
+    maladiesDetected: {
       fullName: string;
       abbr: string;
     };
@@ -102,8 +124,81 @@ export const UserDiagnostics = () => {
     picture: string;
     pictureContentType: string;
     prescription: string;
+    probabilities: string[];
     symptoms: string[];
   } | null>(null);
+
+  // Your function to handle the update
+  // const handleUpdate = (diagnosticInfos): MouseEventHandler<HTMLButtonElement> => () => {
+  //   const maladie = {
+  //     id: diagnosticInfos.maladies?.[0]?.id,
+  //     fullName: diagnosticInfos.maladies?.[0]?.fullName,
+  //     abbr: diagnosticInfos.maladies?.[0]?.abbr,
+  //   };
+  //   const listeMaladies = [];
+  //   listeMaladies[0] = maladie;
+
+  //   // Assuming you have an IDiagnostic object
+  //   const diagnosticToUpdate={
+  //     maladies: listeMaladies, // Replace with the actual ID
+  //     // Other fields you want to update
+  //   };
+  //   dispatch(partialUpdateEntity(diagnosticToUpdate))
+  //     .unwrap()
+  //     .then((response) => {
+  //       // Handle successful update
+  //       console.log('Update successful', response);
+  //       // Optionally, you can dispatch an action to fetch the updated entities
+  //       // dispatch(getEntities({}));
+  //     })
+  //     .catch((error) => {
+  //       // Handle update error
+  //       console.error('Update failed', error);
+  //     });
+  // };
+
+  const [selectedMaladie, setSelectedMaladie] = useState<IMaladie | null>(null);
+
+  interface IMaladie {
+    id: string;
+    fullName: string;
+  }
+
+  // Other state and function definitions...
+
+  const handleUpdate = () => {
+    console.log('this is my selected maladie : ', selectedMaladie);
+    if (selectedMaladie && diagnosticInfos) {
+      // Your existing logic to construct the maladie object...
+
+      const diagnosticToUpdate = {
+        id: diagnosticInfos.id, // Replace with the actual property name of the diagnostic ID
+        maladies: [
+          {
+            id: selectedMaladie.id,
+            fullName: selectedMaladie.fullName,
+          },
+        ],
+      };
+
+      dispatch(partialUpdateEntity(diagnosticToUpdate))
+        .unwrap()
+        .then(response => {
+          // Handle successful update
+          console.log('Update successful', response);
+          // Optionally, you can dispatch an action to fetch the updated entities
+          // dispatch(getEntities({}));
+        })
+        .catch(error => {
+          // Handle update error
+          console.error('Update failed', error);
+        });
+    }
+
+    setIsValidateModalOpen(!isValidateModalOpen);
+    setIsModelOpen(!isModelOpen);
+    window.location.reload();
+  };
 
   const [statisticsData, setStatisticsData] = useState<{
     labels: string[];
@@ -134,6 +229,7 @@ export const UserDiagnostics = () => {
   });
 
   const [data, setData] = useState([]);
+  const [dataMaladies, setDataMaladies] = useState([]);
   const getAllEntities = () => {
     dispatch(
       getEntities({
@@ -217,6 +313,14 @@ export const UserDiagnostics = () => {
     setDiagnosticInfos(storedDiagnostic);
   }, [isStatisticsModalOpen]);
 
+  useEffect(() => {
+    const myDiagnostic = JSON.parse(sessionStorage.getItem('Mydiagnostic'));
+    if (myDiagnostic) {
+      console.log('Diagnostic Information:', myDiagnostic);
+    }
+    setDiagnosticInfos(myDiagnostic);
+  }, [isValidateModalOpen]);
+
   const toggleStatisticsModal = (probabilities, diagnostic) => {
     const circularReferenceReplacer = () => {
       const seen = new WeakSet();
@@ -236,6 +340,19 @@ export const UserDiagnostics = () => {
     const jsonStringDiagnostic = JSON.stringify(diagnostic, circularReferenceReplacer());
     sessionStorage.setItem('diagnostic', jsonStringDiagnostic);
     setIsStatisticsModalOpen(!isStatisticsModalOpen);
+    const keepItem1 = 'user_data';
+    const keepItem2 = 'jhi-authenticationToken';
+    const keepItem3 = 'consultation_id';
+    const keepItem4 = 'patientName';
+    const keepItem5 = 'statisticsData';
+    const keepItem6 = 'diagnostic';
+
+    for (let i = sessionStorage.length - 1; i >= 0; i--) {
+      const key = sessionStorage.key(i);
+      if (key !== keepItem1 && key !== keepItem2 && key !== keepItem3 && key !== keepItem4 && key !== keepItem5 && key !== keepItem6) {
+        sessionStorage.removeItem(key);
+      }
+    }
   };
 
   const toggleValidateModal = diagnostic => {
@@ -252,8 +369,14 @@ export const UserDiagnostics = () => {
       };
     };
 
+    const maladies = axios.get(`/api/maladies`).then(response => {
+      console.log(response.data);
+      setDataMaladies(response.data);
+    });
+    console.log('dataMaladies:', dataMaladies);
+
     const jsonStringDiagnostic = JSON.stringify(diagnostic, circularReferenceReplacer());
-    // sessionStorage.setItem('Mydiagnostic', jsonStringDiagnostic);
+    sessionStorage.setItem('Mydiagnostic', jsonStringDiagnostic);
     setIsValidateModalOpen(!isValidateModalOpen);
   };
 
@@ -268,6 +391,7 @@ export const UserDiagnostics = () => {
     }
   };
   console.log('getSessionStorageData', getSessionStorageData());
+  const diseases = ['akiec', 'bcc', 'bkl', 'df', 'mel', 'nv', 'vasc'];
 
   useEffect(() => {
     const originalData = getSessionStorageData();
@@ -299,6 +423,18 @@ export const UserDiagnostics = () => {
     maxWidth: '100%',
     maxHeight: '100%',
   });
+
+  const handleClose = () => {
+    // Add any additional logic you want when the modal is closed
+    setIsValidateModalOpen(!isValidateModalOpen);
+  };
+
+  // Function to handle the confirm button
+  const handleConfirm = () => {
+    // Add any logic you want when the user confirms the selection
+    // You can access the selected value from your select element here
+    setIsValidateModalOpen(!isValidateModalOpen);
+  };
 
   if (consultationId != undefined && consultationId != null) {
     return (
@@ -374,7 +510,7 @@ export const UserDiagnostics = () => {
                       ) : null}
                     </td>
 
-                    <td>{diagnostic.maladies[0].fullName}</td>
+                    <td>{diagnostic.maladies[0]?.fullName}</td>
 
                     <td>
                       {diagnostic.picture ? (
@@ -407,7 +543,7 @@ export const UserDiagnostics = () => {
                     <td className="text-end">
                       <div className="btn-group flex-btn-group-container">
                         <Button color="success" size="sm" onClick={() => toggleStatisticsModal(diagnostic.probabilities, diagnostic)}>
-                          <FontAwesomeIcon icon="eye" /> <span className="d-none d-md-inline">Statistics</span>
+                          <FontAwesomeIcon icon={faChartLine} /> <span className="d-none d-md-inline">Statistics</span>
                         </Button>
 
                         <Button tag={Link} to={`/diagnostic/${diagnostic.id}`} color="info" size="sm" data-cy="entityDetailsButton">
@@ -423,7 +559,7 @@ export const UserDiagnostics = () => {
                           </span>
                         </Button>
                         <Button color="success" size="sm" onClick={() => toggleValidateModal(diagnostic)}>
-                          <FontAwesomeIcon icon="eye" /> <span className="d-none d-md-inline">Validate</span>
+                          <FontAwesomeIcon icon={faCheck} /> <span className="d-none d-md-inline">Validate</span>
                         </Button>
                         <Button
                           onClick={() => (location.href = `/diagnostic/${diagnostic.id}/delete`)}
@@ -496,7 +632,7 @@ export const UserDiagnostics = () => {
                         <Grid item xs container direction="column" spacing={2}>
                           <Grid item xs>
                             <Typography gutterBottom variant="subtitle1" component="div">
-                              Predicted disease: {diagnosticInfos.maladies?.[0]?.fullName}
+                              Predicted disease: {diagnosticInfos.maladiesDetected?.[0]?.fullName}
                             </Typography>
                             <Typography gutterBottom variant="subtitle1" component="div">
                               Confidence: {diagnosticInfos.probability + ' %'}
@@ -562,39 +698,84 @@ export const UserDiagnostics = () => {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box sx={chartstyle}>
-            <Typography id="modal-modal-title" variant="h6" component="h2" style={{ background: 'yellow', textAlign: 'center' }}>
+          <Box sx={validatestyle}>
+            <Typography id="modal-modal-title" variant="h6" component="h2" style={{ textAlign: 'center' }}>
               Diagnostic Validation
             </Typography>
-            {/* <Container className='chat-container' style={{ alignContent: "stretch" }}>
-                        <Row>
-                            <Col>
-                                <div className="form-field">
-                                    <label>SELECT THE CORRECT DISEASE</label>
-                                    <select name="maladie_id" 
-                                        style={{ width: "200px", justifyContent: 'initial', fontSize: '20px', color: 'gray' }} required>
-                                        <option value="">choose</option>
-                                        {/* {diagnostic.maladies.map((maladie, index) => (
-                                            <option key={maladie._id} value={maladie._id}>
-                                                <span>{maladie.nom}</span> ========= <span>{diagnostic.probabilities[index]}%</span>
-                                            </option>
-                                        ))} */}
-            {/* </select>
-                                </div>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <Card>
-                                    <Card.Header>DISEASE DETECTED BY THE ALGORTHM</Card.Header>
-                                    <Card.Body>
-                                        <span>PREDICATED DISEASE : </span> 
-                                        CONFIDENCE 
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                        </Row>
-                        </Container> */}
+            {/* <Container className='chat-container' style={{ alignContent: "stretch" }}> */}
+            <Row>
+              <Col>
+                {diagnosticInfos && (
+                  <div className="form-field">
+                    <label>SELECT THE CORRECT DISEASE</label>
+                    <select
+                      name="maladie_id"
+                      style={{ width: '200px', justifyContent: 'initial', fontSize: '20px', color: 'gray' }}
+                      required
+                      onChange={e => {
+                        const selectedMaladie = dataMaladies.find(maladie => maladie.id === e.target.value);
+                        setSelectedMaladie(selectedMaladie || null);
+                      }}
+                      value={selectedMaladie?.id || ''}
+                    >
+                      <option value="">choose</option>
+                      {dataMaladies.map(maladie => (
+                        <option key={maladie.id} value={maladie.id}>
+                          <Typography variant="body2" gutterBottom>
+                            <span>{maladie.fullName}</span>
+                          </Typography>
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </Col>
+            </Row>
+            <br></br>
+            <Row>
+              <Col>
+                <Card>
+                  <Card.Header>DISEASE DETECTED BY THE ALGORITHM</Card.Header>
+                  <Card.Body>
+                    {diagnosticInfos && (
+                      <div>
+                        <span>PREDICATED DISEASE : {diagnosticInfos.maladiesDetected?.[0]?.fullName} </span> <br></br>
+                        <span>CONFIDENCE : {diagnosticInfos.probability + ' '}%</span>
+                      </div>
+                    )}
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col>
+                {diagnosticInfos && (
+                  <Card>
+                    <Card.Header>DISEASE DETECTECTION RESULTS GIVEN BY THE ALGORTHM</Card.Header>
+                    <Card.Body>
+                      {diagnosticInfos.probabilities?.map((probability, index) => (
+                        <option key={index} value={probability}>
+                          <Typography variant="body2" gutterBottom>
+                            <span>{diseases[index]}</span> ========= <span>{probability}%</span>
+                          </Typography>
+                        </option>
+                      ))}
+                    </Card.Body>
+                  </Card>
+                )}
+              </Col>
+            </Row>
+            <br></br>
+            <Row>
+              <Col>
+                <Button variant="danger" onClick={handleClose}>
+                  Close
+                </Button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <Button variant="success" onClick={handleUpdate}>
+                  Confirm
+                </Button>
+              </Col>
+            </Row>
+            {/* </Container> */}
           </Box>
         </Modal>
       </div>

@@ -146,6 +146,9 @@ public class DiagnosticResource {
                 if (diagnostic.getProbability() != null) {
                     existingDiagnostic.setProbability(diagnostic.getProbability());
                 }
+                if (diagnostic.getMaladies() != null) {
+                    existingDiagnostic.setMaladies(diagnostic.getMaladies());
+                }
 
                 return existingDiagnostic;
             })

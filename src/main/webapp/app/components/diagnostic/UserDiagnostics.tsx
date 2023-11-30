@@ -374,7 +374,7 @@ export const UserDiagnostics = () => {
                       ) : null}
                     </td>
 
-                    <td>{diagnostic.maladies[0].fullName}</td>
+                    <td>{''}</td>
 
                     <td>
                       {diagnostic.picture ? (
@@ -571,7 +571,7 @@ export const UserDiagnostics = () => {
                             <Col>
                                 <div className="form-field">
                                     <label>SELECT THE CORRECT DISEASE</label>
-                                    <select name="maladie_id" 
+                                    <select name="maladie_id"
                                         style={{ width: "200px", justifyContent: 'initial', fontSize: '20px', color: 'gray' }} required>
                                         <option value="">choose</option>
                                         {/* {diagnostic.maladies.map((maladie, index) => (
@@ -588,8 +588,8 @@ export const UserDiagnostics = () => {
                                 <Card>
                                     <Card.Header>DISEASE DETECTED BY THE ALGORTHM</Card.Header>
                                     <Card.Body>
-                                        <span>PREDICATED DISEASE : </span> 
-                                        CONFIDENCE 
+                                        <span>PREDICATED DISEASE : </span>
+                                        CONFIDENCE
                                     </Card.Body>
                                 </Card>
                             </Col>

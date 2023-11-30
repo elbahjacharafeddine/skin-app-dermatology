@@ -198,8 +198,8 @@ export const Dermatologue = () => {
   };
 
   return (
-    <div className="p-2">
-      <h2 id="dermatologue-heading" data-cy="DermatologueHeading">
+    <div className="p-2 card">
+      <h2 id="dermatologue-heading" data-cy="DermatologueHeading" className="card-header">
         Dermatologists
         <div className="d-flex justify-content-end">
           {/*<Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>*/}
@@ -213,7 +213,7 @@ export const Dermatologue = () => {
           </Link>
         </div>
       </h2>
-      <div className="table-responsive p-3">
+      <div className="card-body p-3">
         {dermatologueList && dermatologueList.length > 0 ? (
           <table className="table table-responsive p-2" id="myTable">
             <thead>
@@ -304,7 +304,7 @@ export const Dermatologue = () => {
                 <Avatar
                   className="m-1"
                   alt="User Image"
-                  src="https://cdn-icons-png.flaticon.com/512/387/387561.png"
+                  src="../../../content/images/user-image/dermatologue.png"
                   sx={{ width: 100, height: 100 }}
                 />
               </div>

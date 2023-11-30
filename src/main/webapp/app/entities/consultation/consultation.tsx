@@ -49,6 +49,7 @@ export const Consultation = () => {
   useEffect(() => {
     if (consultationList.length > 0) {
       const table = $('#myTable').DataTable();
+      table.order([0, 'desc']).draw();
       return () => {
         table.destroy();
       };

@@ -234,4 +234,22 @@ public class SecretaireResource {
         userRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
     }
+
+    @PutMapping("/secretaires/update/{id}")
+    public List<Secretaire> updateDermatologue(@RequestBody Secretaire p) {
+        Optional<Secretaire> secretaire = secretaireRepository.findById(p.getId());
+        if (secretaire.isPresent()) {
+            Secretaire secretaireFounded = secretaire.get();
+            secretaireFounded.setTelephone(p.getTelephone());
+            secretaireFounded.setGenre(p.getGenre());
+            secretaireFounded.setCodeEmp(p.getCodeEmp());
+            Optional<User> user = userRepository.findById(secretaire.get().getId());
+            user.get().setEmail(p.getUser().getEmail());
+            user.get().setLastName(p.getUser().getLastName());
+            user.get().setFirstName(p.getUser().getFirstName());
+            secretaireRepository.save(secretaireFounded);
+            userRepository.save(user.get());
+        }
+        return secretaireRepository.findAll();
+    }
 }

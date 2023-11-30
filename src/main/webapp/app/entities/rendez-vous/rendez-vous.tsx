@@ -50,6 +50,7 @@ export const RendezVous = () => {
   useEffect(() => {
     if (rendezVousList.length > 0) {
       const table = $('#myTable').DataTable();
+      table.order([0, 'desc']).draw();
       return () => {
         table.destroy();
       };
@@ -90,8 +91,8 @@ export const RendezVous = () => {
   };
 
   return (
-    <div className="p-2">
-      <h2 id="rendez-vous-heading" data-cy="RendezVousHeading">
+    <div className="p-2 card">
+      <h2 id="rendez-vous-heading" data-cy="RendezVousHeading" className="card-header">
         Appointments
         <div className="d-flex justify-content-end">
           {/*<Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>*/}
@@ -109,7 +110,7 @@ export const RendezVous = () => {
           </Link>
         </div>
       </h2>
-      <div className="table-responsive">
+      <div className="card-body">
         {rendezVousList && rendezVousList.length > 0 ? (
           <table className="table table-responsive p-3" id="myTable">
             <thead>

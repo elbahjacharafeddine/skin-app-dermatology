@@ -10,6 +10,9 @@ import com.ensaj.service.dto.*;
 import com.ensaj.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -164,7 +167,6 @@ public class ConsultationResource {
         log.debug("REST request to get all Consultations");
 
         List<Consultation> consultationList = consultationRepository.findAll();
-
         return consultationList
             .stream()
             .map(consultation -> {
@@ -199,7 +201,12 @@ public class ConsultationResource {
     public List<ConsultationDTOSimplifie> getAllConsultationsByDermatologueID(@PathVariable(value = "id") final String id) {
         log.debug("REST request to get all Consultations for dermatologist with ID: {}", id);
 
-        List<Consultation> consultationList = consultationRepository.findAll();
+        Instant debutAujourdhui = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant();
+        Instant debutDemain = LocalDate.now().plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant();
+        List<Consultation> consultationList = consultationRepository.findConsultationsForToday(debutAujourdhui, debutDemain);
+        //
+        //        List<Consultation> consultationList = consultationRepository.findAll();
+        System.out.println(consultationList.size() + " est La taille de la liste de consultation pour" + id);
 
         return consultationList
             .stream()

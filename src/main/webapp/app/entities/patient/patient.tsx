@@ -191,8 +191,8 @@ export const Patient = () => {
   };
 
   return (
-    <div className="p-2">
-      <h2 id="patient-heading" data-cy="PatientHeading">
+    <div className="p-2 card">
+      <h2 id="patient-heading" data-cy="PatientHeading" className="card-header">
         <Translate contentKey="assistanteDermatologueApp.patient.home.title">Patients</Translate>
         <div className="d-flex justify-content-end">
           {/*<Button className="me-2" color="info" onClick={handleSyncList} disabled={loading}>*/}
@@ -206,7 +206,7 @@ export const Patient = () => {
           </Link>
         </div>
       </h2>
-      <div className="table-responsive p-3">
+      <div className="card-body p-3 ">
         {patientList && patientList.length > 0 ? (
           <table className="table table-responsive" id="myTable">
             <thead>
@@ -305,7 +305,7 @@ export const Patient = () => {
                 <Avatar
                   className="m-1"
                   alt="User Image"
-                  src="data:image/png;base64,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"
+                  src="../../../content/images/user-image/patient.png"
                   sx={{ width: 100, height: 100 }}
                 />
               </div>

@@ -512,6 +512,8 @@ export const UserDiagnostics = () => {
 
                     <td>{diagnostic.maladies[0]?.fullName}</td>
 
+                    <td>{''}</td>
+
                     <td>
                       {diagnostic.picture ? (
                         <div>
@@ -702,6 +704,7 @@ export const UserDiagnostics = () => {
             <Typography id="modal-modal-title" variant="h6" component="h2" style={{ textAlign: 'center' }}>
               Diagnostic Validation
             </Typography>
+
             {/* <Container className='chat-container' style={{ alignContent: "stretch" }}> */}
             <Row>
               <Col>
@@ -776,6 +779,36 @@ export const UserDiagnostics = () => {
               </Col>
             </Row>
             {/* </Container> */}
+
+            {/* <Container className='chat-container' style={{ alignContent: "stretch" }}>
+                        <Row>
+                            <Col>
+                                <div className="form-field">
+                                    <label>SELECT THE CORRECT DISEASE</label>
+                                    <select name="maladie_id"
+                                        style={{ width: "200px", justifyContent: 'initial', fontSize: '20px', color: 'gray' }} required>
+                                        <option value="">choose</option>
+                                        {/* {diagnostic.maladies.map((maladie, index) => (
+                                            <option key={maladie._id} value={maladie._id}>
+                                                <span>{maladie.nom}</span> ========= <span>{diagnostic.probabilities[index]}%</span>
+                                            </option>
+                                        ))} */}
+            {/* </select>
+                                </div>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <Card>
+                                    <Card.Header>DISEASE DETECTED BY THE ALGORTHM</Card.Header>
+                                    <Card.Body>
+                                        <span>PREDICATED DISEASE : </span>
+                                        CONFIDENCE
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        </Row>
+                        </Container> */}
           </Box>
         </Modal>
       </div>

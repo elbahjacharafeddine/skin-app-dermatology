@@ -55,6 +55,7 @@ export const Consultation = () => {
       };
     }
   }, [consultationList]);
+
   useEffect(() => {
     sortEntities();
   }, [sortState.order, sortState.sort]);

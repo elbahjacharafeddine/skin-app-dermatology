@@ -437,7 +437,7 @@ export const CreateRendezVous = () => {
   }
 
   // Call the async function
-  // fetchData();
+  fetchData();
 
   return (
     <div>

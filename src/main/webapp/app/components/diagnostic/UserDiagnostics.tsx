@@ -53,7 +53,7 @@ const chartstyle = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 800,
+  width: 900,
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
@@ -61,7 +61,9 @@ const chartstyle = {
   borderRadius: 8,
   display: 'flex',
   flexDirection: 'column',
-  alignItems: 'center',
+  // alignItems: 'center',
+  overflowY: 'auto',
+  maxHeight: '90vh',
 };
 
 const validatestyle = {
@@ -511,9 +513,6 @@ export const UserDiagnostics = () => {
                     </td>
 
                     <td>{diagnostic.maladies[0]?.fullName}</td>
-
-                    <td>{''}</td>
-
                     <td>
                       {diagnostic.picture ? (
                         <div>
@@ -594,104 +593,86 @@ export const UserDiagnostics = () => {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box sx={chartstyle}>
-            <Typography id="modal-modal-title" variant="h6" component="h2" style={{ background: 'yellow', textAlign: 'center' }}>
-              Statistics
-            </Typography>
+          <div>
+            <Box sx={chartstyle}>
+              <Typography id="modal-modal-title" variant="h6" component="h2" style={{ textAlign: 'center' }}>
+                Disease Detection Statistics
+              </Typography>
 
-            <Bar data={statisticsData} />
-            {diagnosticInfos && (
-              <div>
-                <div style={{ display: 'flex', gap: '16px' }}>
-                  <Paper
-                    sx={{
-                      p: 2,
-                      margin: 'auto',
-                      maxWidth: 500,
-                      flexGrow: 1,
-                      backgroundColor: theme => (theme.palette.mode === 'dark' ? '#1A2027' : '#fff'),
-                    }}
-                  >
-                    <Grid container spacing={2}>
-                      <Grid item>
-                        <ButtonBase sx={{ width: 128, height: 128 }}>
-                          {diagnosticInfos.picture ? (
-                            <div>
-                              {diagnosticInfos.pictureContentType ? (
-                                <a onClick={openFile(diagnosticInfos.pictureContentType, diagnosticInfos.picture)}>
-                                  <img
-                                    src={`data:${diagnosticInfos.pictureContentType};base64,${diagnosticInfos.picture}`}
-                                    style={{ maxHeight: '120px', maxWidth: '120px' }}
-                                  />
-                                  &nbsp;
-                                </a>
+              <Bar data={statisticsData} />
+              <br></br>
+              <br></br>
+              {diagnosticInfos && (
+                <div>
+                  <Row>
+                    <Col lg={6}>
+                      <Card>
+                        <Card.Header>DEGREE OF CERTAINTY</Card.Header>
+                        <Card.Body>
+                          <span>PREDICATED DISEASE : </span>
+                          {diagnosticInfos.maladiesDetected?.[0]?.fullName} <br />
+                          CONFIDENCE :{diagnosticInfos.probability + ' %'}
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                    <Col lg={6}>
+                      <Card>
+                        <Card.Header>PRESCRIPTION</Card.Header>
+                        <Card.Body>{diagnosticInfos.prescription}</Card.Body>
+                      </Card>
+                    </Col>
+                  </Row>
+                  <Row style={{ marginTop: '10px' }}>
+                    <Col lg={6}>
+                      <Card>
+                        <Card.Header>DISEASE SYMPTOMS</Card.Header>
+                        {/* <Card.Body>
+                              
+                                  Disease Symptoms: {diagnosticInfos.symptoms?.map(symptom => symptom).join(', ')}
+                              
+                                </Card.Body> */}
+                        <Card.Body>
+                          <ul>{diagnosticInfos.symptoms?.map((desc, index) => <li key={index}>{desc}</li>)}</ul>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                    <Col lg={6}>
+                      <Card>
+                        <Card.Header>DISEASE DESCRIPTION</Card.Header>
+                        <Card.Body>{diagnosticInfos.description}</Card.Body>
+                      </Card>
+                    </Col>
+                  </Row>
+                  <Row style={{ marginTop: '10px' }}>
+                    <Col lg={12}>
+                      <Card>
+                        <Card.Header>diagnostic IMAGE</Card.Header>
+                        <Card.Body style={{ justifyContent: 'center' }}>
+                          <center>
+                            <ButtonBase sx={{ width: 328, height: 328 }}>
+                              {diagnosticInfos.picture ? (
+                                <div>
+                                  {diagnosticInfos.pictureContentType ? (
+                                    <a onClick={openFile(diagnosticInfos.pictureContentType, diagnosticInfos.picture)}>
+                                      <img
+                                        src={`data:${diagnosticInfos.pictureContentType};base64,${diagnosticInfos.picture}`}
+                                        style={{ height: '300px', width: '400px', maxHeight: '1020px', maxWidth: '1520px' }}
+                                      />
+                                      &nbsp;
+                                    </a>
+                                  ) : null}
+                                </div>
                               ) : null}
-                            </div>
-                          ) : null}
-                        </ButtonBase>
-                      </Grid>
-                      <Grid item xs={12} sm container>
-                        <Grid item xs container direction="column" spacing={2}>
-                          <Grid item xs>
-                            <Typography gutterBottom variant="subtitle1" component="div">
-                              Predicted disease: {diagnosticInfos.maladiesDetected?.[0]?.fullName}
-                            </Typography>
-                            <Typography gutterBottom variant="subtitle1" component="div">
-                              Confidence: {diagnosticInfos.probability + ' %'}
-                            </Typography>
-                            <Typography variant="body2" gutterBottom>
-                              Disease Symptoms: {diagnosticInfos.symptoms?.map(symptom => symptom).join(', ')}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              Prescription: {diagnosticInfos.prescription}
-                            </Typography>
-                          </Grid>
-                          {/* <Grid item>
-                        <Typography sx={{ cursor: 'pointer' }} variant="body2">
-                          Remove
-                        </Typography>
-                      </Grid> */}
-                        </Grid>
-                        {/* <Grid item>
-                      <Typography variant="subtitle1" component="div">
-                        $19.00
-                      </Typography>
-                    </Grid> */}
-                      </Grid>
-                    </Grid>
-                  </Paper>
-
-                  <Paper
-                    sx={{
-                      p: 2,
-                      margin: 'auto',
-                      width: 320,
-                      maxWidth: 350,
-                      flexGrow: 2,
-                      backgroundColor: theme => (theme.palette.mode === 'dark' ? '#1A2027' : '#fff'),
-                    }}
-                  >
-                    <Grid container spacing={2}>
-                      <Grid item xs={8} sm container>
-                        <Grid item xs container direction="column" spacing={2}>
-                          <Grid item xs>
-                            <Typography gutterBottom variant="subtitle1" component="div">
-                              Disease Description
-                            </Typography>
-                            <Typography variant="body2" gutterBottom sx={{ whiteSpace: 'pre-line' }}>
-                              <p>{diagnosticInfos.description}</p>
-                            </Typography>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </Paper>
+                            </ButtonBase>
+                          </center>
+                        </Card.Body>
+                      </Card>
+                    </Col>
+                  </Row>
                 </div>
-                {/* <p>Diagnostic ID: {diagnosticInfos.picture}</p> */}
-                {/* Add other properties as needed */}
-              </div>
-            )}
-          </Box>
+              )}
+            </Box>
+          </div>
         </Modal>
 
         <Modal

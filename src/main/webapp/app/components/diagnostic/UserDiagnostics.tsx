@@ -380,6 +380,18 @@ export const UserDiagnostics = () => {
     const jsonStringDiagnostic = JSON.stringify(diagnostic, circularReferenceReplacer());
     sessionStorage.setItem('Mydiagnostic', jsonStringDiagnostic);
     setIsValidateModalOpen(!isValidateModalOpen);
+    const keepItem1 = 'user_data';
+    const keepItem2 = 'jhi-authenticationToken';
+    const keepItem3 = 'consultation_id';
+    const keepItem4 = 'patientName';
+    const keepItem5 = 'Mydiagnostic';
+
+    for (let i = sessionStorage.length - 1; i >= 0; i--) {
+      const key = sessionStorage.key(i);
+      if (key !== keepItem1 && key !== keepItem2 && key !== keepItem3 && key !== keepItem4 && key !== keepItem5) {
+        sessionStorage.removeItem(key);
+      }
+    }
   };
 
   const getSessionStorageData = () => {

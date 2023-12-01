@@ -84,13 +84,9 @@ const validatestyle = {
 
 const buttonStyle = {
   marginTop: 'auto',
-  flexDirection: 'column', // Display children in a column
-  alignItems: 'center', // Center items horizontally
+  flexDirection: 'column',
+  alignItems: 'center',
 };
-
-// const buttonStyle = {
-//   marginTop: 'auto', // Push the button to the bottom
-// };
 
 export const UserDiagnostics = () => {
   const dispatch = useAppDispatch();
@@ -106,11 +102,29 @@ export const UserDiagnostics = () => {
 
   const diagnosticList = useAppSelector(state => state.diagnostic.entities);
   const loading = useAppSelector(state => state.diagnostic.loading);
-  // const location = useLocation();
   const searchParams = new URLSearchParams(pageLocation.search);
   const consultationId = sessionStorage.getItem('consultation_id');
   const patientName = sessionStorage.getItem('patientName');
-  // const [diagnosticInfos,setDiagnosticInfos]=useState();
+  const [probabilities, setProbabilities] = useState([]);
+  const [mydiagnostic, setMyDiagnostic] = useState<{
+    id: string;
+    description: string;
+    maladies: {
+      fullName: string;
+      abbr: string;
+    };
+    maladiesDetected: {
+      fullName: string;
+      abbr: string;
+    };
+    probability: string;
+    picture: string;
+    pictureContentType: string;
+    prescription: string;
+    probabilities: string[];
+    symptoms: string[];
+  } | null>(null);
+
   const [diagnosticInfos, setDiagnosticInfos] = useState<{
     id: string;
     description: string;
@@ -130,35 +144,6 @@ export const UserDiagnostics = () => {
     symptoms: string[];
   } | null>(null);
 
-  // Your function to handle the update
-  // const handleUpdate = (diagnosticInfos): MouseEventHandler<HTMLButtonElement> => () => {
-  //   const maladie = {
-  //     id: diagnosticInfos.maladies?.[0]?.id,
-  //     fullName: diagnosticInfos.maladies?.[0]?.fullName,
-  //     abbr: diagnosticInfos.maladies?.[0]?.abbr,
-  //   };
-  //   const listeMaladies = [];
-  //   listeMaladies[0] = maladie;
-
-  //   // Assuming you have an IDiagnostic object
-  //   const diagnosticToUpdate={
-  //     maladies: listeMaladies, // Replace with the actual ID
-  //     // Other fields you want to update
-  //   };
-  //   dispatch(partialUpdateEntity(diagnosticToUpdate))
-  //     .unwrap()
-  //     .then((response) => {
-  //       // Handle successful update
-  //       console.log('Update successful', response);
-  //       // Optionally, you can dispatch an action to fetch the updated entities
-  //       // dispatch(getEntities({}));
-  //     })
-  //     .catch((error) => {
-  //       // Handle update error
-  //       console.error('Update failed', error);
-  //     });
-  // };
-
   const [selectedMaladie, setSelectedMaladie] = useState<IMaladie | null>(null);
 
   interface IMaladie {
@@ -166,15 +151,11 @@ export const UserDiagnostics = () => {
     fullName: string;
   }
 
-  // Other state and function definitions...
-
   const handleUpdate = () => {
     console.log('this is my selected maladie : ', selectedMaladie);
     if (selectedMaladie && diagnosticInfos) {
-      // Your existing logic to construct the maladie object...
-
       const diagnosticToUpdate = {
-        id: diagnosticInfos.id, // Replace with the actual property name of the diagnostic ID
+        id: diagnosticInfos.id,
         maladies: [
           {
             id: selectedMaladie.id,
@@ -186,13 +167,9 @@ export const UserDiagnostics = () => {
       dispatch(partialUpdateEntity(diagnosticToUpdate))
         .unwrap()
         .then(response => {
-          // Handle successful update
           console.log('Update successful', response);
-          // Optionally, you can dispatch an action to fetch the updated entities
-          // dispatch(getEntities({}));
         })
         .catch(error => {
-          // Handle update error
           console.error('Update failed', error);
         });
     }
@@ -243,11 +220,6 @@ export const UserDiagnostics = () => {
   const sortEntities = () => {
     getAllEntities();
     setIsModelOpen(false);
-
-    // const endURL = `?sort=${sortState.sort},${sortState.order}`;
-    // if (pageLocation.search !== endURL) {
-    //   navigate(`${pageLocation.pathname}${endURL}`);
-    // }
   };
 
   useEffect(() => {
@@ -307,21 +279,6 @@ export const UserDiagnostics = () => {
 
   const [isStatisticsModalOpen, setIsStatisticsModalOpen] = useState(false);
   const [isValidateModalOpen, setIsValidateModalOpen] = useState(false);
-  useEffect(() => {
-    const storedDiagnostic = JSON.parse(sessionStorage.getItem('diagnostic'));
-    if (storedDiagnostic) {
-      console.log('Diagnostic Information:', storedDiagnostic);
-    }
-    setDiagnosticInfos(storedDiagnostic);
-  }, [isStatisticsModalOpen]);
-
-  useEffect(() => {
-    const myDiagnostic = JSON.parse(sessionStorage.getItem('Mydiagnostic'));
-    if (myDiagnostic) {
-      console.log('Diagnostic Information:', myDiagnostic);
-    }
-    setDiagnosticInfos(myDiagnostic);
-  }, [isValidateModalOpen]);
 
   const toggleStatisticsModal = (probabilities, diagnostic) => {
     const circularReferenceReplacer = () => {
@@ -337,25 +294,15 @@ export const UserDiagnostics = () => {
       };
     };
 
-    const jsonString = JSON.stringify(probabilities, circularReferenceReplacer());
-    sessionStorage.setItem('statisticsData', jsonString);
-    const jsonStringDiagnostic = JSON.stringify(diagnostic, circularReferenceReplacer());
-    sessionStorage.setItem('diagnostic', jsonStringDiagnostic);
+    console.log('this is my diagnostic: ', diagnostic);
+    setMyDiagnostic(diagnostic);
+    console.log('my probabilities: ', probabilities);
+    setProbabilities(probabilities);
     setIsStatisticsModalOpen(!isStatisticsModalOpen);
-    const keepItem1 = 'user_data';
-    const keepItem2 = 'jhi-authenticationToken';
-    const keepItem3 = 'consultation_id';
-    const keepItem4 = 'patientName';
-    const keepItem5 = 'statisticsData';
-    const keepItem6 = 'diagnostic';
-
-    for (let i = sessionStorage.length - 1; i >= 0; i--) {
-      const key = sessionStorage.key(i);
-      if (key !== keepItem1 && key !== keepItem2 && key !== keepItem3 && key !== keepItem4 && key !== keepItem5 && key !== keepItem6) {
-        sessionStorage.removeItem(key);
-      }
-    }
   };
+  useEffect(() => {
+    console.log('my diagnosticcc:', mydiagnostic);
+  }, [mydiagnostic]);
 
   const toggleValidateModal = diagnostic => {
     const circularReferenceReplacer = () => {
@@ -376,39 +323,14 @@ export const UserDiagnostics = () => {
       setDataMaladies(response.data);
     });
     console.log('dataMaladies:', dataMaladies);
-
-    const jsonStringDiagnostic = JSON.stringify(diagnostic, circularReferenceReplacer());
-    sessionStorage.setItem('Mydiagnostic', jsonStringDiagnostic);
+    setDiagnosticInfos(diagnostic);
     setIsValidateModalOpen(!isValidateModalOpen);
-    const keepItem1 = 'user_data';
-    const keepItem2 = 'jhi-authenticationToken';
-    const keepItem3 = 'consultation_id';
-    const keepItem4 = 'patientName';
-    const keepItem5 = 'Mydiagnostic';
-
-    for (let i = sessionStorage.length - 1; i >= 0; i--) {
-      const key = sessionStorage.key(i);
-      if (key !== keepItem1 && key !== keepItem2 && key !== keepItem3 && key !== keepItem4 && key !== keepItem5) {
-        sessionStorage.removeItem(key);
-      }
-    }
   };
 
-  const getSessionStorageData = () => {
-    const storedData = sessionStorage.getItem('statisticsData');
-    try {
-      return storedData ? JSON.parse(storedData.trim()) : [];
-    } catch (error) {
-      console.error('Error parsing JSON from sessionStorage:', error);
-
-      return [];
-    }
-  };
-  console.log('getSessionStorageData', getSessionStorageData());
   const diseases = ['akiec', 'bcc', 'bkl', 'df', 'mel', 'nv', 'vasc'];
 
   useEffect(() => {
-    const originalData = getSessionStorageData();
+    const originalData = probabilities;
     const convertedData = Array.isArray(originalData) ? originalData.map(value => Number(value.toFixed(2))) : [];
 
     setStatisticsData({
@@ -439,14 +361,10 @@ export const UserDiagnostics = () => {
   });
 
   const handleClose = () => {
-    // Add any additional logic you want when the modal is closed
     setIsValidateModalOpen(!isValidateModalOpen);
   };
 
-  // Function to handle the confirm button
   const handleConfirm = () => {
-    // Add any logic you want when the user confirms the selection
-    // You can access the selected value from your select element here
     setIsValidateModalOpen(!isValidateModalOpen);
   };
 
@@ -465,11 +383,6 @@ export const UserDiagnostics = () => {
               New diagnostic
             </Button>
             <DiagnosticModel isOpen={isModelOpen} toggle={toggleModel} isNew={true} />
-            {/* <Link to="/diagnostic/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
-            <FontAwesomeIcon icon="plus" />
-            &nbsp;
-            <Translate contentKey="assistanteDermatologueApp.diagnostic.home.createLabel">Create new Diagnostic</Translate>
-          </Link> */}
           </div>
         </h2>
         <div className="table-responsive">
@@ -477,10 +390,6 @@ export const UserDiagnostics = () => {
             <table className="table table-responsive p-3" id="myTable">
               <thead>
                 <tr>
-                  {/* <th className="hand" onClick={sort('id')}>
-                  <Translate contentKey="assistanteDermatologueApp.diagnostic.id">ID</Translate>{' '}
-                  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
-                </th> */}
                   <th className="hand" onClick={sort('dateDiagnostic')}>
                     <Translate contentKey="assistanteDermatologueApp.diagnostic.dateDiagnostic">Date Diagnostic</Translate>{' '}
                     <FontAwesomeIcon icon={getSortIconByFieldName('dateDiagnostic')} />
@@ -503,21 +412,13 @@ export const UserDiagnostics = () => {
                     <Translate contentKey="assistanteDermatologueApp.diagnostic.probability">Probability</Translate>{' '}
                     <FontAwesomeIcon icon={getSortIconByFieldName('probability')} />
                   </th>
-                  {/* <th>
-                  <Translate contentKey="assistanteDermatologueApp.diagnostic.consultations">Consultations</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
-                </th> */}
+
                   <th />
                 </tr>
               </thead>
               <tbody>
                 {data.map((diagnostic, i) => (
                   <tr key={`entity-${i}`} data-cy="entityTable">
-                    {/* <td>
-                    <Button tag={Link} to={`/diagnostic/${diagnostic.id}`} color="link" size="sm">
-                      {diagnostic.id}
-                    </Button>
-                  </td> */}
                     <td>
                       {diagnostic.dateDiagnostic ? (
                         <TextFormat type="date" value={diagnostic.dateDiagnostic} format={APP_DATE_FORMAT} />
@@ -547,25 +448,13 @@ export const UserDiagnostics = () => {
                     <td>{diagnostic.description}</td>
                     <td>{diagnostic.prescription}</td>
                     <td>{diagnostic.probability}</td>
-                    {/* <td>
-                    {diagnostic.consultations ? (
-                      <Link to={`/consultation/${diagnostic.consultations.id}`}>{diagnostic.consultations.id}</Link>
-                    ) : (
-                      ''
-                    )}
-                  </td> */}
+
                     <td className="text-end">
                       <div className="btn-group flex-btn-group-container">
                         <Button color="success" size="sm" onClick={() => toggleStatisticsModal(diagnostic.probabilities, diagnostic)}>
                           <FontAwesomeIcon icon={faChartLine} /> <span className="d-none d-md-inline">Statistics</span>
                         </Button>
 
-                        {/* <Button tag={Link} to={`/diagnostic/${diagnostic.id}`} color="info" size="sm" data-cy="entityDetailsButton">
-                          <FontAwesomeIcon icon="eye" />{' '}
-                          <span className="d-none d-md-inline">
-                            <Translate contentKey="entity.action.view">View</Translate>
-                          </span>
-                        </Button> */}
                         <Button tag={Link} to={`/diagnostic/${diagnostic.id}/edit`} color="primary" size="sm" data-cy="entityEditButton">
                           <FontAwesomeIcon icon="pencil-alt" />{' '}
                           <span className="d-none d-md-inline">
@@ -615,7 +504,7 @@ export const UserDiagnostics = () => {
               <Bar data={statisticsData} />
               <br></br>
               <br></br>
-              {diagnosticInfos && (
+              {mydiagnostic && (
                 <div>
                   <Row>
                     <Col lg={6}>
@@ -623,15 +512,15 @@ export const UserDiagnostics = () => {
                         <Card.Header>DEGREE OF CERTAINTY</Card.Header>
                         <Card.Body>
                           <span>PREDICATED DISEASE : </span>
-                          {diagnosticInfos.maladiesDetected?.[0]?.fullName} <br />
-                          CONFIDENCE :{diagnosticInfos.probability + ' %'}
+                          {mydiagnostic.maladiesDetected?.[0]?.fullName} <br />
+                          CONFIDENCE :{mydiagnostic.probability + ' %'}
                         </Card.Body>
                       </Card>
                     </Col>
                     <Col lg={6}>
                       <Card>
                         <Card.Header>PRESCRIPTION</Card.Header>
-                        <Card.Body>{diagnosticInfos.prescription}</Card.Body>
+                        <Card.Body>{mydiagnostic.prescription}</Card.Body>
                       </Card>
                     </Col>
                   </Row>
@@ -639,20 +528,16 @@ export const UserDiagnostics = () => {
                     <Col lg={6}>
                       <Card>
                         <Card.Header>DISEASE SYMPTOMS</Card.Header>
-                        {/* <Card.Body>
-                              
-                                  Disease Symptoms: {diagnosticInfos.symptoms?.map(symptom => symptom).join(', ')}
-                              
-                                </Card.Body> */}
+
                         <Card.Body>
-                          <ul>{diagnosticInfos.symptoms?.map((desc, index) => <li key={index}>{desc}</li>)}</ul>
+                          <ul>{mydiagnostic.symptoms?.map((desc, index) => <li key={index}>{desc}</li>)}</ul>
                         </Card.Body>
                       </Card>
                     </Col>
                     <Col lg={6}>
                       <Card>
                         <Card.Header>DISEASE DESCRIPTION</Card.Header>
-                        <Card.Body>{diagnosticInfos.description}</Card.Body>
+                        <Card.Body>{mydiagnostic.description}</Card.Body>
                       </Card>
                     </Col>
                   </Row>
@@ -663,12 +548,12 @@ export const UserDiagnostics = () => {
                         <Card.Body style={{ justifyContent: 'center' }}>
                           <center>
                             <ButtonBase sx={{ width: 328, height: 328 }}>
-                              {diagnosticInfos.picture ? (
+                              {mydiagnostic.picture ? (
                                 <div>
-                                  {diagnosticInfos.pictureContentType ? (
-                                    <a onClick={openFile(diagnosticInfos.pictureContentType, diagnosticInfos.picture)}>
+                                  {mydiagnostic.pictureContentType ? (
+                                    <a onClick={openFile(mydiagnostic.pictureContentType, mydiagnostic.picture)}>
                                       <img
-                                        src={`data:${diagnosticInfos.pictureContentType};base64,${diagnosticInfos.picture}`}
+                                        src={`data:${mydiagnostic.pictureContentType};base64,${mydiagnostic.picture}`}
                                         style={{ height: '300px', width: '400px', maxHeight: '1020px', maxWidth: '1520px' }}
                                       />
                                       &nbsp;
@@ -699,7 +584,6 @@ export const UserDiagnostics = () => {
               Diagnostic Validation
             </Typography>
 
-            {/* <Container className='chat-container' style={{ alignContent: "stretch" }}> */}
             <Row>
               <Col>
                 {diagnosticInfos && (
@@ -772,37 +656,6 @@ export const UserDiagnostics = () => {
                 </Button>
               </Col>
             </Row>
-            {/* </Container> */}
-
-            {/* <Container className='chat-container' style={{ alignContent: "stretch" }}>
-                        <Row>
-                            <Col>
-                                <div className="form-field">
-                                    <label>SELECT THE CORRECT DISEASE</label>
-                                    <select name="maladie_id"
-                                        style={{ width: "200px", justifyContent: 'initial', fontSize: '20px', color: 'gray' }} required>
-                                        <option value="">choose</option>
-                                        {/* {diagnostic.maladies.map((maladie, index) => (
-                                            <option key={maladie._id} value={maladie._id}>
-                                                <span>{maladie.nom}</span> ========= <span>{diagnostic.probabilities[index]}%</span>
-                                            </option>
-                                        ))} */}
-            {/* </select>
-                                </div>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                <Card>
-                                    <Card.Header>DISEASE DETECTED BY THE ALGORTHM</Card.Header>
-                                    <Card.Body>
-                                        <span>PREDICATED DISEASE : </span>
-                                        CONFIDENCE
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                        </Row>
-                        </Container> */}
           </Box>
         </Modal>
       </div>
@@ -810,11 +663,10 @@ export const UserDiagnostics = () => {
   } else {
     return (
       <div>
-        {/*<Button onClick={handleOpen}>Open modal</Button>*/}
         <Modal
           open={true}
           onClose={() => {
-            // Handle close logic here, if needed
+            //
           }}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
@@ -829,7 +681,6 @@ export const UserDiagnostics = () => {
             </Typography>
             <br />
             <Button
-              // style={buttonStyle}
               onClick={() => {
                 // Handle any additional logic here
                 navigate('/consultation');

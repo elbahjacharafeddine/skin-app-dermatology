@@ -87,23 +87,24 @@ export const ConsultationList = () => {
     navigate('/diagnostic');
   };
 
+  consultationForToday(userData.id);
   useEffect(() => {
-    consultationForToday(userData.id);
+    // consultationForToday(userData.id);
     const table = $('#myTable').DataTable();
     table.order([0, 'desc']).draw();
     return () => {
       table.destroy();
     };
-  }, [consultationList, isToday]);
+  }, [userData.id, consultationList]);
 
   useEffect(() => {
-    allConsultation();
+    // allConsultation();
     const table = $('#myTableAll').DataTable();
     table.order([0, 'desc']).draw();
     return () => {
       table.destroy();
     };
-  }, []);
+  }, [userData.id, conAll]);
 
   return (
     <>

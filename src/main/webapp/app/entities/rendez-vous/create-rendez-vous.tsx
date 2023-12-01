@@ -389,7 +389,7 @@ export const CreateRendezVous = () => {
     try {
       // const getRendezvousConfirmed = await axios.get(`/api/rendez-vous/dermatologue/6561f3665b5a615b11e0091d`);
       const selectedDermatologue = sessionStorage.getItem('selectedDermatologue');
-      const getRendezvousConfirmed = await axios.get(`/api/rendez-vous/confirmed/dermatologue/${selectedDermatologue}`);
+      const getRendezvousConfirmed = await axios.get(`/api/rendez-vous/dermatologue/${selectedDermatologue}`);
 
       const filteredData = getRendezvousConfirmed.data.filter(item => {
         const dateDebut = new Date(item.dateDebut);
@@ -437,7 +437,7 @@ export const CreateRendezVous = () => {
   }
 
   // Call the async function
-  // fetchData();
+  fetchData();
 
   return (
     <div>

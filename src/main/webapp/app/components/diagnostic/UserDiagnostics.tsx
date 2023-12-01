@@ -751,11 +751,11 @@ export const UserDiagnostics = () => {
             <br></br>
             <Row>
               <Col>
-                <Button variant="danger" onClick={handleClose}>
+                <Button color="danger" variant="danger" onClick={handleClose}>
                   Close
                 </Button>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <Button variant="success" onClick={handleUpdate}>
+                <Button color="primary" variant="success" onClick={handleUpdate}>
                   Confirm
                 </Button>
               </Col>

@@ -40,45 +40,15 @@ export const ConsultationList = () => {
 
   const allConsultation = () => {
     axios
-      .get('/api/consultations')
+      .get('/api/consultations/all-Consultations/dematologue/' + userData.id)
       .then(response => {
         console.log(response.data);
-        setConsultationList(response.data);
+        setConAll(response.data);
       })
       .catch(error => {
         console.log(error);
       });
   };
-
-  // useEffect(() => {
-  //   if (consultationList.length > 0) {
-  //     const table = $('#myTable').DataTable();
-  //     // table.order([0, 'desc']).draw();
-  //     tableRef.current = table;
-  //
-  //     return () => {
-  //       if (tableRef.current) {
-  //         tableRef.current.destroy();
-  //       }
-  //     };
-  //   }
-  // }, [consultationList]);
-
-  // useEffect(() => {
-  //   if (consultationList.length > 0) {
-  //     const table = $('#myTable').DataTable();
-  //     table.order([0, 'desc']).draw();
-  //     return () => {
-  //       table.destroy();
-  //     };
-  //   }
-  // }, []);
-
-  useEffect(() => {
-    consultationForToday(userData.id);
-    // const table = $('#myTable').DataTable();
-    // table.order([0, 'desc']).draw();
-  }, []);
 
   const extractDate = dateTimeString => {
     const date = new Date(dateTimeString);
@@ -96,20 +66,17 @@ export const ConsultationList = () => {
   };
 
   const changeChoix = () => {
+    console.log('today is ' + isToday);
+    console.log(choix);
     if (choix === 'All') {
-      setToday(true);
+      setToday(false);
       setChoix('Today');
       allConsultation();
-      const table1 = $('#myTable').DataTable();
-      table1.destroy();
-      const table = $('#myTable').DataTable();
     } else {
-      setToday(false);
+      setToday(true);
       setChoix('All');
+      allConsultation();
       consultationForToday(userData.id);
-      const table1 = $('#myTable').DataTable();
-      table1.destroy();
-      const table = $('#myTable').DataTable();
     }
   };
 
@@ -119,6 +86,25 @@ export const ConsultationList = () => {
     sessionStorage.setItem('patientName', patient);
     navigate('/diagnostic');
   };
+
+  consultationForToday(userData.id);
+  useEffect(() => {
+    // consultationForToday(userData.id);
+    const table = $('#myTable').DataTable();
+    table.order([0, 'desc']).draw();
+    return () => {
+      table.destroy();
+    };
+  }, [userData.id, consultationList]);
+
+  useEffect(() => {
+    // allConsultation();
+    const table = $('#myTableAll').DataTable();
+    table.order([0, 'desc']).draw();
+    return () => {
+      table.destroy();
+    };
+  }, [userData.id, conAll]);
 
   return (
     <>
@@ -131,48 +117,95 @@ export const ConsultationList = () => {
             </button>
           </div>
         </h2>
-        <div className="card-body table-reponsive">
-          {consultationList && consultationList.length > 0 ? (
-            <table className="table-responsive">
-              <thead>
-                <tr>
-                  <th className="hand">Date consultation</th>
-                  <th>Hour</th>
-                  <th>Patient</th>
-                  <th>Patient phone</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {consultationList.map((consultation, index) => (
-                  <tr key={index}>
-                    <td>{extractDate(consultation.dateConsultation)}</td>
-                    <td>{extractTime(consultation.dateConsultation)}</td>
-                    <td>{consultation.rendezVous.patient.user.firstName + ' ' + consultation.rendezVous.patient.user.lastName}</td>
-                    <td>{consultation.rendezVous.patient.telephone}</td>
-                    <td>
-                      <button
-                        className="btn btn-primary m-1"
-                        title="Diagnostic"
-                        onClick={() =>
-                          toNavigate(
-                            consultation.id,
-                            consultation.rendezVous.patient.user.firstName + ' ' + consultation.rendezVous.patient.user.lastName,
-                          )
-                        }
-                      >
-                        <FontAwesomeIcon icon={faFileMedical} /> <span className="d-none d-md-inline">Diagnostic</span>
-                      </button>
-                      <button className="btn btn-danger">Delete</button>
-                    </td>
+        {isToday && (
+          <div className="card-body table-reponsive">
+            {consultationList && consultationList.length > 0 ? (
+              <table className="table-responsive" id="myTable">
+                <thead>
+                  <tr>
+                    <th className="hand">Date consultation</th>
+                    <th>Hour</th>
+                    <th>Patient</th>
+                    <th>Patient phone</th>
+                    <th>Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <>No data</>
-          )}
-        </div>
+                </thead>
+                <tbody>
+                  {consultationList.map((consultation, index) => (
+                    <tr key={index}>
+                      <td>{extractDate(consultation.dateConsultation)}</td>
+                      <td>{extractTime(consultation.dateConsultation)}</td>
+                      <td>{consultation.rendezVous.patient.user.firstName + ' ' + consultation.rendezVous.patient.user.lastName}</td>
+                      <td>{consultation.rendezVous.patient.telephone}</td>
+                      <td>
+                        <button
+                          className="btn btn-primary m-1"
+                          title="Diagnostic"
+                          onClick={() =>
+                            toNavigate(
+                              consultation.id,
+                              consultation.rendezVous.patient.user.firstName + ' ' + consultation.rendezVous.patient.user.lastName,
+                            )
+                          }
+                        >
+                          <FontAwesomeIcon icon={faFileMedical} /> <span className="d-none d-md-inline">Diagnostic</span>
+                        </button>
+                        <button className="btn btn-danger">Delete</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <>No data</>
+            )}
+          </div>
+        )}
+
+        {!isToday && (
+          <div className="card-body table-reponsive">
+            {conAll && conAll.length > 0 ? (
+              <table className="table-responsive" id="myTableAll">
+                <thead>
+                  <tr>
+                    <th className="hand">Date consultation</th>
+                    <th>Hour</th>
+                    <th>Patient</th>
+                    <th>Patient phone</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {conAll.map((consultation, index) => (
+                    <tr key={index}>
+                      <td>{extractDate(consultation.dateConsultation)}</td>
+                      <td>{extractTime(consultation.dateConsultation)}</td>
+                      <td>{consultation.rendezVous.patient.user.firstName + ' ' + consultation.rendezVous.patient.user.lastName}</td>
+                      <td>{consultation.rendezVous.patient.telephone}</td>
+                      <td>
+                        <button
+                          className="btn btn-primary m-1"
+                          title="Diagnostic"
+                          onClick={() =>
+                            toNavigate(
+                              consultation.id,
+                              consultation.rendezVous.patient.user.firstName + ' ' + consultation.rendezVous.patient.user.lastName,
+                            )
+                          }
+                        >
+                          <FontAwesomeIcon icon={faFileMedical} /> <span className="d-none d-md-inline">Diagnostic</span>
+                        </button>
+                        <button className="btn btn-danger">Delete</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <>No data</>
+            )}
+          </div>
+        )}
       </div>
     </>
   );

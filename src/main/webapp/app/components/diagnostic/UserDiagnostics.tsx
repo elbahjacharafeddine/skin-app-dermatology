@@ -512,8 +512,6 @@ export const UserDiagnostics = () => {
 
                     <td>{diagnostic.maladies[0]?.fullName}</td>
 
-                    <td>{''}</td>
-
                     <td>
                       {diagnostic.picture ? (
                         <div>

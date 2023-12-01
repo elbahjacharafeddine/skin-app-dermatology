@@ -26,7 +26,7 @@ export const ConsultationList = () => {
   const tableRef = useRef(null);
   const [isToday, setToday] = useState(true);
 
-  const consultationForToday = id => {
+  const consultationForToday = () => {
     axios
       .get('/api/consultations/listeConsultations/dematologue/' + userData.id)
       .then(response => {
@@ -76,7 +76,7 @@ export const ConsultationList = () => {
       setToday(true);
       setChoix('All');
       allConsultation();
-      consultationForToday(userData.id);
+      consultationForToday();
     }
   };
 
@@ -87,24 +87,25 @@ export const ConsultationList = () => {
     navigate('/diagnostic');
   };
 
-  consultationForToday(userData.id);
   useEffect(() => {
-    // consultationForToday(userData.id);
     const table = $('#myTable').DataTable();
     table.order([0, 'desc']).draw();
     return () => {
       table.destroy();
     };
-  }, [userData.id, consultationList]);
+  }, [consultationList]);
 
   useEffect(() => {
-    // allConsultation();
     const table = $('#myTableAll').DataTable();
     table.order([0, 'desc']).draw();
     return () => {
       table.destroy();
     };
-  }, [userData.id, conAll]);
+  }, [conAll]);
+
+  useEffect(() => {
+    consultationForToday();
+  }, []);
 
   return (
     <>

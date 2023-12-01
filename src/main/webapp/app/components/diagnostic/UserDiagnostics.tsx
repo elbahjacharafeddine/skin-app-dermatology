@@ -513,6 +513,7 @@ export const UserDiagnostics = () => {
                     </td>
 
                     <td>{diagnostic.maladies[0]?.fullName}</td>
+
                     <td>
                       {diagnostic.picture ? (
                         <div>

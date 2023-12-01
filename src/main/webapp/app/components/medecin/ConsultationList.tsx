@@ -40,7 +40,7 @@ export const ConsultationList = () => {
 
   const allConsultation = () => {
     axios
-      .get('/api/consultations')
+      .get('/api/consultations/all-Consultations/dematologue/' + userData.id)
       .then(response => {
         console.log(response.data);
         setConAll(response.data);
@@ -94,7 +94,7 @@ export const ConsultationList = () => {
     return () => {
       table.destroy();
     };
-  }, [consultationList]);
+  }, [consultationList, isToday]);
 
   useEffect(() => {
     allConsultation();
@@ -103,7 +103,7 @@ export const ConsultationList = () => {
     return () => {
       table.destroy();
     };
-  }, [conAll]);
+  }, []);
 
   return (
     <>

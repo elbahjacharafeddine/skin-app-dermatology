@@ -8,11 +8,13 @@ import MaladieDetail from './maladie-detail';
 import MaladieUpdate from './maladie-update';
 import MaladieDeleteDialog from './maladie-delete-dialog';
 import MyForm from 'app/components/MyForm';
+import MaladieCreate from 'app/components/maladie/MaladieCreate';
 
 const MaladieRoutes = () => (
   <ErrorBoundaryRoutes>
     <Route index element={<Maladie />} />
-    <Route path="new" element={<MaladieUpdate />} />
+    {/*<Route path="new" element={<MaladieUpdate />} />*/}
+    <Route path="new" element={<MaladieCreate />} />
     {/*<Route path="new" element={<MyForm />} />*/}
     <Route path=":id">
       <Route index element={<MaladieDetail />} />

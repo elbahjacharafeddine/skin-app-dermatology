@@ -544,7 +544,7 @@ export const UserDiagnostics = () => {
                   <Row style={{ marginTop: '10px' }}>
                     <Col lg={12}>
                       <Card>
-                        <Card.Header>diagnostic IMAGE</Card.Header>
+                        <Card.Header>DIAGNOSTIC IMAGE</Card.Header>
                         <Card.Body style={{ justifyContent: 'center' }}>
                           <center>
                             <ButtonBase sx={{ width: 328, height: 328 }}>

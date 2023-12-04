@@ -50,7 +50,7 @@ export const RendezVous = () => {
   useEffect(() => {
     if (rendezVousList.length > 0) {
       const table = $('#myTable').DataTable();
-      table.order([0, 'desc']).draw();
+      table.order([2, 'desc']).draw();
       return () => {
         table.destroy();
       };

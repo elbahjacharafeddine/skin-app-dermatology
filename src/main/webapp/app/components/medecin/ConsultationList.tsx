@@ -1,13 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation, useNavigate, useNavigation } from 'react-router-dom';
-import { Button, Table } from 'reactstrap';
-import { Translate, TextFormat, getSortState } from 'react-jhipster';
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons';
-import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
-import { ASC, DESC, SORT } from 'app/shared/util/pagination.constants';
-import { overrideSortStateWithQueryParams } from 'app/shared/util/entity-utils';
-import { useAppDispatch, useAppSelector } from 'app/config/store';
 
 import $ from 'jquery';
 import 'jquery';
@@ -15,7 +8,6 @@ import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-responsive-dt/js/responsive.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.css';
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
-import { redirect } from 'react-router';
 import axios from 'axios';
 import { faFileMedical } from '@fortawesome/free-solid-svg-icons';
 export const ConsultationList = () => {
@@ -23,7 +15,6 @@ export const ConsultationList = () => {
   const [conAll, setConAll] = useState([]);
   const userData = JSON.parse(sessionStorage.getItem('user_data'));
   const [choix, setChoix] = useState('All');
-  const tableRef = useRef(null);
   const [isToday, setToday] = useState(true);
 
   const consultationForToday = () => {

@@ -39,15 +39,15 @@ const EntitiesMenu = () => {
         {/*<Translate contentKey="global.menu.entities.maladie" />*/}
         Diseases
       </MenuItem>
-      <MenuItem icon="asterisk" to="/stade" role={data ? dataJson.authorities : []} forWho={['ROLE_DERMATOLOGUE']}>
-        <Translate contentKey="global.menu.entities.stade" />
-      </MenuItem>
-      <MenuItem icon="asterisk" to="/image-stade" role={data ? dataJson.authorities : []} forWho={['ROLE_DERMATOLOGUE']}>
-        <Translate contentKey="global.menu.entities.imageStade" />
-      </MenuItem>
-      <MenuItem icon="asterisk" to="/symptoms" role={data ? dataJson.authorities : []} forWho={['ROLE_DERMATOLOGUE']}>
-        <Translate contentKey="global.menu.entities.symptoms" />
-      </MenuItem>
+      {/*<MenuItem icon="asterisk" to="/stade" role={data ? dataJson.authorities : []} forWho={['ROLE_DERMATOLOGUE']}>*/}
+      {/*  <Translate contentKey="global.menu.entities.stade" />*/}
+      {/*</MenuItem>*/}
+      {/*<MenuItem icon="asterisk" to="/image-stade" role={data ? dataJson.authorities : []} forWho={['ROLE_DERMATOLOGUE']}>*/}
+      {/*  <Translate contentKey="global.menu.entities.imageStade" />*/}
+      {/*</MenuItem>*/}
+      {/*<MenuItem icon="asterisk" to="/symptoms" role={data ? dataJson.authorities : []} forWho={['ROLE_DERMATOLOGUE']}>*/}
+      {/*  <Translate contentKey="global.menu.entities.symptoms" />*/}
+      {/*</MenuItem>*/}
       {/* jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here */}
     </>
   );

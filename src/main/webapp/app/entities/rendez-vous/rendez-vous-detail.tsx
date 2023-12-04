@@ -20,7 +20,7 @@ export const RendezVousDetail = () => {
 
   const rendezVousEntity = useAppSelector(state => state.rendezVous.entity);
   return (
-    <Row>
+    <Row className="p-2 card p-4">
       <Col md="8">
         <h2 data-cy="rendezVousDetailsHeading">
           <Translate contentKey="assistanteDermatologueApp.rendezVous.detail.title">RendezVous</Translate>

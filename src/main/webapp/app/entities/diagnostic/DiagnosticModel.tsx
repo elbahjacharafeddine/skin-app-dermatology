@@ -194,7 +194,7 @@ const DiagnosticModel: React.FC<DiagnosticModelProps> = ({ isOpen, toggle, isNew
           consultations: diagnosticEntity?.consultations?.id,
         };
   return (
-    <Modal isOpen={isOpen} toggle={toggle} centered>
+    <Modal isOpen={isOpen} toggle={toggle} centered className="p-4" style={{ minWidth: '750px' }}>
       <ModalHeader toggle={toggle}>New Diagnostic</ModalHeader>
       <ModalBody>
         <Row className="justify-content-center">

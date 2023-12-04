@@ -39,7 +39,7 @@ export const HealthPage = () => {
   const data = (health || {}).components || {};
 
   return (
-    <div>
+    <div className="p-2 card p-4">
       <h2 id="health-page-heading" data-cy="healthPageHeading">
         <Translate contentKey="health.title">Health Checks</Translate>
       </h2>

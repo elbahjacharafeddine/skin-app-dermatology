@@ -254,11 +254,20 @@ public class DermatologueResource {
 
             // Fetch and set the patients for the dermatologist
             List<RendezVous> dermatologuePatients = rendezVousRepository.findByDermatologues(dermatologue.get());
+            Set<String> uniquePatientIds = new HashSet<>();
 
             // Construct a list of RendezVousDTO with the required structure
             List<DermatologuePatientsDTO> rendezVousDTOList = dermatologuePatients
                 .stream()
-                .map(rendezvous -> mapRendezVousToDTOWithUser(rendezvous))
+                .map(rendezvous -> {
+                    String patientId = rendezvous.getPatients().getId();
+                    if (uniquePatientIds.add(patientId)) {
+                        return mapRendezVousToDTOWithUser(rendezvous);
+                    } else {
+                        return null; // Skip duplicate patients
+                    }
+                })
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
             // Set the transformed dermatologist user information

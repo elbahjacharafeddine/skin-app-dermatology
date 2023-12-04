@@ -64,7 +64,7 @@ export const SymptomsUpdate = () => {
         };
 
   return (
-    <div>
+    <div className="p-2 card p-4">
       <Row className="justify-content-center">
         <Col md="8">
           <h2 id="assistanteDermatologueApp.symptoms.home.createOrEditLabel" data-cy="SymptomsCreateUpdateHeading">

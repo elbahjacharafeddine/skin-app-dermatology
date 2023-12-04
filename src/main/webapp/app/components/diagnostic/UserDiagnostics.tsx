@@ -370,7 +370,7 @@ export const UserDiagnostics = () => {
 
   if (consultationId != undefined && consultationId != null) {
     return (
-      <div className="p-2">
+      <div className="p-2 card p-4">
         <h2 id="diagnostic-heading" data-cy="DiagnosticHeading">
           Diagnostics for Patient : {patientName}
           <div className="d-flex justify-content-end">

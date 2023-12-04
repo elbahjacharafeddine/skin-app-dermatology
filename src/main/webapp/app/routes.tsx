@@ -21,6 +21,8 @@ import ListePatients from './entities/dermatologue/ListePatients';
 import { useAppSelector } from 'app/config/store';
 import Listpatient from 'app/components/medecin/ListPatient';
 import PaginatorBasicDemo from 'app/components/medecin/PaginatorBasicDemo';
+import PatientsList from './entities/dermatologue/PatientsList';
+import MedicalRecord from './entities/patient/medical-record';
 
 // import Elbahja from "app/modules/login/Elbahja";
 // import Test from "app/components/medecin/Test";
@@ -47,7 +49,8 @@ const AppRoutes = () => {
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
         {/* Dermatologue patients Liste */}
-        <Route path="patientsliste" element={<ListePatients />} />
+        <Route path="/dermatologue/patientsliste" element={<PatientsList />} />
+        <Route path="/medicalRecord" element={<MedicalRecord />} />
 
         <Route path="logout" element={<Logout />} />
         <Route path="account">

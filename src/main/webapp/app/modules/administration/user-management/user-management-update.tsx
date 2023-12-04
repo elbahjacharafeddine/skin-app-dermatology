@@ -48,7 +48,7 @@ export const UserManagementUpdate = () => {
   const authorities = useAppSelector(state => state.userManagement.authorities);
 
   return (
-    <div>
+    <div className="p-2 card p-4">
       <Row className="justify-content-center">
         <Col md="8">
           <h1>

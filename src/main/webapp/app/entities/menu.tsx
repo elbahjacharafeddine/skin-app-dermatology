@@ -16,6 +16,10 @@ const EntitiesMenu = () => {
         {/*<Translate contentKey="global.menu.entities.patient" />*/}
         Patients
       </MenuItem>
+      <MenuItem icon="asterisk" to="/dermatologue/patientsliste" role={data ? dataJson.authorities : []} forWho={['ROLE_DERMATOLOGUE']}>
+        {/*<Translate contentKey="global.menu.entities.patient" />*/}
+        My Patients
+      </MenuItem>
       <MenuItem icon="asterisk" to="/secretaire" role={data ? dataJson.authorities : []} forWho={['ROLE_ADMIN']}>
         {/*<Translate contentKey="global.menu.entities.secretaire" />*/}
         Secretaries

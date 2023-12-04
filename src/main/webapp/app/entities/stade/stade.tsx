@@ -64,7 +64,7 @@ export const Stade = () => {
   };
 
   return (
-    <div>
+    <div className="p-2 card p-4">
       <h2 id="stade-heading" data-cy="StadeHeading">
         <Translate contentKey="assistanteDermatologueApp.stade.home.title">Stades</Translate>
         <div className="d-flex justify-content-end">

@@ -138,7 +138,7 @@ const Elbahja: React.FC<ElbahjaProps> = ({ isAuthenticated, role }) => {
 
   if (role == 'ROLE_DERMATOLOGUE') {
     return (
-      <div className="App">
+      <div className="App p-2 ">
         <h1>Calendar</h1>
         {/*<h2>Add New Event</h2>*/}
         {/*<div>*/}

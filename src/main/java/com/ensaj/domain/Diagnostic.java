@@ -1,5 +1,6 @@
 package com.ensaj.domain;
 
+import com.ensaj.service.dto.PatientUserDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.Instant;
@@ -61,6 +62,17 @@ public class Diagnostic implements Serializable {
     @Field("maladieDetected")
     @JsonIgnoreProperties(value = { "stades", "diagnostics" }, allowSetters = true)
     private Set<Maladie> maladiesDetected = new HashSet<>();
+
+    private PatientUserDTO patientUserDTO;
+
+    public PatientUserDTO getPatientUserDTO() {
+        return patientUserDTO;
+    }
+
+    // Setter for patientUserDTO
+    public void setPatientUserDTO(PatientUserDTO patientUserDTO) {
+        this.patientUserDTO = patientUserDTO;
+    }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 

@@ -1,20 +1,22 @@
 package com.ensaj.web.rest;
 
-import com.ensaj.domain.Consultation;
-import com.ensaj.domain.Diagnostic;
-import com.ensaj.domain.Maladie;
+import com.ensaj.domain.*;
 import com.ensaj.repository.DiagnosticRepository;
 import com.ensaj.repository.MaladieRepository;
+import com.ensaj.repository.UserRepository;
+import com.ensaj.service.UserService;
+import com.ensaj.service.dto.PatientUserDTO;
 import com.ensaj.web.rest.errors.BadRequestAlertException;
+//import jdk.jshell.Diag;
+
+//import jdk.jshell.Diag;
+import com.ensaj.web.rest.vm.ManagedUserVM;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-//import jdk.jshell.Diag;
-
-//import jdk.jshell.Diag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,9 +40,13 @@ public class DiagnosticResource {
     private String applicationName;
 
     private final DiagnosticRepository diagnosticRepository;
+    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public DiagnosticResource(DiagnosticRepository diagnosticRepository) {
+    public DiagnosticResource(DiagnosticRepository diagnosticRepository, UserService userService, UserRepository userRepository) {
         this.diagnosticRepository = diagnosticRepository;
+        this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -169,6 +175,30 @@ public class DiagnosticResource {
     public List<Diagnostic> getAllDiagnostics() {
         log.debug("REST request to get all Diagnostics");
         return diagnosticRepository.findAll();
+    }
+
+    //api dossier medical for a specific patient by dermatologue_id
+    @GetMapping("/dermatologue/{id_dermatologue}/dossiermedical/patient/{id}")
+    public List<Diagnostic> getAllDiagnosticsForMedicalRecord(@PathVariable String id_dermatologue, @PathVariable String id) {
+        log.debug("REST request to get all Diagnostics");
+        List<Diagnostic> diagnostics = diagnosticRepository.findAll();
+        List<Diagnostic> data = new ArrayList<>();
+        for (Diagnostic diagnostic : diagnostics) {
+            Patient patient = diagnostic.getConsultations().getRendezVous().getPatients();
+            Dermatologue dermatologue = diagnostic.getConsultations().getRendezVous().getDermatologues();
+            if (patient.getId().equals(id) && dermatologue.getId().equals(id_dermatologue)) {
+                Optional<User> user = userRepository.findById(patient.getUser().getId());
+                PatientUserDTO patientUserDTO = new PatientUserDTO();
+                ManagedUserVM managedUserVM = new ManagedUserVM();
+                managedUserVM.setEmail(user.get().getEmail());
+                managedUserVM.setFirstName(user.get().getFirstName());
+                managedUserVM.setLastName(user.get().getLastName());
+                patientUserDTO.setPatient(patient);
+                diagnostic.setPatientUserDTO(patientUserDTO);
+                data.add(diagnostic);
+            }
+        }
+        return data;
     }
 
     /**

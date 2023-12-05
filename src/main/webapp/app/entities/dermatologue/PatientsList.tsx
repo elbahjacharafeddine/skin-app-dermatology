@@ -177,6 +177,11 @@ export const PatientsList = () => {
     },
   };
 
+  const viewMedicalRecord = id => {
+    sessionStorage.setItem('patient_id', id);
+    navigate('/medicalRecord');
+  };
+
   const sendUpdate = () => {
     axios
       .put('/api/patients/update/' + id, dataJson)
@@ -220,11 +225,6 @@ export const PatientsList = () => {
           {/*  <FontAwesomeIcon icon="sync" spin={loading} />{' '}*/}
           {/*  <Translate contentKey="assistanteDermatologueApp.patient.home.refreshListLabel">Refresh List</Translate>*/}
           {/*</Button>*/}
-          <Link to="/patient/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
-            <FontAwesomeIcon icon="plus" />
-            &nbsp;
-            <Translate contentKey="assistanteDermatologueApp.patient.home.createLabel">Create new Patient</Translate>
-          </Link>
         </div>
       </h2>
       <div className="card-body p-3 ">
@@ -236,19 +236,19 @@ export const PatientsList = () => {
                 {/*  <Translate contentKey="assistanteDermatologueApp.patient.id">ID</Translate>{' '}*/}
                 {/*  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />*/}
                 {/*</th>*/}
-                <th className="hand" onClick={sort('birthdate')}>
+                <th className="hand">
                   <Translate contentKey="assistanteDermatologueApp.patient.birthdate">Birthdate</Translate>{' '}
                   {/*<FontAwesomeIcon icon={getSortIconByFieldName('birthdate')} />*/}
                 </th>
-                <th className="hand" onClick={sort('adress')}>
+                <th className="hand">
                   <Translate contentKey="assistanteDermatologueApp.patient.adress">Adress</Translate>{' '}
                   {/*<FontAwesomeIcon icon={getSortIconByFieldName('adress')} />*/}
                 </th>
-                <th className="hand" onClick={sort('genre')}>
+                <th className="hand">
                   Gender
                   {/*<FontAwesomeIcon icon={getSortIconByFieldName('genre')} />*/}
                 </th>
-                <th className="hand" onClick={sort('telephone')}>
+                <th className="hand">
                   Phone
                   {/*<FontAwesomeIcon icon={getSortIconByFieldName('telephone')} />*/}
                 </th>
@@ -273,12 +273,12 @@ export const PatientsList = () => {
                   <td>{patient.patient.user ? patient.patient.user.firstName + ' ' + patient.patient.user.lastName : ''}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
-                      <Link to="/medicalRecord" className="btn btn-primary">
+                      <Button onClick={() => viewMedicalRecord(patient.patient.id)} color="info" size="sm">
                         <FontAwesomeIcon icon="plus" />
                         &nbsp; medical record
-                      </Link>
+                      </Button>
 
-                      <Button onClick={() => viewPatient(patient.patient.id)} color="info" size="sm">
+                      <Button onClick={() => viewPatient(patient.patient.id)} color="success" size="sm">
                         <FontAwesomeIcon icon="eye" />{' '}
                         <span className="d-none d-md-inline">
                           <Translate contentKey="entity.action.view">View</Translate>

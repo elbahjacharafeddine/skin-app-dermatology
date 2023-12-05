@@ -450,7 +450,7 @@ export const UserDiagnostics = () => {
                     <td>{diagnostic.probability}</td>
 
                     <td className="text-end">
-                      <div className="btn-group flex-btn-group-container">
+                      <div className="flex-btn-group-container">
                         <Button color="success" size="sm" onClick={() => toggleStatisticsModal(diagnostic.probabilities, diagnostic)}>
                           <FontAwesomeIcon icon={faChartLine} /> <span className="d-none d-md-inline">Statistics</span>
                         </Button>

@@ -160,27 +160,12 @@ export const RendezVous = () => {
 
                   <td>{rendezVous.statut ? 'Confirmed' : 'Waiting'}</td>
                   <td>
-                    {/* {rendezVous.dermatologues.id} */}
-                    {rendezVous.dermatologue ? (
-                      <Link to={`/dermatologue/${rendezVous.dermatologue.id}`}>
-                        {rendezVous.dermatologue.user
-                          ? rendezVous.dermatologue.user.firstName + ' ' + rendezVous.dermatologue.user.lastName
-                          : ' '}
-                      </Link>
-                    ) : (
-                      ''
-                    )}
+                    {rendezVous.dermatologue.user
+                      ? rendezVous.dermatologue.user.firstName + ' ' + rendezVous.dermatologue.user.lastName
+                      : ' '}
                   </td>
                   {/* {rendezVous.patients.id} */}
-                  <td>
-                    {rendezVous.patient ? (
-                      <Link to={`/patient/${rendezVous.patient.id}`}>
-                        {rendezVous.dermatologue.user ? rendezVous.patient.user.firstName + ' ' + rendezVous.patient.user.lastName : ' '}
-                      </Link>
-                    ) : (
-                      ''
-                    )}
-                  </td>
+                  <td>{rendezVous.dermatologue.user ? rendezVous.patient.user.firstName + ' ' + rendezVous.patient.user.lastName : ' '}</td>
                   <td className="text-end">
                     <div className="btn-group flex-btn-group-container">
                       {rendezVous.statut == false && (
@@ -188,7 +173,7 @@ export const RendezVous = () => {
                           <FontAwesomeIcon icon={faCheck} /> <span className="d-none d-md-inline">Confirm</span>
                         </Button>
                       )}
-                      <Button tag={Link} to={`/rendez-vous/${rendezVous.id}`} color="info" size="sm" data-cy="entityDetailsButton">
+                      {/* <Button tag={Link} to={`/rendez-vous/${rendezVous.id}`} color="info" size="sm" data-cy="entityDetailsButton">
                         <FontAwesomeIcon icon="eye" />{' '}
                         <span className="d-none d-md-inline">
                           <Translate contentKey="entity.action.view">View</Translate>
@@ -199,7 +184,7 @@ export const RendezVous = () => {
                         <span className="d-none d-md-inline">
                           <Translate contentKey="entity.action.edit">Edit</Translate>
                         </span>
-                      </Button>
+                      </Button> */}
                       <Button
                         onClick={() => (location.href = `/rendez-vous/${rendezVous.id}/delete`)}
                         color="danger"

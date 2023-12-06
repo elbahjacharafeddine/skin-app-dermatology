@@ -272,7 +272,7 @@ export const PatientsList = () => {
                   <td>{patient.patient.telephone}</td>
                   <td>{patient.patient.user ? patient.patient.user.firstName + ' ' + patient.patient.user.lastName : ''}</td>
                   <td className="text-end">
-                    <div className="btn-group flex-btn-group-container">
+                    <div className="flex-btn-group-container">
                       <Button onClick={() => viewMedicalRecord(patient.patient.id)} color="info" size="sm">
                         <FontAwesomeIcon icon="plus" />
                         &nbsp; medical record

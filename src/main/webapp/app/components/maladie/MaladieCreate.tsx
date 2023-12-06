@@ -150,7 +150,7 @@ function MaladieCreate() {
   }
 
   return (
-    <div className="row">
+    <div className="row p-4">
       <div className="card mt-1 offset-md-3 col-md-6">
         {/*<button onClick={() => changeImage()} >Show data</button>*/}
         <div className="card-header">New disease</div>

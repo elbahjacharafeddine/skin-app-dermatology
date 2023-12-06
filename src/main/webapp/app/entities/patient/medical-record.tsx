@@ -300,17 +300,26 @@ export default function MedicalRecord() {
                   <MDBCardBody>
                     <div className="table-responsive">
                       {data && data.length > 0 ? (
-                        <table className="table table-responsive p-3" id="myTable">
+                        <table className="table table-responsive " id="myTable">
                           <thead>
                             <tr>
-                              <th className="hand">Date_Diagnostic</th>
-                              <th className="hand">Disease</th>
+                              <th className="hand" style={{ width: '150px' }}>
+                                Date Diagnostic
+                              </th>
+                              <th className="hand" style={{ width: '150px' }}>
+                                Predicted Disease
+                              </th>
+                              <th className="hand" style={{ width: '150px' }}>
+                                Confirmed Disease
+                              </th>
 
                               <th className="hand">Picture</th>
                               <th className="hand">Description</th>
                               <th>Prescription</th>
                               <th className="hand">Probability</th>
-                              <th className="hand">Symptoms</th>
+                              <th className="hand" style={{ width: '150px' }}>
+                                Symptoms
+                              </th>
 
                               <th />
                             </tr>
@@ -323,7 +332,7 @@ export default function MedicalRecord() {
                                     <TextFormat type="date" value={diagnostic.dateDiagnostic} format={APP_DATE_FORMAT} />
                                   ) : null}
                                 </td>
-
+                                <td>{diagnostic.maladiesDetected?.[0]?.fullName}</td>
                                 <td>{diagnostic.maladies[0]?.fullName}</td>
 
                                 <td>
@@ -333,14 +342,14 @@ export default function MedicalRecord() {
                                         <a onClick={openFile(diagnostic.pictureContentType, diagnostic.picture)}>
                                           <img
                                             src={`data:${diagnostic.pictureContentType};base64,${diagnostic.picture}`}
-                                            style={{ maxHeight: '30px' }}
+                                            style={{ height: '60px', width: '60px' }}
                                           />
                                           &nbsp;
                                         </a>
                                       ) : null}
-                                      <span>
+                                      {/* <span>
                                         {diagnostic.pictureContentType}, {byteSize(diagnostic.picture)}
-                                      </span>
+                                      </span> */}
                                     </div>
                                   ) : null}
                                 </td>

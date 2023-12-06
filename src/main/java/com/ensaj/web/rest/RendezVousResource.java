@@ -252,6 +252,23 @@ public class RendezVousResource {
         return rendezvousList.stream().map(rendezvous -> mapRendezVousToDTO(rendezvous)).collect(Collectors.toList());
     }
 
+    //get patient all Rendez-vous(appointements)
+    @GetMapping("patient/rdvs/{id}")
+    public List<RendezVousDTO> getAllRendezVousForaPatient(@PathVariable String id) {
+        log.debug("REST request to get all RendezVous");
+        List<RendezVous> rendezvousList = rendezVousRepository.findAll();
+        //debut
+        List<RendezVous> data = new ArrayList<>();
+        for (RendezVous r : rendezvousList) {
+            if (r.getPatients().getUser().getId().equals(id)) {
+                data.add(r);
+            }
+        }
+
+        //fin
+        return data.stream().map(rendezvous -> mapRendezVousToDTO(rendezvous)).collect(Collectors.toList());
+    }
+
     private RendezVousDTO mapRendezVousToDTO(RendezVous rendezvous) {
         RendezVousDTO rendezvousDTO = new RendezVousDTO();
         rendezvousDTO.setId(rendezvous.getId());

@@ -17,6 +17,8 @@ import 'datatables.net-dt/css/jquery.dataTables.css';
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
 
 import Avatar from '@mui/material/Avatar';
+import { Row, Col, FormText } from 'reactstrap';
+import { isNumber, translate, ValidatedField, ValidatedForm } from 'react-jhipster';
 
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -26,7 +28,9 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { getEntity, updateEntity, createEntity, reset } from './dermatologue.reducer';
 import axios from 'axios';
+import DermatologueModal from './DermatologueCreateModal';
 
 const style = {
   position: 'absolute',
@@ -50,10 +54,58 @@ export const Dermatologue = () => {
   const [dateToModal, setDate] = useState('');
   const [visible, setVisible] = useState(false);
   const [isupdate, setUpdate] = useState(false);
+  const users = useAppSelector(state => state.userManagement.users);
+  const dermatologueEntity = useAppSelector(state => state.dermatologue.entity);
+  // const loading = useAppSelector(state => state.dermatologue.loading);
+  const updating = useAppSelector(state => state.dermatologue.updating);
+  const updateSuccess = useAppSelector(state => state.dermatologue.updateSuccess);
   const [id, setId] = useState(1);
   const handleClose = () => {
     setVisible(false);
     setUpdate(false);
+  };
+  const toggle = () => {
+    setIsModelOpen(false);
+  };
+  const saveDermatologueEntity = values => {
+    console.log('dermatologue');
+    console.log(values);
+    const entity = {
+      ...dermatologueEntity,
+      ...values,
+      user: users.find(it => it.id.toString() === values.user.toString()),
+    };
+
+    try {
+      dispatch(createEntity(formData));
+      window.location.reload();
+    } catch (error) {
+      console.error('Error in API request:', error);
+    }
+
+    // dispatch(createEntity(formData));
+    // window.location.reload();
+  };
+  const [formData, setFormData] = useState({
+    dermatologue: {
+      codeEmp: '',
+      telephone: '',
+      genre: '',
+    },
+    user: {
+      login: '',
+      password: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      activated: true,
+      langKey: 'en',
+    },
+  });
+  //ajouté recement by Amine
+  const [isModelOpen, setIsModelOpen] = useState(false);
+  const toggleModel = () => {
+    setIsModelOpen(!isModelOpen);
   };
 
   const extractBirthdate = date => {
@@ -206,11 +258,15 @@ export const Dermatologue = () => {
           {/*  <FontAwesomeIcon icon="sync" spin={loading} />{' '}*/}
           {/*  <Translate contentKey="assistanteDermatologueApp.dermatologue.home.refreshListLabel">Refresh List</Translate>*/}
           {/*</Button>*/}
-          <Link to="/dermatologue/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
+          {/* <Link to="/dermatologue/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
             <FontAwesomeIcon icon="plus" />
             &nbsp;
             <Translate contentKey="assistanteDermatologueApp.dermatologue.home.createLabel">Create new Dermatologue</Translate>
-          </Link>
+          </Link> */}
+          <Button color="primary" onClick={toggleModel}>
+            Create new Dermatologue
+          </Button>
+          {/* <DermatologueModal isOpen={isModelOpen} toggle={toggleModel} isNew={true} /> */}
         </div>
       </h2>
       <div className="card-body p-3">
@@ -407,6 +463,200 @@ export const Dermatologue = () => {
               </div>
             )}
           </div>
+        </Box>
+      </Modal>
+      <Modal open={isModelOpen} onClose={toggle} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-creation">
+        <Box sx={style}>
+          <Row className="justify-content-center">
+            <Col md="15">
+              <ValidatedForm onSubmit={saveDermatologueEntity}>
+                <Row className="mb-3">
+                  <Col md="6">
+                    {false ? (
+                      <ValidatedField
+                        name="id"
+                        required
+                        readOnly
+                        id="dermatologue-id"
+                        label={translate('global.field.id')}
+                        validate={{ required: true }}
+                        hidden={true}
+                      />
+                    ) : null}
+                    <ValidatedField
+                      label="Employee code"
+                      id="dermatologue-codeEmp"
+                      name="codeEmp"
+                      data-cy="codeEmp"
+                      type="text"
+                      onChange={e => {
+                        setFormData({
+                          ...formData,
+                          dermatologue: { ...formData.dermatologue, codeEmp: e.target.value },
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md="6">
+                    {/* <ValidatedField id="dermatologue-user" name="genre" data-cy="genre" label="Gender" type="select">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </ValidatedField> */}
+                    <ValidatedField
+                      id="dermatologue-genre"
+                      name="genre"
+                      data-cy="genre"
+                      label={translate('assistanteDermatologueApp.dermatologue.genre')}
+                      type="select"
+                      onChange={e => {
+                        setFormData({
+                          ...formData,
+                          dermatologue: {
+                            ...formData.dermatologue,
+                            genre: e.target.value,
+                          },
+                        });
+                      }}
+                    >
+                      <option disabled selected>
+                        Choose a value
+                      </option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                    </ValidatedField>
+
+                    {/* <ValidatedField*/}
+                    {/*  label={translate('assistanteDermatologueApp.dermatologue.genre')}*/}
+                    {/*  id="dermatologue-genre"*/}
+                    {/*  name="genre"*/}
+                    {/*  data-cy="genre"*/}
+                    {/*  type="text"*/}
+                    {/*  onChange={e => {*/}
+                    {/*    if (isNew) {*/}
+                    {/*      setFormData({*/}
+                    {/*        ...formData,*/}
+                    {/*        dermatologue: { ...formData.dermatologue, genre: e.target.value },*/}
+                    {/*      });*/}
+                    {/*    }*/}
+                    {/*  }}*/}
+                    {/*/> */}
+                  </Col>
+                </Row>
+                <Row className="mb-3">
+                  <Col md="6">
+                    <ValidatedField
+                      label="First name"
+                      // label={translate('assistanteDermatologueApp.dermatologue.user.login')}
+                      id="firstName"
+                      name="user.firstName"
+                      data-cy="user.firstName"
+                      type="text"
+                      onChange={e => {
+                        setFormData({
+                          ...formData,
+                          user: { ...formData.user, firstName: e.target.value },
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md="6">
+                    <ValidatedField
+                      label="Last name"
+                      // label={translate('assistanteDermatologueApp.dermatologue.user.login')}
+                      id="lastName"
+                      name="user.lastName"
+                      data-cy="user.lastName"
+                      type="text"
+                      onChange={e => {
+                        setFormData({
+                          ...formData,
+                          user: { ...formData.user, lastName: e.target.value },
+                        });
+                      }}
+                    />
+                  </Col>
+                </Row>
+                <Row className="mb-3">
+                  <Col md="6">
+                    <ValidatedField
+                      label="Password"
+                      id="password"
+                      name="user.passwword"
+                      data-cy="user.password"
+                      type="password"
+                      onChange={e => {
+                        setFormData({
+                          ...formData,
+                          user: { ...formData.user, password: e.target.value },
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md="6">
+                    <ValidatedField
+                      label="Email"
+                      // label={translate('assistanteDermatologueApp.dermatologue.user.login')}
+                      id="lastName"
+                      name="user.email"
+                      data-cy="user.email"
+                      type="text"
+                      onChange={e => {
+                        setFormData({
+                          ...formData,
+                          user: { ...formData.user, email: e.target.value },
+                        });
+                      }}
+                    />
+                  </Col>
+                </Row>
+                <Row className="mb-3">
+                  <Col md="6">
+                    <ValidatedField
+                      label="Phone"
+                      id="dermatologue-telephone"
+                      name="telephone"
+                      data-cy="telephone"
+                      type="text"
+                      onChange={e => {
+                        setFormData({
+                          ...formData,
+                          dermatologue: { ...formData.dermatologue, telephone: e.target.value },
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md="6">
+                    <ValidatedField
+                      label="Login"
+                      // label={translate('assistanteDermatologueApp.dermatologue.user.login')}
+                      id="login"
+                      name="user.login"
+                      data-cy="user.login"
+                      type="text"
+                      onChange={e => {
+                        setFormData({
+                          ...formData,
+                          user: { ...formData.user, login: e.target.value },
+                        });
+                      }}
+                    />
+                  </Col>
+                </Row>
+                {/* </Row>
+              </Col> */}
+                <Button color="danger" onClick={toggle}>
+                  Close
+                </Button>
+                &nbsp;
+                <Button color="primary" id="save-entity" data-cy="entityCreateSaveButton" type="submit" disabled={updating}>
+                  <FontAwesomeIcon icon="save" />
+                  &nbsp;
+                  <Translate contentKey="entity.action.save">Save</Translate>
+                </Button>
+              </ValidatedForm>
+            </Col>
+          </Row>
+          {/* </ModalBody> */}
         </Box>
       </Modal>
     </div>

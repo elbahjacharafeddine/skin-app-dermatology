@@ -45,6 +45,9 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+const inputBorderStyle = {
+  border: '1px solid red',
+};
 
 export const Patient = () => {
   const [firstName, setFirstName] = useState('');
@@ -99,19 +102,37 @@ export const Patient = () => {
       navigate(`${pageLocation.pathname}${endURL}`);
     }
   };
+  const [isClicked, setIsClicked] = useState(false);
   const savePatientEntity = values => {
+    setIsClicked(!isClicked);
     values.birthdate = convertDateTimeToServer(values.birthdate);
 
-    const entity = {
-      ...patientEntity,
-      ...values,
-      user: users.find(it => it.id.toString() === values.user.toString()),
-    };
-    try {
-      dispatch(createEntity(formData));
-      window.location.reload();
-    } catch (error) {
-      console.error('Error in API request:', error);
+    // const entity = {
+    //   ...patientEntity,
+    //   ...values,
+    //   user: users.find(it => it.id.toString() === values.user.toString()),
+    // };
+    if (
+      formData.patient.birthdate !== '' &&
+      formData.patient.telephone !== '' &&
+      formData.patient.genre !== '' &&
+      formData.patient.adress !== '' &&
+      formData.user.login !== '' &&
+      formData.user.password !== '' &&
+      formData.user.firstName !== '' &&
+      formData.user.lastName !== '' &&
+      formData.user.email !== ''
+    ) {
+      try {
+        dispatch(createEntity(formData));
+        toggleModel();
+        getAllEntities();
+        window.location.reload();
+      } catch (error) {
+        console.error('Error in API request:', error);
+      }
+    } else {
+      console.log('Veuillez remplir tous les champs du formulaire.');
     }
   };
   const handleDatetimeLocalChange = e => {
@@ -132,7 +153,7 @@ export const Patient = () => {
     patient: {
       birthdate: '',
       telephone: '',
-      genre: 'male',
+      genre: '',
       adress: '',
     },
     user: {
@@ -511,6 +532,7 @@ export const Patient = () => {
                       name="adress"
                       data-cy="adress"
                       type="text"
+                      style={isClicked === true && formData.patient.adress === '' ? inputBorderStyle : null}
                       onChange={e => {
                         setFormData({
                           ...formData,
@@ -530,6 +552,8 @@ export const Patient = () => {
                       data-cy="genre"
                       label={translate('assistanteDermatologueApp.patient.genre')}
                       type="select"
+                      validate={{ required: true }}
+                      style={isClicked === true && formData.patient.genre === '' ? inputBorderStyle : null}
                       onChange={e => {
                         setFormData({
                           ...formData,
@@ -573,6 +597,7 @@ export const Patient = () => {
                       name="user.firstName"
                       data-cy="user.firstName"
                       type="text"
+                      style={isClicked === true && formData.user.firstName === '' ? inputBorderStyle : null}
                       onChange={e => {
                         setFormData({
                           ...formData,
@@ -589,6 +614,7 @@ export const Patient = () => {
                       name="user.lastName"
                       data-cy="user.lastName"
                       type="text"
+                      style={isClicked === true && formData.user.lastName === '' ? inputBorderStyle : null}
                       onChange={e => {
                         setFormData({
                           ...formData,
@@ -606,6 +632,7 @@ export const Patient = () => {
                       name="user.passwword"
                       data-cy="user.password"
                       type="password"
+                      style={isClicked === true && formData.user.password === '' ? inputBorderStyle : null}
                       onChange={e => {
                         setFormData({
                           ...formData,
@@ -622,6 +649,7 @@ export const Patient = () => {
                       name="user.email"
                       data-cy="user.email"
                       type="text"
+                      style={isClicked === true && formData.user.email === '' ? inputBorderStyle : null}
                       onChange={e => {
                         setFormData({
                           ...formData,
@@ -639,6 +667,7 @@ export const Patient = () => {
                       name="birthdat"
                       data-cy="birthdat"
                       type="datetime-local"
+                      style={isClicked === true && formData.patient.birthdate === '' ? inputBorderStyle : null}
                       placeholder="YYYY-MM-DD"
                       onChange={handleDatetimeLocalChange}
                     />
@@ -651,6 +680,7 @@ export const Patient = () => {
                       name="user.login"
                       data-cy="user.login"
                       type="text"
+                      style={isClicked === true && formData.user.login === '' ? inputBorderStyle : null}
                       onChange={e => {
                         setFormData({
                           ...formData,
@@ -664,6 +694,7 @@ export const Patient = () => {
                       name="telephone"
                       data-cy="telephone"
                       type="text"
+                      style={isClicked === true && formData.patient.telephone === '' ? inputBorderStyle : null}
                       onChange={e => {
                         setFormData({
                           ...formData,

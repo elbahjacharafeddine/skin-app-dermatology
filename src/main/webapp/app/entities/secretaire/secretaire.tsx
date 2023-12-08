@@ -17,7 +17,11 @@ import 'datatables.net-dt/css/jquery.dataTables.css';
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
 
 import Avatar from '@mui/material/Avatar';
+import { Row, Col, FormText } from 'reactstrap';
+import { isNumber, translate, ValidatedField, ValidatedForm } from 'react-jhipster';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import { convertDateTimeFromServer, convertDateTimeToServer, displayDefaultDateTime } from 'app/shared/util/date-utils';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
@@ -27,7 +31,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import axios from 'axios';
-
+import { getEntity, updateEntity, createEntity, reset } from './secretaire.reducer';
 const style = {
   position: 'absolute',
   top: '50%',
@@ -38,6 +42,9 @@ const style = {
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
+};
+const inputBorderStyle = {
+  border: '1px solid red',
 };
 
 export const Secretaire = () => {
@@ -51,10 +58,19 @@ export const Secretaire = () => {
   const [visible, setVisible] = useState(false);
   const [isupdate, setUpdate] = useState(false);
   const [id, setId] = useState(1);
+  const users = useAppSelector(state => state.userManagement.users);
+  // localStorage.setItem('Users', users);
+  const secretaireEntity = useAppSelector(state => state.secretaire.entity);
+  // const loading = useAppSelector(state => state.secretaire.loading);
+  const updating = useAppSelector(state => state.secretaire.updating);
+  const updateSuccess = useAppSelector(state => state.secretaire.updateSuccess);
 
   const handleClose = () => {
     setVisible(false);
     setUpdate(false);
+  };
+  const toggle = () => {
+    setIsModelOpen(false);
   };
 
   const extractBirthdate = date => {
@@ -66,7 +82,7 @@ export const Secretaire = () => {
   };
   const viewSecretaire = id => {
     setVisible(true);
-    console.log(id + ' dermatologue id');
+    console.log(id + ' secretaire id');
     const element = secretaireList.find(e => e.id === id);
     if (element) {
       console.log(element);
@@ -81,6 +97,55 @@ export const Secretaire = () => {
       console.log('error');
     }
   };
+  const [isClicked, setIsClicked] = useState(false);
+  const saveSecretaireEntity = values => {
+    setIsClicked(!isClicked);
+    console.log(values);
+    if (
+      formData.secretaire.codeEmp !== '' &&
+      formData.secretaire.telephone !== '' &&
+      formData.secretaire.genre !== '' &&
+      formData.user.login !== '' &&
+      formData.user.password !== '' &&
+      formData.user.firstName !== '' &&
+      formData.user.lastName !== '' &&
+      formData.user.email !== ''
+    ) {
+      try {
+        dispatch(createEntity(formData));
+        toggleModel();
+        getAllEntities();
+        window.location.reload();
+      } catch (error) {
+        console.error('Error in API request:', error);
+      }
+    } else {
+      console.log('Veuillez remplir tous les champs du formulaire.');
+    }
+  };
+
+  const [isModelOpen, setIsModelOpen] = useState(false);
+
+  const toggleModel = () => {
+    setIsModelOpen(!isModelOpen);
+  };
+
+  const [formData, setFormData] = useState({
+    secretaire: {
+      codeEmp: '',
+      telephone: '',
+      genre: '',
+    },
+    user: {
+      login: '',
+      password: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      activated: true,
+      langKey: 'en',
+    },
+  });
 
   const editSecretaire = id => {
     setVisible(true);
@@ -204,11 +269,14 @@ export const Secretaire = () => {
           {/*  <FontAwesomeIcon icon="sync" spin={loading} />{' '}*/}
           {/*  <Translate contentKey="assistanteDermatologueApp.secretaire.home.refreshListLabel">Refresh List</Translate>*/}
           {/*</Button>*/}
-          <Link to="/secretaire/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
+          {/* <Link to="/secretaire/new" className="btn btn-primary jh-create-entity" id="jh-create-entity" data-cy="entityCreateButton">
             <FontAwesomeIcon icon="plus" />
             &nbsp;
             <Translate contentKey="assistanteDermatologueApp.secretaire.home.createLabel">Create new Secretaire</Translate>
-          </Link>
+          </Link> */}
+          <Button color="primary" onClick={toggleModel}>
+            Create new Secretaire
+          </Button>
         </div>
       </h2>
       <div className="card-body">
@@ -410,6 +478,216 @@ export const Secretaire = () => {
               </div>
             )}
           </div>
+        </Box>
+      </Modal>
+      <Modal open={isModelOpen} onClose={toggle} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-creation">
+        <Box sx={style}>
+          <Row className="justify-content-center">
+            <Col md="15">
+              <ValidatedForm onSubmit={saveSecretaireEntity}>
+                <Row className="mb-3">
+                  <Col md="6">
+                    {false ? (
+                      <ValidatedField
+                        name="id"
+                        required
+                        readOnly
+                        id="secretaire-id"
+                        label={translate('global.field.id')}
+                        validate={{ required: true }}
+                        hidden={true}
+                      />
+                    ) : null}
+                    <ValidatedField
+                      label="Employee code"
+                      id="secretaire-codeEmp"
+                      name="codeEmp"
+                      data-cy="codeEmp"
+                      type="text"
+                      validate={{ required: true }}
+                      style={isClicked === true && formData.secretaire.codeEmp === '' ? inputBorderStyle : null}
+                      onChange={e => {
+                        setFormData({
+                          ...formData,
+                          secretaire: { ...formData.secretaire, codeEmp: e.target.value },
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md="6">
+                    {/* <ValidatedField id="secretaire-user" name="genre" data-cy="genre" label="Gender" type="select">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </ValidatedField> */}
+                    <ValidatedField
+                      id="secretaire-genre"
+                      name="genre"
+                      data-cy="genre"
+                      label={translate('assistanteDermatologueApp.secretaire.genre')}
+                      type="select"
+                      validate={{ required: true }}
+                      style={isClicked === true && formData.secretaire.genre === '' ? inputBorderStyle : null}
+                      onChange={e => {
+                        setFormData({
+                          ...formData,
+                          secretaire: {
+                            ...formData.secretaire,
+                            genre: e.target.value,
+                          },
+                        });
+                      }}
+                    >
+                      <option disabled selected>
+                        Choose a value
+                      </option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                    </ValidatedField>
+
+                    {/* <ValidatedField*/}
+                    {/*  label={translate('assistanteDermatologueApp.secretaire.genre')}*/}
+                    {/*  id="secretaire-genre"*/}
+                    {/*  name="genre"*/}
+                    {/*  data-cy="genre"*/}
+                    {/*  type="text"*/}
+                    {/*  onChange={e => {*/}
+                    {/*    if (isNew) {*/}
+                    {/*      setFormData({*/}
+                    {/*        ...formData,*/}
+                    {/*        secretaire: { ...formData.secretaire, genre: e.target.value },*/}
+                    {/*      });*/}
+                    {/*    }*/}
+                    {/*  }}*/}
+                    {/*/> */}
+                  </Col>
+                </Row>
+                <Row className="mb-3">
+                  <Col md="6">
+                    <ValidatedField
+                      label="First name"
+                      // label={translate('assistanteDermatologueApp.secretaire.user.login')}
+                      id="firstName"
+                      name="user.firstName"
+                      data-cy="user.firstName"
+                      type="text"
+                      style={isClicked === true && formData.user.firstName === '' ? inputBorderStyle : null}
+                      validate={{ required: true }}
+                      onChange={e => {
+                        setFormData({
+                          ...formData,
+                          user: { ...formData.user, firstName: e.target.value },
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md="6">
+                    <ValidatedField
+                      label="Last name"
+                      // label={translate('assistanteDermatologueApp.secretaire.user.login')}
+                      id="lastName"
+                      name="user.lastName"
+                      data-cy="user.lastName"
+                      type="text"
+                      style={isClicked === true && formData.user.lastName === '' ? inputBorderStyle : null}
+                      validate={{ required: true }}
+                      onChange={e => {
+                        setFormData({
+                          ...formData,
+                          user: { ...formData.user, lastName: e.target.value },
+                        });
+                      }}
+                    />
+                  </Col>
+                </Row>
+                <Row className="mb-3">
+                  <Col md="6">
+                    <ValidatedField
+                      label="Password"
+                      id="password"
+                      name="user.passwword"
+                      data-cy="user.password"
+                      type="password"
+                      style={isClicked === true && formData.user.password === '' ? inputBorderStyle : null}
+                      validate={{ required: true }}
+                      onChange={e => {
+                        setFormData({
+                          ...formData,
+                          user: { ...formData.user, password: e.target.value },
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md="6">
+                    <ValidatedField
+                      label="Email"
+                      // label={translate('assistanteDermatologueApp.secretaire.user.login')}
+                      id="lastName"
+                      name="user.email"
+                      data-cy="user.email"
+                      type="text"
+                      style={isClicked === true && formData.user.email === '' ? inputBorderStyle : null}
+                      validate={{ required: true }}
+                      onChange={e => {
+                        setFormData({
+                          ...formData,
+                          user: { ...formData.user, email: e.target.value },
+                        });
+                      }}
+                    />
+                  </Col>
+                </Row>
+                <Row className="mb-3">
+                  <Col md="6">
+                    <ValidatedField
+                      label="Phone"
+                      id="secretaire-telephone"
+                      name="telephone"
+                      data-cy="telephone"
+                      type="text"
+                      style={isClicked === true && formData.secretaire.telephone === '' ? inputBorderStyle : null}
+                      validate={{ required: true }}
+                      onChange={e => {
+                        setFormData({
+                          ...formData,
+                          secretaire: { ...formData.secretaire, telephone: e.target.value },
+                        });
+                      }}
+                    />
+                  </Col>
+                  <Col md="6">
+                    <ValidatedField
+                      label="Login"
+                      // label={translate('assistanteDermatologueApp.secretaire.user.login')}
+                      id="login"
+                      name="user.login"
+                      data-cy="user.login"
+                      type="text"
+                      style={isClicked === true && formData.user.login === '' ? inputBorderStyle : null}
+                      validate={{ required: true }}
+                      onChange={e => {
+                        setFormData({
+                          ...formData,
+                          user: { ...formData.user, login: e.target.value },
+                        });
+                      }}
+                    />
+                  </Col>
+                </Row>
+                {/* </Row>
+              </Col> */}
+                <Button color="danger" onClick={toggle}>
+                  Close
+                </Button>
+                &nbsp;
+                <Button color="primary" id="save-entity" data-cy="entityCreateSaveButton" type="submit" disabled={updating}>
+                  <FontAwesomeIcon icon="save" />
+                  &nbsp;
+                  <Translate contentKey="entity.action.save">Save</Translate>
+                </Button>
+              </ValidatedForm>
+            </Col>
+          </Row>
+          {/* </ModalBody> */}
         </Box>
       </Modal>
     </div>

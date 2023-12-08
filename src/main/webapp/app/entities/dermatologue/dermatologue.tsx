@@ -43,6 +43,9 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+const inputBorderStyle = {
+  border: '1px solid red',
+};
 
 export const Dermatologue = () => {
   const [firstName, setFirstName] = useState('');
@@ -67,24 +70,38 @@ export const Dermatologue = () => {
   const toggle = () => {
     setIsModelOpen(false);
   };
+  const [isClicked, setIsClicked] = useState(false);
   const saveDermatologueEntity = values => {
     console.log('dermatologue');
     console.log(values);
-    const entity = {
-      ...dermatologueEntity,
-      ...values,
-      user: users.find(it => it.id.toString() === values.user.toString()),
-    };
-
-    try {
-      dispatch(createEntity(formData));
-      window.location.reload();
-    } catch (error) {
-      console.error('Error in API request:', error);
+    // const entity = {
+    //   ...dermatologueEntity,
+    //   ...values,
+    //   user: users.find(it => it.id.toString() === values.user.toString()),
+    // };
+    setIsClicked(!isClicked);
+    console.log(values);
+    if (
+      formData.dermatologue.codeEmp !== '' &&
+      formData.dermatologue.telephone !== '' &&
+      formData.dermatologue.genre !== '' &&
+      formData.user.login !== '' &&
+      formData.user.password !== '' &&
+      formData.user.firstName !== '' &&
+      formData.user.lastName !== '' &&
+      formData.user.email !== ''
+    ) {
+      try {
+        dispatch(createEntity(formData));
+        toggleModel();
+        getAllEntities();
+        window.location.reload();
+      } catch (error) {
+        console.error('Error in API request:', error);
+      }
+    } else {
+      console.log('Veuillez remplir tous les champs du formulaire.');
     }
-
-    // dispatch(createEntity(formData));
-    // window.location.reload();
   };
   const [formData, setFormData] = useState({
     dermatologue: {
@@ -489,6 +506,7 @@ export const Dermatologue = () => {
                       name="codeEmp"
                       data-cy="codeEmp"
                       type="text"
+                      style={isClicked === true && formData.dermatologue.codeEmp === '' ? inputBorderStyle : null}
                       onChange={e => {
                         setFormData({
                           ...formData,
@@ -508,6 +526,7 @@ export const Dermatologue = () => {
                       data-cy="genre"
                       label={translate('assistanteDermatologueApp.dermatologue.genre')}
                       type="select"
+                      style={isClicked === true && formData.dermatologue.genre === '' ? inputBorderStyle : null}
                       onChange={e => {
                         setFormData({
                           ...formData,
@@ -551,6 +570,7 @@ export const Dermatologue = () => {
                       name="user.firstName"
                       data-cy="user.firstName"
                       type="text"
+                      style={isClicked === true && formData.user.firstName === '' ? inputBorderStyle : null}
                       onChange={e => {
                         setFormData({
                           ...formData,
@@ -567,6 +587,7 @@ export const Dermatologue = () => {
                       name="user.lastName"
                       data-cy="user.lastName"
                       type="text"
+                      style={isClicked === true && formData.user.lastName === '' ? inputBorderStyle : null}
                       onChange={e => {
                         setFormData({
                           ...formData,
@@ -584,6 +605,7 @@ export const Dermatologue = () => {
                       name="user.passwword"
                       data-cy="user.password"
                       type="password"
+                      style={isClicked === true && formData.user.password === '' ? inputBorderStyle : null}
                       onChange={e => {
                         setFormData({
                           ...formData,
@@ -600,6 +622,7 @@ export const Dermatologue = () => {
                       name="user.email"
                       data-cy="user.email"
                       type="text"
+                      style={isClicked === true && formData.user.email === '' ? inputBorderStyle : null}
                       onChange={e => {
                         setFormData({
                           ...formData,
@@ -617,6 +640,7 @@ export const Dermatologue = () => {
                       name="telephone"
                       data-cy="telephone"
                       type="text"
+                      style={isClicked === true && formData.dermatologue.telephone === '' ? inputBorderStyle : null}
                       onChange={e => {
                         setFormData({
                           ...formData,
@@ -633,6 +657,7 @@ export const Dermatologue = () => {
                       name="user.login"
                       data-cy="user.login"
                       type="text"
+                      style={isClicked === true && formData.user.login === '' ? inputBorderStyle : null}
                       onChange={e => {
                         setFormData({
                           ...formData,

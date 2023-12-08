@@ -1,5 +1,6 @@
 package com.ensaj.domain;
 
+import com.ensaj.service.dto.NewPatientUserDTO;
 import com.ensaj.service.dto.PatientUserDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
@@ -72,6 +73,17 @@ public class Diagnostic implements Serializable {
     // Setter for patientUserDTO
     public void setPatientUserDTO(PatientUserDTO patientUserDTO) {
         this.patientUserDTO = patientUserDTO;
+    }
+
+    private NewPatientUserDTO newPatientUserDTO;
+
+    public NewPatientUserDTO getNewPatientUserDTO() {
+        return newPatientUserDTO;
+    }
+
+    // Setter for patientUserDTO
+    public void setNewPatientUserDTO(NewPatientUserDTO newPatientUserDTO) {
+        this.newPatientUserDTO = newPatientUserDTO;
     }
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
+import { Link, useLocation } from 'react-router-dom';
 import $ from 'jquery';
 import 'jquery';
 import 'datatables.net-dt/js/dataTables.dataTables';
@@ -10,6 +10,7 @@ import 'datatables.net-dt/css/jquery.dataTables.css';
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
 import axios from 'axios';
 import { faFileMedical } from '@fortawesome/free-solid-svg-icons';
+import { Button } from 'reactstrap';
 export const ConsultationList = () => {
   const [consultationList, setConsultationList] = useState([]);
   const [conAll, setConAll] = useState([]);
@@ -157,7 +158,7 @@ export const ConsultationList = () => {
         {!isToday && (
           <div className="card-body table-reponsive">
             {conAll && conAll.length > 0 ? (
-              <table className="table-responsive" id="myTableAll">
+              <table className="table table-responsive" id="myTableAll">
                 <thead>
                   <tr>
                     <th className="hand">Date consultation</th>
@@ -175,7 +176,7 @@ export const ConsultationList = () => {
                       <td>{consultation.rendezVous.patient.user.firstName + ' ' + consultation.rendezVous.patient.user.lastName}</td>
                       <td>{consultation.rendezVous.patient.telephone}</td>
                       <td>
-                        <button
+                        {/* <button
                           className="btn btn-primary m-1"
                           title="Diagnostic"
                           onClick={() =>
@@ -186,8 +187,25 @@ export const ConsultationList = () => {
                           }
                         >
                           <FontAwesomeIcon icon={faFileMedical} /> <span className="d-none d-md-inline">Diagnostic</span>
-                        </button>
-                        <button className="btn btn-danger">Delete</button>
+                        </button> */}
+                        {/* <button className="btn btn-danger">Delete</button> */}
+
+                        <Button
+                          onClick={() =>
+                            toNavigate(
+                              consultation.id,
+                              consultation.rendezVous.patient.user.firstName + ' ' + consultation.rendezVous.patient.user.lastName,
+                            )
+                          }
+                          color="primary"
+                          size="sm"
+                          data-cy="entityDeleteButton"
+                        >
+                          <FontAwesomeIcon icon={faFileMedical} /> <span className="d-none d-md-inline">Diagnostic</span>
+                        </Button>
+                        <Button color="danger" size="sm" data-cy="entityDeleteButton">
+                          <FontAwesomeIcon icon="trash" /> <span className="d-none d-md-inline">Delete</span>
+                        </Button>
                       </td>
                     </tr>
                   ))}

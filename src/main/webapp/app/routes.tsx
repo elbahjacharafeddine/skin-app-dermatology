@@ -24,6 +24,7 @@ import PaginatorBasicDemo from 'app/components/medecin/PaginatorBasicDemo';
 import PatientsList from './entities/dermatologue/PatientsList';
 import MedicalRecord from './entities/patient/medical-record';
 import PatientRendezVous from './entities/rendez-vous/patient-rendez-vous';
+import PatientDossierMedical from './entities/patient/patient-medical-dossier';
 
 // import Elbahja from "app/modules/login/Elbahja";
 // import Test from "app/components/medecin/Test";
@@ -53,6 +54,7 @@ const AppRoutes = () => {
         <Route path="/dermatologue/patientsliste" element={<PatientsList />} />
         <Route path="/medicalRecord" element={<MedicalRecord />} />
         <Route path="/patient/appointements" element={<PatientRendezVous />} />
+        <Route path="/MyMedicalRecord" element={<PatientDossierMedical />} />
 
         <Route path="logout" element={<Logout />} />
         <Route path="account">

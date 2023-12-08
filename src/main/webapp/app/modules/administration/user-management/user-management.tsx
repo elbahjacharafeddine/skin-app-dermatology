@@ -95,7 +95,7 @@ export const UserManagement = () => {
   };
 
   return (
-    <div>
+    <div className="p-3 card">
       <h2 id="user-management-page-heading" data-cy="userManagementPageHeading">
         <Translate contentKey="userManagement.home.title">Users</Translate>
         <div className="d-flex justify-content-end">

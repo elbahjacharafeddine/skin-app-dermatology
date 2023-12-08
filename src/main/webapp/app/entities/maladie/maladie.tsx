@@ -126,7 +126,7 @@ export const Maladie = () => {
                   {/*<td>{maladie.diagnostics ? <Link to={`/diagnostic/${maladie.diagnostics.id}`}>{maladie.diagnostics.id}</Link> : ''}</td>*/}
 
                   <td className="text-end">
-                    <div className="btn-group flex-btn-group-container">
+                    <div className="flex-btn-group-container">
                       <Button tag={Link} to={`/maladie/${maladie.id}`} color="info" size="sm" data-cy="entityDetailsButton">
                         <FontAwesomeIcon icon="eye" />{' '}
                         <span className="d-none d-md-inline">

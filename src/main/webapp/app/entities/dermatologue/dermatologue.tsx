@@ -47,6 +47,15 @@ const inputBorderStyle = {
   border: '1px solid red',
 };
 
+const buttonContainerStyle = {
+  display: 'flex',
+  alignItems: 'center',
+};
+
+const buttonStyle = {
+  marginRight: '10px',
+};
+
 export const Dermatologue = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -313,12 +322,13 @@ export const Dermatologue = () => {
                   {/*<td>{dermatologue.user ? dermatologue.user : ''}</td>*/}
                   <td>{dermatologue.user ? dermatologue.user.firstName + ' ' + dermatologue.user.lastName : ''}</td>
                   <td className="text-end">
-                    <div className="btn-group flex-btn-group-container">
+                    <div className="flex-btn-group-container" style={buttonContainerStyle}>
                       <Button
                         onClick={() => viewDermatologue(dermatologue.id)}
                         // tag={Link} to={`/dermatologue/${dermatologue.id}`}
                         color="info"
                         size="sm"
+                        style={buttonStyle}
                         data-cy="entityDetailsButton"
                       >
                         <FontAwesomeIcon icon="eye" />{' '}
@@ -331,6 +341,7 @@ export const Dermatologue = () => {
                         // tag={Link} to={`/dermatologue/${dermatologue.id}/edit`}
                         color="primary"
                         size="sm"
+                        style={buttonStyle}
                         data-cy="entityEditButton"
                       >
                         <FontAwesomeIcon icon="pencil-alt" />{' '}
@@ -338,7 +349,7 @@ export const Dermatologue = () => {
                           <Translate contentKey="entity.action.edit">Edit</Translate>
                         </span>
                       </Button>
-                      <Button tag={Link} to={`/dermatologue/all-patient/${dermatologue.id}`} color="warning" size="sm">
+                      <Button tag={Link} to={`/dermatologue/all-patient/${dermatologue.id}`} color="warning" size="sm" style={buttonStyle}>
                         <FontAwesomeIcon icon="eye" /> <span className="d-none d-md-inline m-1">Patients info</span>
                       </Button>
 
@@ -346,6 +357,7 @@ export const Dermatologue = () => {
                         onClick={() => (location.href = `/dermatologue/${dermatologue.id}/delete`)}
                         color="danger"
                         size="sm"
+                        style={buttonStyle}
                         data-cy="entityDeleteButton"
                       >
                         <FontAwesomeIcon icon="trash" />{' '}

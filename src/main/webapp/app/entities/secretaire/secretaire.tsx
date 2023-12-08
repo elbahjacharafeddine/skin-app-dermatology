@@ -47,6 +47,15 @@ const inputBorderStyle = {
   border: '1px solid red',
 };
 
+const buttonContainerStyle = {
+  display: 'flex',
+  alignItems: 'center',
+};
+
+const buttonStyle = {
+  marginRight: '10px',
+};
+
 export const Secretaire = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -315,12 +324,13 @@ export const Secretaire = () => {
                   <td>{secretaire.telephone}</td>
                   <td>{secretaire.user ? secretaire.user.firstName + ' ' + secretaire.user.lastName : ''}</td>
                   <td className="text-end">
-                    <div className="btn-group flex-btn-group-container">
+                    <div className="flex-btn-group-container" style={buttonContainerStyle}>
                       <Button
                         onClick={() => viewSecretaire(secretaire.id)}
                         // tag={Link} to={`/secretaire/${secretaire.id}`}
                         color="info"
                         size="sm"
+                        style={buttonStyle}
                         data-cy="entityDetailsButton"
                       >
                         <FontAwesomeIcon icon="eye" />{' '}
@@ -333,6 +343,7 @@ export const Secretaire = () => {
                         // tag={Link} to={`/secretaire/${secretaire.id}/edit`}
                         color="primary"
                         size="sm"
+                        style={buttonStyle}
                         data-cy="entityEditButton"
                       >
                         <FontAwesomeIcon icon="pencil-alt" />{' '}
@@ -344,6 +355,7 @@ export const Secretaire = () => {
                         onClick={() => (location.href = `/secretaire/${secretaire.id}/delete`)}
                         color="danger"
                         size="sm"
+                        style={buttonStyle}
                         data-cy="entityDeleteButton"
                       >
                         <FontAwesomeIcon icon="trash" />{' '}

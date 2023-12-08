@@ -367,6 +367,14 @@ export const UserDiagnostics = () => {
   const handleConfirm = () => {
     setIsValidateModalOpen(!isValidateModalOpen);
   };
+  const buttonContainerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+  };
+
+  const buttonStyle = {
+    marginRight: '10px', // Ajustez selon vos besoins
+  };
 
   if (consultationId != undefined && consultationId != null) {
     return (
@@ -450,18 +458,30 @@ export const UserDiagnostics = () => {
                     <td>{diagnostic.probability}</td>
 
                     <td className="text-end">
-                      <div className="flex-btn-group-container">
-                        <Button color="success" size="sm" onClick={() => toggleStatisticsModal(diagnostic.probabilities, diagnostic)}>
+                      <div className="flex-btn-group-container" style={buttonContainerStyle}>
+                        <Button
+                          color="success"
+                          size="sm"
+                          onClick={() => toggleStatisticsModal(diagnostic.probabilities, diagnostic)}
+                          style={buttonStyle}
+                        >
                           <FontAwesomeIcon icon={faChartLine} /> <span className="d-none d-md-inline">Statistics</span>
                         </Button>
 
-                        <Button tag={Link} to={`/diagnostic/${diagnostic.id}/edit`} color="primary" size="sm" data-cy="entityEditButton">
+                        <Button
+                          tag={Link}
+                          to={`/diagnostic/${diagnostic.id}/edit`}
+                          color="primary"
+                          size="sm"
+                          data-cy="entityEditButton"
+                          style={buttonStyle}
+                        >
                           <FontAwesomeIcon icon="pencil-alt" />{' '}
                           <span className="d-none d-md-inline">
                             <Translate contentKey="entity.action.edit">Edit</Translate>
                           </span>
                         </Button>
-                        <Button color="success" size="sm" onClick={() => toggleValidateModal(diagnostic)}>
+                        <Button color="success" size="sm" onClick={() => toggleValidateModal(diagnostic)} style={buttonStyle}>
                           <FontAwesomeIcon icon={faCheck} /> <span className="d-none d-md-inline">Validate</span>
                         </Button>
                         <Button
@@ -469,6 +489,7 @@ export const UserDiagnostics = () => {
                           color="danger"
                           size="sm"
                           data-cy="entityDeleteButton"
+                          style={buttonStyle}
                         >
                           <FontAwesomeIcon icon="trash" />{' '}
                           <span className="d-none d-md-inline">

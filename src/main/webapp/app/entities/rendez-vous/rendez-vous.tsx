@@ -17,6 +17,14 @@ import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-responsive-dt/js/responsive.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.css';
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
+const buttonContainerStyle = {
+  display: 'flex',
+  alignItems: 'center',
+};
+
+const buttonStyle = {
+  marginRight: '10px',
+};
 export const RendezVous = () => {
   const dispatch = useAppDispatch();
 
@@ -167,9 +175,9 @@ export const RendezVous = () => {
                   {/* {rendezVous.patients.id} */}
                   <td>{rendezVous.dermatologue.user ? rendezVous.patient.user.firstName + ' ' + rendezVous.patient.user.lastName : ' '}</td>
                   <td className="text-end">
-                    <div className="btn-group flex-btn-group-container">
+                    <div className="flex-btn-group-container" style={buttonContainerStyle}>
                       {rendezVous.statut == false && (
-                        <Button onClick={() => handleChangeStatus(rendezVous.id)} color="success" size="sm">
+                        <Button onClick={() => handleChangeStatus(rendezVous.id)} color="success" size="sm" style={buttonStyle}>
                           <FontAwesomeIcon icon={faCheck} /> <span className="d-none d-md-inline">Confirm</span>
                         </Button>
                       )}
@@ -189,6 +197,7 @@ export const RendezVous = () => {
                         onClick={() => (location.href = `/rendez-vous/${rendezVous.id}/delete`)}
                         color="danger"
                         size="sm"
+                        style={buttonStyle}
                         data-cy="entityDeleteButton"
                       >
                         <FontAwesomeIcon icon="trash" />{' '}

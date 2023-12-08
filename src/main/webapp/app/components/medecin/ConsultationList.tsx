@@ -17,6 +17,14 @@ export const ConsultationList = () => {
   const userData = JSON.parse(sessionStorage.getItem('user_data'));
   const [choix, setChoix] = useState('All');
   const [isToday, setToday] = useState(true);
+  const buttonContainerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+  };
+
+  const buttonStyle = {
+    marginRight: '10px',
+  };
 
   const consultationForToday = () => {
     axios
@@ -130,10 +138,11 @@ export const ConsultationList = () => {
                       <td>{extractTime(consultation.dateConsultation)}</td>
                       <td>{consultation.rendezVous.patient.user.firstName + ' ' + consultation.rendezVous.patient.user.lastName}</td>
                       <td>{consultation.rendezVous.patient.telephone}</td>
-                      <td>
+                      <td style={buttonContainerStyle}>
                         <button
                           className="btn btn-primary m-1"
                           title="Diagnostic"
+                          style={buttonStyle}
                           onClick={() =>
                             toNavigate(
                               consultation.id,
@@ -143,7 +152,9 @@ export const ConsultationList = () => {
                         >
                           <FontAwesomeIcon icon={faFileMedical} /> <span className="d-none d-md-inline">Diagnostic</span>
                         </button>
-                        <button className="btn btn-danger">Delete</button>
+                        <button className="btn btn-danger" style={buttonStyle}>
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -175,7 +186,7 @@ export const ConsultationList = () => {
                       <td>{extractTime(consultation.dateConsultation)}</td>
                       <td>{consultation.rendezVous.patient.user.firstName + ' ' + consultation.rendezVous.patient.user.lastName}</td>
                       <td>{consultation.rendezVous.patient.telephone}</td>
-                      <td>
+                      <td style={buttonContainerStyle}>
                         {/* <button
                           className="btn btn-primary m-1"
                           title="Diagnostic"
@@ -199,11 +210,12 @@ export const ConsultationList = () => {
                           }
                           color="primary"
                           size="sm"
+                          style={buttonStyle}
                           data-cy="entityDeleteButton"
                         >
                           <FontAwesomeIcon icon={faFileMedical} /> <span className="d-none d-md-inline">Diagnostic</span>
                         </Button>
-                        <Button color="danger" size="sm" data-cy="entityDeleteButton">
+                        <Button color="danger" size="sm" data-cy="entityDeleteButton" style={buttonStyle}>
                           <FontAwesomeIcon icon="trash" /> <span className="d-none d-md-inline">Delete</span>
                         </Button>
                       </td>

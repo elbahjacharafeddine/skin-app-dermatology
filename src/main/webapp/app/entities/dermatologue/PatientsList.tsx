@@ -39,6 +39,14 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+const buttonContainerStyle = {
+  display: 'flex',
+  alignItems: 'center',
+};
+
+const buttonStyle = {
+  marginRight: '10px',
+};
 
 export const PatientsList = () => {
   const [firstName, setFirstName] = useState('');
@@ -272,13 +280,13 @@ export const PatientsList = () => {
                   <td>{patient.patient.telephone}</td>
                   <td>{patient.patient.user ? patient.patient.user.firstName + ' ' + patient.patient.user.lastName : ''}</td>
                   <td className="text-end">
-                    <div className="flex-btn-group-container">
-                      <Button onClick={() => viewMedicalRecord(patient.patient.id)} color="info" size="sm">
+                    <div className="flex-btn-group-container" style={buttonContainerStyle}>
+                      <Button onClick={() => viewMedicalRecord(patient.patient.id)} color="info" size="sm" style={buttonStyle}>
                         <FontAwesomeIcon icon="plus" />
                         &nbsp; medical record
                       </Button>
 
-                      <Button onClick={() => viewPatient(patient.patient.id)} color="success" size="sm">
+                      <Button onClick={() => viewPatient(patient.patient.id)} color="success" size="sm" style={buttonStyle}>
                         <FontAwesomeIcon icon="eye" />{' '}
                         <span className="d-none d-md-inline">
                           <Translate contentKey="entity.action.view">View</Translate>
@@ -289,6 +297,7 @@ export const PatientsList = () => {
                         // tag={Link} to={`/patient/${patient.id}/edit`}
                         color="primary"
                         size="sm"
+                        style={buttonStyle}
                         data-cy="entityEditButton"
                       >
                         <FontAwesomeIcon icon="pencil-alt" />{' '}
@@ -300,6 +309,7 @@ export const PatientsList = () => {
                         onClick={() => (location.href = `/patient/${patient.patient.id}/delete`)}
                         color="danger"
                         size="sm"
+                        style={buttonStyle}
                         data-cy="entityDeleteButton"
                       >
                         <FontAwesomeIcon icon="trash" />{' '}

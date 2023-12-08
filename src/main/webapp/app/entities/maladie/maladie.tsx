@@ -7,9 +7,22 @@ import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons'
 import { ASC, DESC, SORT } from 'app/shared/util/pagination.constants';
 import { overrideSortStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
+import $ from 'jquery';
+import 'jquery';
+import 'datatables.net-dt/js/dataTables.dataTables';
+import 'datatables.net-responsive-dt/js/responsive.dataTables';
+import 'datatables.net-dt/css/jquery.dataTables.css';
+import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
 
 import { getEntities } from './maladie.reducer';
+const buttonContainerStyle = {
+  display: 'flex',
+  alignItems: 'center',
+};
 
+const buttonStyle = {
+  marginRight: '10px',
+};
 export const Maladie = () => {
   const dispatch = useAppDispatch();
 
@@ -53,6 +66,15 @@ export const Maladie = () => {
     sortEntities();
   };
 
+  useEffect(() => {
+    if (maladieList.length > 0) {
+      const table = $('#myTable').DataTable();
+      return () => {
+        table.destroy();
+      };
+    }
+  }, [maladieList]);
+
   const getSortIconByFieldName = (fieldName: string) => {
     const sortFieldName = sortState.sort;
     const order = sortState.order;
@@ -81,13 +103,9 @@ export const Maladie = () => {
       </h2>
       <div className="table-responsive">
         {maladieList && maladieList.length > 0 ? (
-          <Table responsive>
+          <Table className="table table-responsive" id="myTable">
             <thead>
               <tr>
-                {/*<th className="hand" onClick={sort('id')}>*/}
-                {/*  <Translate contentKey="assistanteDermatologueApp.maladie.id">ID</Translate>{' '}*/}
-                {/*  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />*/}
-                {/*</th>*/}
                 <th className="hand" onClick={sort('fullName')}>
                   <Translate contentKey="assistanteDermatologueApp.maladie.fullName">Full Name</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('fullName')} />
@@ -97,43 +115,38 @@ export const Maladie = () => {
                   <FontAwesomeIcon icon={getSortIconByFieldName('abbr')} />
                 </th>
 
-                {/* <th>
-                  <Translate contentKey="assistanteDermatologueApp.maladie.diagnostics">Diagnostics</Translate>{' '}
-                  <FontAwesomeIcon icon="sort" />
-                </th> */}
-
-                {/*<th>*/}
-                {/*  <Translate contentKey="assistanteDermatologueApp.maladie.diagnostics">Diagnostics</Translate>{' '}*/}
-                {/*  <FontAwesomeIcon icon="sort" />*/}
-                {/*</th>*/}
-
                 <th />
               </tr>
             </thead>
             <tbody>
               {maladieList.map((maladie, i) => (
                 <tr key={`entity-${i}`} data-cy="entityTable">
-                  {/*<td>*/}
-                  {/*  <Button tag={Link} to={`/maladie/${maladie.id}`} color="link" size="sm">*/}
-                  {/*    {maladie.id}*/}
-                  {/*  </Button>*/}
-                  {/*</td>*/}
                   <td>{maladie.fullName}</td>
                   <td>{maladie.abbr}</td>
 
-                  {/* <td>{maladie.diagnostics ? <Link to={`/diagnostic/${maladie.diagnostics.id}`}>{maladie.diagnostics.id}</Link> : ''}</td> */}
-
-                  {/*<td>{maladie.diagnostics ? <Link to={`/diagnostic/${maladie.diagnostics.id}`}>{maladie.diagnostics.id}</Link> : ''}</td>*/}
-
                   <td className="text-end">
-                    <div className="flex-btn-group-container">
-                      <Button tag={Link} to={`/maladie/${maladie.id}`} color="info" size="sm" data-cy="entityDetailsButton">
+                    <div className="flex-btn-group-container" style={buttonContainerStyle}>
+                      <Button
+                        tag={Link}
+                        to={`/maladie/${maladie.id}`}
+                        color="info"
+                        size="sm"
+                        data-cy="entityDetailsButton"
+                        style={buttonStyle}
+                      >
                         <FontAwesomeIcon icon="eye" />{' '}
                         <span className="d-none d-md-inline">
                           <Translate contentKey="entity.action.view">View</Translate>
                         </span>
                       </Button>
-                      <Button tag={Link} to={`/maladie/${maladie.id}/edit`} color="primary" size="sm" data-cy="entityEditButton">
+                      <Button
+                        tag={Link}
+                        to={`/maladie/${maladie.id}/edit`}
+                        color="primary"
+                        size="sm"
+                        data-cy="entityEditButton"
+                        style={buttonStyle}
+                      >
                         <FontAwesomeIcon icon="pencil-alt" />{' '}
                         <span className="d-none d-md-inline">
                           <Translate contentKey="entity.action.edit">Edit</Translate>
@@ -143,6 +156,7 @@ export const Maladie = () => {
                         onClick={() => (location.href = `/maladie/${maladie.id}/delete`)}
                         color="danger"
                         size="sm"
+                        style={buttonStyle}
                         data-cy="entityDeleteButton"
                       >
                         <FontAwesomeIcon icon="trash" />{' '}

@@ -69,6 +69,7 @@ const Elbahja: React.FC<ElbahjaProps> = ({ isAuthenticated, role }) => {
         const convertedData = response.data.map(item => {
           console.log(item);
           const dateObject = new Date(item.dateDebut);
+          dateObject.setHours(dateObject.getHours() - 1);
           const timeString = dateObject.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
           console.log(timeString);
           return {

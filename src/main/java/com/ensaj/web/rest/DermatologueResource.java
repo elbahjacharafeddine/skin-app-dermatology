@@ -1,28 +1,22 @@
 package com.ensaj.web.rest;
 
-import com.ensaj.domain.Dermatologue;
-import com.ensaj.domain.Patient;
-import com.ensaj.domain.RendezVous;
-import com.ensaj.domain.User;
-import com.ensaj.repository.DermatologueRepository;
-import com.ensaj.repository.RendezVousRepository;
-import com.ensaj.repository.UserRepository;
+import com.ensaj.domain.*;
+import com.ensaj.repository.*;
 import com.ensaj.security.AuthoritiesConstants;
 import com.ensaj.service.UserService;
 import com.ensaj.service.dto.DermatologuePatientsDTO;
 import com.ensaj.service.dto.DermatologueUserDTO;
-import com.ensaj.service.dto.RendezVousDTO;
 import com.ensaj.service.dto.TransformedDermatologueUserDTO;
 import com.ensaj.web.rest.errors.BadRequestAlertException;
 import com.ensaj.web.rest.vm.ManagedUserVM;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
@@ -46,17 +40,23 @@ public class DermatologueResource {
     private final RendezVousRepository rendezVousRepository;
     private final UserService userService;
     private final UserRepository userRepository;
+    private final ConsultationRepository consultationRepository;
+    private final DiagnosticRepository diagnosticRepository;
 
     public DermatologueResource(
         DermatologueRepository dermatologueRepository,
         RendezVousRepository rendezVousRepository,
         UserService userService,
-        UserRepository userRepository
+        UserRepository userRepository,
+        ConsultationRepository consultationRepository,
+        DiagnosticRepository diagnosticRepository
     ) {
         this.dermatologueRepository = dermatologueRepository;
         this.rendezVousRepository = rendezVousRepository;
         this.userService = userService;
         this.userRepository = userRepository;
+        this.consultationRepository = consultationRepository;
+        this.diagnosticRepository = diagnosticRepository;
     }
 
     /**
@@ -69,6 +69,11 @@ public class DermatologueResource {
     @PostMapping("/dermatologues")
     public ResponseEntity<Dermatologue> createDermatologue(@RequestBody DermatologueUserDTO dermatologue) throws URISyntaxException {
         log.debug("REST request to save Dermatologue : {}", dermatologue);
+        Optional<User> existingUser = userRepository.findOneByLogin(dermatologue.getUser().getLogin());
+
+        if (existingUser.isPresent()) {
+            return null;
+        }
         if (dermatologue.getDermatologue().getId() != null) {
             throw new BadRequestAlertException("A new dermatologue cannot already have an ID", ENTITY_NAME, "idexists");
         }
@@ -352,6 +357,20 @@ public class DermatologueResource {
     @DeleteMapping("/dermatologues/{id}")
     public ResponseEntity<Void> deleteDermatologue(@PathVariable String id) {
         log.debug("REST request to delete Dermatologue : {}", id);
+
+        Dermatologue dermatologue = dermatologueRepository.findById(id).get();
+        List<RendezVous> rendezVous = rendezVousRepository.findByDermatologues(dermatologue);
+
+        for (RendezVous r : rendezVous) {
+            Consultation consultation = consultationRepository.findByRendezVous(r);
+            List<Diagnostic> diagnostics = diagnosticRepository.findByConsultations(consultation);
+            for (Diagnostic d : diagnostics) {
+                diagnosticRepository.deleteById(d.getId());
+            }
+            consultationRepository.deleteById(consultation.getId());
+            rendezVousRepository.deleteById(r.getId());
+        }
+
         dermatologueRepository.deleteById(id);
         userRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();

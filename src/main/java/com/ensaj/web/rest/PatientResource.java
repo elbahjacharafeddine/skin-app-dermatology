@@ -75,6 +75,11 @@ public class PatientResource {
     @PostMapping("")
     public ResponseEntity<Patient> createPatient(@RequestBody PatientUserDTO patientUserDTO) throws URISyntaxException {
         log.debug("REST request to save Patient : {}", patientUserDTO);
+        Optional<User> existingUser = userRepository.findOneByLogin(patientUserDTO.getUser().getLogin());
+
+        if (existingUser.isPresent()) {
+            return null;
+        }
         if (patientUserDTO.getUser().getId() != null) {
             throw new BadRequestAlertException("A new patient cannot already have an ID", ENTITY_NAME, "idexists");
         }

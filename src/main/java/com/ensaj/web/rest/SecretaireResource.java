@@ -74,6 +74,11 @@ public class SecretaireResource {
     @PostMapping("/secretaires")
     public ResponseEntity<Secretaire> createSecretaire(@RequestBody SecretaireUserDTO secretaire) throws URISyntaxException {
         log.debug("REST request to save Secretaire : {}", secretaire);
+        Optional<User> existingUser = userRepository.findOneByLogin(secretaire.getUser().getLogin());
+
+        if (existingUser.isPresent()) {
+            return null;
+        }
         if (secretaire.getSecretaire().getId() != null) {
             throw new BadRequestAlertException("A new secretaire cannot already have an ID", ENTITY_NAME, "idexists");
         }

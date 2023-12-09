@@ -10,7 +10,9 @@ import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.cons
 import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { getUsersAsAdmin, updateUser } from './user-management.reducer';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
-
+const headerColor = {
+  backgroundColor: '#54B4D3',
+};
 export const UserManagement = () => {
   const dispatch = useAppDispatch();
 
@@ -110,7 +112,7 @@ export const UserManagement = () => {
       </h2>
       <Table responsive striped>
         <thead>
-          <tr>
+          <tr style={headerColor}>
             <th className="hand" onClick={sort('id')}>
               <Translate contentKey="global.field.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
             </th>

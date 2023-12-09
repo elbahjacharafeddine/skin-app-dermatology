@@ -30,6 +30,9 @@ import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons'
 import { openFile, byteSize, Translate, TextFormat, getSortState } from 'react-jhipster';
 import { overrideSortStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { ASC, DESC, SORT } from 'app/shared/util/pagination.constants';
+const headerColor = {
+  backgroundColor: '#54B4D3',
+};
 export default function PatientDossierMedical() {
   const dispatch = useAppDispatch();
   const [details, setDetails] = useState([]);
@@ -305,7 +308,7 @@ export default function PatientDossierMedical() {
                       {data && data.length > 0 ? (
                         <table className="table table-responsive " id="myTable">
                           <thead>
-                            <tr>
+                            <tr style={headerColor}>
                               <th className="hand">Date_Diagnostic</th>
                               <th className="hand">Dermatologue</th>
 

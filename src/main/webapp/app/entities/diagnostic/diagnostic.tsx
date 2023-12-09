@@ -10,7 +10,9 @@ import { overrideSortStateWithQueryParams } from 'app/shared/util/entity-utils';
 import { useAppDispatch, useAppSelector } from 'app/config/store';
 import DiagnosticModel from './DiagnosticModel';
 import { getEntities } from './diagnostic.reducer';
-
+const headerColor = {
+  backgroundColor: '#54B4D3',
+};
 export const Diagnostic = () => {
   const dispatch = useAppDispatch();
   const [isModelOpen, setIsModelOpen] = useState(false);
@@ -100,7 +102,7 @@ export const Diagnostic = () => {
         {diagnosticList && diagnosticList.length > 0 ? (
           <Table responsive>
             <thead>
-              <tr>
+              <tr style={headerColor}>
                 {/* <th className="hand" onClick={sort('id')}>
                   <Translate contentKey="assistanteDermatologueApp.diagnostic.id">ID</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('id')} />

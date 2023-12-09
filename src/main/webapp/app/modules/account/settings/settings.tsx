@@ -36,7 +36,7 @@ export const SettingsPage = () => {
   };
 
   return (
-    <div>
+    <div className="p-3 card">
       <Row className="justify-content-center">
         <Col md="8">
           <h2 id="settings-title">

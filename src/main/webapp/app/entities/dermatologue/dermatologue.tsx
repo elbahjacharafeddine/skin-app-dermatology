@@ -56,6 +56,10 @@ const buttonStyle = {
   marginRight: '10px',
 };
 
+const headerColor = {
+  backgroundColor: '#54B4D3',
+};
+
 export const Dermatologue = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -299,7 +303,7 @@ export const Dermatologue = () => {
         {dermatologueList && dermatologueList.length > 0 ? (
           <table className="table table-responsive p-2" id="myTable">
             <thead>
-              <tr>
+              <tr style={headerColor}>
                 <th className="hand" onClick={sort('codeEmp')}>
                   <Translate contentKey="assistanteDermatologueApp.dermatologue.codeEmp">Code Emp</Translate>{' '}
                 </th>

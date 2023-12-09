@@ -17,6 +17,9 @@ import 'datatables.net-dt/js/dataTables.dataTables';
 import 'datatables.net-responsive-dt/js/responsive.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.css';
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
+const headerColor = {
+  backgroundColor: '#54B4D3',
+};
 export const PatientRendezVous = () => {
   const dispatch = useAppDispatch();
 
@@ -104,7 +107,7 @@ export const PatientRendezVous = () => {
         {patientRendezVous && patientRendezVous.length > 0 ? (
           <table className="table table-responsive p-3" id="myTable">
             <thead>
-              <tr>
+              <tr style={headerColor}>
                 {/*<th className="hand" onClick={sort('id')}>*/}
                 {/*  <Translate contentKey="assistanteDermatologueApp.rendezVous.id">ID</Translate>{' '}*/}
                 {/*  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />*/}

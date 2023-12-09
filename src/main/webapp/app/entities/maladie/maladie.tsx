@@ -19,7 +19,9 @@ const buttonContainerStyle = {
   display: 'flex',
   alignItems: 'center',
 };
-
+const headerColor = {
+  backgroundColor: '#54B4D3',
+};
 const buttonStyle = {
   marginRight: '10px',
 };
@@ -105,7 +107,7 @@ export const Maladie = () => {
         {maladieList && maladieList.length > 0 ? (
           <Table className="table table-responsive" id="myTable">
             <thead>
-              <tr>
+              <tr style={headerColor}>
                 <th className="hand" onClick={sort('fullName')}>
                   <Translate contentKey="assistanteDermatologueApp.maladie.fullName">Full Name</Translate>{' '}
                   <FontAwesomeIcon icon={getSortIconByFieldName('fullName')} />

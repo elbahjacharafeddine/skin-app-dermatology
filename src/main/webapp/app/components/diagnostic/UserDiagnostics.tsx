@@ -87,6 +87,9 @@ const buttonStyle = {
   flexDirection: 'column',
   alignItems: 'center',
 };
+const headerColor = {
+  backgroundColor: '#54B4D3',
+};
 
 export const UserDiagnostics = () => {
   const dispatch = useAppDispatch();
@@ -397,7 +400,7 @@ export const UserDiagnostics = () => {
           {data && data.length > 0 ? (
             <table className="table table-responsive p-3" id="myTable">
               <thead>
-                <tr>
+                <tr style={headerColor}>
                   <th className="hand" onClick={sort('dateDiagnostic')}>
                     <Translate contentKey="assistanteDermatologueApp.diagnostic.dateDiagnostic">Date Diagnostic</Translate>{' '}
                     <FontAwesomeIcon icon={getSortIconByFieldName('dateDiagnostic')} />
@@ -460,7 +463,7 @@ export const UserDiagnostics = () => {
                     <td className="text-end">
                       <div className="flex-btn-group-container" style={buttonContainerStyle}>
                         <Button
-                          color="success"
+                          color="info"
                           size="sm"
                           onClick={() => toggleStatisticsModal(diagnostic.probabilities, diagnostic)}
                           style={buttonStyle}

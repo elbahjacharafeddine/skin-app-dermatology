@@ -25,6 +25,9 @@ const buttonContainerStyle = {
 const buttonStyle = {
   marginRight: '10px',
 };
+const headerColor = {
+  backgroundColor: '#54B4D3',
+};
 export const RendezVous = () => {
   const dispatch = useAppDispatch();
 
@@ -122,7 +125,7 @@ export const RendezVous = () => {
         {rendezVousList && rendezVousList.length > 0 ? (
           <table className="table table-responsive p-3" id="myTable">
             <thead>
-              <tr>
+              <tr style={headerColor}>
                 {/*<th className="hand" onClick={sort('id')}>*/}
                 {/*  <Translate contentKey="assistanteDermatologueApp.rendezVous.id">ID</Translate>{' '}*/}
                 {/*  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />*/}
@@ -177,7 +180,7 @@ export const RendezVous = () => {
                   <td className="text-end">
                     <div className="flex-btn-group-container" style={buttonContainerStyle}>
                       {rendezVous.statut == false && (
-                        <Button onClick={() => handleChangeStatus(rendezVous.id)} color="success" size="sm" style={buttonStyle}>
+                        <Button onClick={() => handleChangeStatus(rendezVous.id)} color="primary" size="sm" style={buttonStyle}>
                           <FontAwesomeIcon icon={faCheck} /> <span className="d-none d-md-inline">Confirm</span>
                         </Button>
                       )}

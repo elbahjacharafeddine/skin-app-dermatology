@@ -55,6 +55,9 @@ const buttonContainerStyle = {
 const buttonStyle = {
   marginRight: '10px',
 };
+const headerColor = {
+  backgroundColor: '#54B4D3',
+};
 
 export const Secretaire = () => {
   const [firstName, setFirstName] = useState('');
@@ -292,7 +295,7 @@ export const Secretaire = () => {
         {secretaireList && secretaireList.length > 0 ? (
           <table className="table table-responsive p-3" id="myTable">
             <thead>
-              <tr>
+              <tr style={headerColor}>
                 {/*<th className="hand" onClick={sort('id')}>*/}
                 {/*  <Translate contentKey="assistanteDermatologueApp.secretaire.id">ID</Translate>{' '}*/}
                 {/*  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />*/}

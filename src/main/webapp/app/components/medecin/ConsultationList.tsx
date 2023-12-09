@@ -11,6 +11,9 @@ import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
 import axios from 'axios';
 import { faFileMedical } from '@fortawesome/free-solid-svg-icons';
 import { Button } from 'reactstrap';
+const headerColor = {
+  backgroundColor: '#54B4D3',
+};
 export const ConsultationList = () => {
   const [consultationList, setConsultationList] = useState([]);
   const [conAll, setConAll] = useState([]);
@@ -123,7 +126,7 @@ export const ConsultationList = () => {
             {consultationList && consultationList.length > 0 ? (
               <table className="table-responsive" id="myTable">
                 <thead>
-                  <tr>
+                  <tr style={headerColor}>
                     <th className="hand">Date consultation</th>
                     <th>Hour</th>
                     <th>Patient</th>
@@ -171,7 +174,7 @@ export const ConsultationList = () => {
             {conAll && conAll.length > 0 ? (
               <table className="table table-responsive" id="myTableAll">
                 <thead>
-                  <tr>
+                  <tr style={headerColor}>
                     <th className="hand">Date consultation</th>
                     <th>Hour</th>
                     <th>Patient</th>

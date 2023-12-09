@@ -69,6 +69,11 @@ public class DermatologueResource {
     @PostMapping("/dermatologues")
     public ResponseEntity<Dermatologue> createDermatologue(@RequestBody DermatologueUserDTO dermatologue) throws URISyntaxException {
         log.debug("REST request to save Dermatologue : {}", dermatologue);
+        Optional<User> existingUser = userRepository.findOneByLogin(dermatologue.getUser().getLogin());
+
+        if (existingUser.isPresent()) {
+            return null;
+        }
         if (dermatologue.getDermatologue().getId() != null) {
             throw new BadRequestAlertException("A new dermatologue cannot already have an ID", ENTITY_NAME, "idexists");
         }

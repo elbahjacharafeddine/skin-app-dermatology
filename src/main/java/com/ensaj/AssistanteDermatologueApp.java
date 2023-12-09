@@ -2,18 +2,20 @@ package com.ensaj;
 
 import com.ensaj.config.ApplicationProperties;
 import com.ensaj.config.CRLFLogConverter;
+import com.ensaj.domain.Authority;
+import com.ensaj.repository.AuthorityRepository;
 import jakarta.annotation.PostConstruct;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import tech.jhipster.config.DefaultProfileUtil;
 import tech.jhipster.config.JHipsterConstants;
@@ -104,5 +106,19 @@ public class AssistanteDermatologueApp {
             contextPath,
             env.getActiveProfiles().length == 0 ? env.getDefaultProfiles() : env.getActiveProfiles()
         );
+    }
+
+    @Bean
+    CommandLineRunner initDB(AuthorityRepository authorityRepository) {
+        return args -> {
+            List<String> roleList = new ArrayList<>(
+                Arrays.asList("ROLE_SECRETAIRE", "ROLE_PATIENT", "ROLE_DERMATOLOGUE", "ROLE_ADMIN", "ROLE_USER")
+            );
+            roleList.forEach(e -> {
+                Authority authority = new Authority();
+                authority.setName(e);
+                authorityRepository.save(authority);
+            });
+        };
     }
 }

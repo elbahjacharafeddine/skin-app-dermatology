@@ -284,6 +284,24 @@ export const Patient = () => {
       });
   };
 
+  const [variable, setVariable] = useState(false);
+  const deletePatinet = id => {
+    console.log(id);
+    axios
+      .delete('/api/patients/' + id)
+      .then(res => {
+        console.log(res.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    setVariable(!variable);
+  };
+
+  useEffect(() => {
+    getAllEntities();
+  }, [variable]);
+
   return (
     <div className="p-2 card">
       <h2 id="patient-heading" data-cy="PatientHeading" className="card-header">
@@ -366,6 +384,7 @@ export const Patient = () => {
                       </Button>
                       <Button
                         onClick={() => (location.href = `/patient/${patient.id}/delete`)}
+                        // onClick={() =>{deletePatinet(patient.id)}}
                         color="danger"
                         size="sm"
                         style={buttonStyle}

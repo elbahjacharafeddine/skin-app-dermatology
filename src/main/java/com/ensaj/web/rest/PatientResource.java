@@ -1,11 +1,7 @@
 package com.ensaj.web.rest;
 
-import com.ensaj.domain.Authority;
-import com.ensaj.domain.Patient;
-import com.ensaj.domain.User;
-import com.ensaj.repository.AuthorityRepository;
-import com.ensaj.repository.PatientRepository;
-import com.ensaj.repository.UserRepository;
+import com.ensaj.domain.*;
+import com.ensaj.repository.*;
 import com.ensaj.security.AuthoritiesConstants;
 import com.ensaj.service.UserService;
 import com.ensaj.service.dto.PatientUserDTO;
@@ -13,14 +9,7 @@ import com.ensaj.web.rest.errors.BadRequestAlertException;
 import com.ensaj.web.rest.vm.ManagedUserVM;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,17 +37,26 @@ public class PatientResource {
     private final UserRepository userRepository;
     private final UserService userService;
     private final AuthorityRepository authorityRepository;
+    private final RendezVousRepository rendezVousRepository;
+    private final ConsultationRepository consultationRepository;
+    private final DiagnosticRepository diagnosticRepository;
 
     public PatientResource(
         PatientRepository patientRepository,
         UserRepository userRepository,
         UserService userService,
-        AuthorityRepository authorityRepository
+        AuthorityRepository authorityRepository,
+        RendezVousRepository rendezVousRepository,
+        ConsultationRepository consultationRepository,
+        DiagnosticRepository diagnosticRepository
     ) {
         this.patientRepository = patientRepository;
         this.userRepository = userRepository;
         this.userService = userService;
         this.authorityRepository = authorityRepository;
+        this.rendezVousRepository = rendezVousRepository;
+        this.consultationRepository = consultationRepository;
+        this.diagnosticRepository = diagnosticRepository;
     }
 
     //    @PostMapping("")
@@ -83,19 +81,6 @@ public class PatientResource {
 
         Patient patient = patientUserDTO.getPatient();
 
-        //        String dateStr = "2023/11/10"; // Replace with the date string you receive from the request
-        //        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        //        LocalDate localDate = LocalDate.parse(dateStr, dateFormatter);
-        //
-        //        // You can set the time to a default value if needed, like midnight (00:00:00)
-        //        LocalTime localTime = LocalTime.of(0, 0, 0);
-        //        ZonedDateTime zonedDateTime = ZonedDateTime.of(localDate, localTime, ZonedDateTime.now().getZone());
-        //
-        //        // Convert ZonedDateTime to Instant
-        //        Instant instant = zonedDateTime.toInstant();
-
-        //        patient.setBirthdate(instant);
-
         ManagedUserVM puser = patientUserDTO.getUser();
 
         puser.setAuthorities(new HashSet<>());
@@ -103,14 +88,19 @@ public class PatientResource {
 
         User user = userService.createAdministrateurUser(puser);
 
-        patient.setUser(user);
+        Optional<User> lastOne = userRepository.findOneByLogin(user.getLogin());
+        if (lastOne.isPresent()) {
+            patient.setUser(user);
+            patient.setId(lastOne.get().getId());
+            Patient res = patientRepository.save(patient);
 
-        Patient res = patientRepository.save(patient);
-
-        return ResponseEntity
-            .created(new URI("/api/patients/" + res.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, res.getId()))
-            .body(res);
+            return ResponseEntity
+                .created(new URI("/api/patients/" + res.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, res.getId()))
+                .body(res);
+        }
+        //
+        return null;
     }
 
     /**
@@ -233,6 +223,18 @@ public class PatientResource {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePatient(@PathVariable String id) {
         log.debug("REST request to delete Patient : {}", id);
+        Patient patient = patientRepository.findById(id).get();
+        List<RendezVous> rendezVous = rendezVousRepository.findByPatients(patient);
+
+        for (RendezVous r : rendezVous) {
+            Consultation consultation = consultationRepository.findByRendezVous(r);
+            List<Diagnostic> diagnostics = diagnosticRepository.findByConsultations(consultation);
+            for (Diagnostic d : diagnostics) {
+                diagnosticRepository.deleteById(d.getId());
+            }
+            consultationRepository.deleteById(consultation.getId());
+            rendezVousRepository.deleteById(r.getId());
+        }
         patientRepository.deleteById(id);
         userRepository.deleteById(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();

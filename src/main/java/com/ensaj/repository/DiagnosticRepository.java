@@ -1,6 +1,8 @@
 package com.ensaj.repository;
 
+import com.ensaj.domain.Consultation;
 import com.ensaj.domain.Diagnostic;
+import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +11,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface DiagnosticRepository extends MongoRepository<Diagnostic, String> {}
+public interface DiagnosticRepository extends MongoRepository<Diagnostic, String> {
+    List<Diagnostic> findByConsultations(Consultation c);
+}

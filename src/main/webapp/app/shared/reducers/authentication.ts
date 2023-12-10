@@ -5,7 +5,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { AppThunk } from 'app/config/store';
 import { setLocale } from 'app/shared/reducers/locale';
 import { serializeAxiosError } from './reducer.utils';
-
+import { useNavigate } from 'react-router-dom';
 const AUTH_TOKEN_KEY = 'jhi-authenticationToken';
 
 export const initialState = {
@@ -58,15 +58,43 @@ export const login: (username: string, password: string, rememberMe?: boolean) =
   async dispatch => {
     const result = await dispatch(authenticate({ username, password, rememberMe }));
     const response = result.payload as AxiosResponse;
+    // console.log(response)
     const bearerToken = response?.headers?.authorization;
     if (bearerToken && bearerToken.slice(0, 7) === 'Bearer ') {
       const jwt = bearerToken.slice(7, bearerToken.length);
+
+      // console.log(jwtDecode.auth)
       if (rememberMe) {
         Storage.local.set(AUTH_TOKEN_KEY, jwt);
       } else {
         Storage.session.set(AUTH_TOKEN_KEY, jwt);
       }
+
+      var base64Url = jwt.split('.')[1];
+      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      var jsonPayload = decodeURIComponent(
+        window
+          .atob(base64)
+          .split('')
+          .map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join(''),
+      );
+
+      const jwtDecode = JSON.parse(jsonPayload);
+      if (jwtDecode.auth == 'ROLE_DERMATOLOGUE') {
+        window.location.href = '/dermatologue/my-scheduler';
+      } else if (jwtDecode.auth === 'ROLE_ADMIN') {
+        window.location.href = '/dermatologue';
+      } else if (jwtDecode.auth == 'ROLE_SECRETAIRE') {
+        window.location.href = '/rendez-vous';
+      }
+      // else if (jwtDecode.auth=="ROLE_DERMATOLOGUE"){
+      //   window.location.href = '/dermatologue/my-scheduler';
+      // }
     }
+
     dispatch(getSession());
   };
 

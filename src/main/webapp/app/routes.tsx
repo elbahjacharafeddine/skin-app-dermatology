@@ -48,8 +48,8 @@ const AppRoutes = () => {
   return (
     <div className="view-routes">
       <ErrorBoundaryRoutes>
-        <Route index element={<Home />} />
-        <Route path="login" element={<Login />} />
+        <Route element={<Home />} />
+        <Route index path="login" element={<Login />} />
         {/* Dermatologue patients Liste */}
         <Route path="/dermatologue/patientsliste" element={<PatientsList />} />
         <Route path="/medicalRecord" element={<MedicalRecord />} />

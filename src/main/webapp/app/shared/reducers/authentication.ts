@@ -84,7 +84,7 @@ export const login: (username: string, password: string, rememberMe?: boolean) =
 
       const jwtDecode = JSON.parse(jsonPayload);
       if (jwtDecode.auth == 'ROLE_DERMATOLOGUE') {
-        window.location.href = '/dermatologue/my-scheduler';
+        window.location.href = '/consultation';
       } else if (jwtDecode.auth === 'ROLE_ADMIN') {
         window.location.href = '/dashboard';
       } else if (jwtDecode.auth == 'ROLE_SECRETAIRE') {

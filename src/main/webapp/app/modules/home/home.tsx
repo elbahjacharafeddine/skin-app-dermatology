@@ -25,20 +25,7 @@ const Home = () => {
   const hospitalsCount = 10;
   const appointmentsCount = 150;
   const maladies = 7;
-  // Dummy data for the bar chart
 
-  const labels = ['January', 'February', 'March', 'April', 'May', 'June'];
-  const data = {
-    labels: labels,
-    datasets: [
-      {
-        label: 'My First dataset',
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderColor: 'rgb(255, 99, 132)',
-        data: [0, 10, 5, 2, 20, 30, 45],
-      },
-    ],
-  };
   return (
     <div className="home" style={{ overflow: 'auto' }}>
       <div className="m-4">
@@ -93,7 +80,7 @@ const Home = () => {
                 <Col md="12" style={{ marginTop: '50px' }}>
                   <LineChart
                     title="Appointment by month"
-                    data={{ '2021-01-01': 11, '2021-01-02': 6, '2021-01-03': 4, '2021-01-04': 6, '2021-01-05': 1, '2021-01-06': 8 }}
+                    data={{ '2021-12-01': 11, '2021-12-02': 6, '2021-12-03': 4, '2021-12-04': 6, '2021-12-05': 1, '2021-12-06': 8 }}
                   />
                 </Col>
               </Row>

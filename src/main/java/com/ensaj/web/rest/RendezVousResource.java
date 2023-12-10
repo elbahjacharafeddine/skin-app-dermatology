@@ -1,7 +1,6 @@
 package com.ensaj.web.rest;
 
 import com.ensaj.domain.Consultation;
-import com.ensaj.domain.Dermatologue;
 import com.ensaj.domain.Patient;
 import com.ensaj.domain.RendezVous;
 import com.ensaj.domain.User;
@@ -9,7 +8,6 @@ import com.ensaj.repository.ConsultationRepository;
 import com.ensaj.repository.RendezVousRepository;
 import com.ensaj.repository.UserRepository;
 import com.ensaj.service.UserService;
-import com.ensaj.service.dto.DermatologueUserDTO;
 import com.ensaj.service.dto.PatientUserDTO;
 import com.ensaj.service.dto.RendezVousDTO;
 import com.ensaj.service.dto.TransformedDermatologueUserDTO;
@@ -17,7 +15,9 @@ import com.ensaj.web.rest.errors.BadRequestAlertException;
 import com.ensaj.web.rest.vm.ManagedUserVM;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Instant;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
@@ -521,5 +520,22 @@ public class RendezVousResource {
             }
         }
         return data;
+    }
+
+    @GetMapping("/statistics")
+    public List<String> statisticsForMonth() {
+        YearMonth currentYearMonth = YearMonth.now();
+        List<String> daysOfMonth = new ArrayList<>();
+        LocalDate startDate = LocalDate.of(2023, 12, 1);
+        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+            String formattedDate = date.format(formatter);
+            daysOfMonth.add(formattedDate);
+        }
+
+        return daysOfMonth;
     }
 }

@@ -48,7 +48,7 @@ const AppRoutes = () => {
   return (
     <div className="view-routes">
       <ErrorBoundaryRoutes>
-        <Route element={<Home />} />
+        <Route path="/dashboard" element={<Home />} />
         <Route index path="login" element={<Login />} />
         {/* Dermatologue patients Liste */}
         <Route path="/dermatologue/patientsliste" element={<PatientsList />} />

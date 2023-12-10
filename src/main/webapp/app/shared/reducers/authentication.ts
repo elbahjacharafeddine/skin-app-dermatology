@@ -86,13 +86,10 @@ export const login: (username: string, password: string, rememberMe?: boolean) =
       if (jwtDecode.auth == 'ROLE_DERMATOLOGUE') {
         window.location.href = '/dermatologue/my-scheduler';
       } else if (jwtDecode.auth === 'ROLE_ADMIN') {
-        window.location.href = '/dermatologue';
+        window.location.href = '/dashboard';
       } else if (jwtDecode.auth == 'ROLE_SECRETAIRE') {
         window.location.href = '/rendez-vous';
       }
-      // else if (jwtDecode.auth=="ROLE_DERMATOLOGUE"){
-      //   window.location.href = '/dermatologue/my-scheduler';
-      // }
     }
 
     dispatch(getSession());

@@ -12,7 +12,7 @@ import { setLocale } from 'app/shared/reducers/locale';
 import Authentication from 'app/shared/reducers/authentication';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenNib } from '@fortawesome/free-solid-svg-icons';
+import { faTachometerAlt } from '@fortawesome/free-solid-svg-icons';
 import { faCalendar } from '@fortawesome/free-solid-svg-icons';
 export interface IHeaderProps {
   isAuthenticated: boolean;
@@ -58,9 +58,15 @@ const Header = (props: IHeaderProps) => {
         <Brand />
         <Collapse isOpen={menuOpen} navbar>
           <Nav id="header-tabs" className="ms-auto" navbar>
-            {/*{props.isAuthenticated && (*/}
-            {/*    */}
-            {/*)}*/}
+            {props.isAuthenticated && props.isAdmin && (
+              <NavItem>
+                <NavLink tag={Link} to="/dashboard">
+                  <FontAwesomeIcon icon={faTachometerAlt} />
+                  Dashboard
+                </NavLink>
+              </NavItem>
+            )}
+
             {data ? (
               dataJson.authorities.includes('ROLE_DERMATOLOGUE') && (
                 <NavItem>
@@ -75,6 +81,7 @@ const Header = (props: IHeaderProps) => {
             )}
             {props.isAuthenticated && <EntitiesMenu />}
             {props.isAuthenticated && props.isAdmin && <AdminMenu showOpenAPI={props.isOpenAPIEnabled} />}
+
             <LocaleMenu currentLocale={props.currentLocale} onClick={handleLocaleChange} />
             <AccountMenu isAuthenticated={props.isAuthenticated} />
           </Nav>

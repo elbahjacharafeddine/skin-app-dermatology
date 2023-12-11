@@ -42,6 +42,11 @@ Administrators have access to robust user management tools, overseeing accounts 
 
 Patients, as end-users, have access to their comprehensive medical records, upcoming appointments, and personal profiles. The platform adopts a patient-centric approach by providing a secure environment for accessing healthcare information. The software's intuitive functionalities are designed to enhance collaboration among healthcare professionals, streamline administrative processes, and ultimately elevate the quality of dermatological care. From AI-driven preliminary diagnoses to efficient appointment management, this platform represents a pioneering solution at the intersection of healthcare and technology.
 
+### Some User-Interfaces
+#### 1. Authentication and role
+The figure below represents the authentication page to access the platform, it is made up of the “Username” zone which is unique for each user and the “Password” zone, the user is redirected to the functionalities according to his role :
+
+![3](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/33cba3fa-6da0-4ce1-a70b-76d5d6edd1b7)
 
 ## Project Structure
 

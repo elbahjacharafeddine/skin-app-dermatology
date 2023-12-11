@@ -4,9 +4,7 @@ import com.ensaj.domain.Consultation;
 import com.ensaj.domain.Patient;
 import com.ensaj.domain.RendezVous;
 import com.ensaj.domain.User;
-import com.ensaj.repository.ConsultationRepository;
-import com.ensaj.repository.RendezVousRepository;
-import com.ensaj.repository.UserRepository;
+import com.ensaj.repository.*;
 import com.ensaj.service.UserService;
 import com.ensaj.service.dto.PatientUserDTO;
 import com.ensaj.service.dto.RendezVousDTO;
@@ -17,10 +15,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -49,17 +46,26 @@ public class RendezVousResource {
     private final UserRepository userRepository;
     private final UserService userService;
     private final ConsultationRepository consultationRepository;
+    private final DermatologueRepository dermatologueRepository;
+    private final SecretaireRepository secretaireRepository;
+    private final MaladieRepository maladieRepository;
 
     public RendezVousResource(
         RendezVousRepository rendezVousRepository,
         UserRepository userRepository,
         UserService userService,
-        ConsultationRepository consultationRepository
+        ConsultationRepository consultationRepository,
+        DermatologueRepository dermatologueRepository,
+        SecretaireRepository secretaireRepository,
+        MaladieRepository maladieRepository
     ) {
         this.rendezVousRepository = rendezVousRepository;
         this.userRepository = userRepository;
         this.userService = userService;
         this.consultationRepository = consultationRepository;
+        this.dermatologueRepository = dermatologueRepository;
+        this.secretaireRepository = secretaireRepository;
+        this.maladieRepository = maladieRepository;
     }
 
     /**
@@ -523,19 +529,41 @@ public class RendezVousResource {
     }
 
     @GetMapping("/statistics")
-    public List<String> statisticsForMonth() {
-        YearMonth currentYearMonth = YearMonth.now();
-        List<String> daysOfMonth = new ArrayList<>();
-        LocalDate startDate = LocalDate.of(2023, 12, 1);
-        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+    public List<Long> statisticsForMonth() {
+        Long nDermatologues = dermatologueRepository.count();
+        Long nSecretaire = secretaireRepository.count();
+        Long nMaladies = maladieRepository.count();
+        Long nConsultation = consultationRepository.count();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        List<Long> liste = new ArrayList<>();
+        liste.add(nDermatologues);
+        liste.add(nSecretaire);
+        liste.add(nMaladies);
+        liste.add(nConsultation);
 
-        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
-            String formattedDate = date.format(formatter);
-            daysOfMonth.add(formattedDate);
+        return liste;
+    }
+
+    @GetMapping("/jours-du-mois")
+    public Map<String, Long> getJoursDuMois() {
+        List<String> joursDuMois = new ArrayList<>();
+        LocalDate dateActuelle = LocalDate.now();
+        int nombreDeJoursDansLeMois = dateActuelle.lengthOfMonth();
+        for (int jour = 1; jour <= nombreDeJoursDansLeMois; jour++) {
+            joursDuMois.add(dateActuelle.withDayOfMonth(jour).toString());
         }
+        List<Consultation> consultations = consultationRepository.findAll();
 
-        return daysOfMonth;
+        Map<String, Long> dataJson = new HashMap<>();
+
+        joursDuMois.forEach(e -> {
+            long count = consultations
+                .stream()
+                .filter(c -> e.equals(c.getDateConsultation().atZone(ZoneId.systemDefault()).toLocalDate().toString()))
+                .count();
+            dataJson.put(e, count);
+        });
+
+        return dataJson;
     }
 }

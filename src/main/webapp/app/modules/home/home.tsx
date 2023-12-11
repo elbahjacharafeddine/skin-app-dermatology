@@ -1,5 +1,5 @@
 // import './home.scss';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Translate } from 'react-jhipster';
 import { Row, Col, Alert } from 'reactstrap';
@@ -16,15 +16,42 @@ import { useAppSelector } from 'app/config/store';
 
 import { LineChart, AreaChart, ScatterChart, ColumnChart, PieChart } from 'react-chartkick';
 import 'chartkick/chart.js';
+import axios from 'axios';
 
 const Home = () => {
   const account = useAppSelector(state => state.authentication.account);
+  const [doctorsCount, setDoctorsCount] = useState(0);
+  const [appointmentsCount, setAppointmentsCount] = useState(0);
+  const [maladies, setmaladies] = useState(0);
+  const [secretary, setSecretary] = useState(0);
+  const [data, setData] = useState({});
 
-  // Dummy data for statistics
-  const doctorsCount = 25;
-  const hospitalsCount = 10;
-  const appointmentsCount = 150;
-  const maladies = 7;
+  useEffect(() => {
+    axios
+      .get('/api/rendez-vous/statistics')
+      .then(response => {
+        // console.log(response.data[0])
+        setDoctorsCount(response.data[0]);
+        setSecretary(response.data[1]);
+        setAppointmentsCount(response.data[3]);
+        setmaladies(response.data[2]);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get('/api/rendez-vous/jours-du-mois')
+      .then(response => {
+        console.log(response);
+        setData(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <div className="home" style={{ overflow: 'auto' }}>
@@ -51,7 +78,7 @@ const Home = () => {
                     Secretary
                   </div>
                   <div className="card-body">
-                    <h3>{hospitalsCount}</h3>
+                    <h3>{secretary}</h3>
                   </div>
                 </div>
               </Col>
@@ -78,10 +105,7 @@ const Home = () => {
 
               <Row>
                 <Col md="12" style={{ marginTop: '50px' }}>
-                  <LineChart
-                    title="Appointment by month"
-                    data={{ '2021-12-01': 11, '2021-12-02': 6, '2021-12-03': 4, '2021-12-04': 6, '2021-12-05': 1, '2021-12-06': 8 }}
-                  />
+                  <LineChart title="Appointment by month" data={data} />
                 </Col>
               </Row>
               {/*<AreaChart data={{"2021-01-01": 11, "2021-01-02": 6}} />*/}

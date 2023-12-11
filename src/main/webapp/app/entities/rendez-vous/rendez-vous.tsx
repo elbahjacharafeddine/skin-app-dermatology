@@ -61,7 +61,7 @@ export const RendezVous = () => {
   useEffect(() => {
     if (rendezVousList.length > 0) {
       const table = $('#myTable').DataTable();
-      table.order([2, 'desc']).draw();
+      table.order([0, 'desc'], [1, 'asc']).draw();
       return () => {
         table.destroy();
       };

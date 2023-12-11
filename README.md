@@ -2,6 +2,65 @@
 
 This application was generated using JHipster 8.0.0-rc.1, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v8.0.0-rc.1](https://www.jhipster.tech/documentation-archive/v8.0.0-rc.1).
 
+# Project description
+### Project architecture
+The Dermatological Diagnostic Assistance Platform is built on a modern and
+scalable architecture using the JHipster framework. The architecture consists of
+three main components: the Spring Boot backend, the React web application,
+and the React Native mobile application. The Spring Boot Backend forms
+the foundation, providing robust and scalable support for data processing and
+managing interactions with the database. It adopts a monolithic architecture
+and incorporates RESTful APIs to enable seamless communication with the
+frontend components.
+In parallel, the Web front-end is constructed using React, delivering a responsive
+and user-friendly interface tailored for dermatologists, secretaries, patients,
+and administrative users. This component introduces essential features
+like patient management, appointment scheduling, and diagnostic report generation.
+State management is handled efficiently with React hooks, ensuring
+smooth communication with the backend through API calls.
+Complementing the web application, the Mobile Application extends the
+platform’s capabilities to patients and dermatologists. Developed with React
+Native, it enables secure access to medical records, viewing upcoming appointments,
+and receiving diagnostic results. This mobile component significantly
+enhances user accessibility, empowering patients and dermatologists to actively
+engage in their healthcare journey.
+![archi](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/73de1c7a-d414-4ef0-a90f-5c23329f6901)
+
+### Project functionalities
+
+The Dermatological Diagnostic Assistance Platform boasts a comprehensive set
+of functionalities designed to revolutionize the field of dermatological diagnostics.
+Built on a modern and scalable architecture using the JHipster framework,
+the system accommodates four primary user roles: Doctors, Administrators,
+Secretaries, and Patients.
+For doctors, the platform provides a dynamic dashboard offering a real-time
+snapshot of daily appointments and consultations, empowering efficient schedule
+management. The Patient Management feature enables doctors to access,
+update, and diagnose patients, leveraging machine learning algorithms for preliminary
+analysis. The system ensures a seamless integration of expert review,
+allowing dermatologists to confirm, adjust, and prescribe treatments as needed.
+The software facilitates secure logout to safeguard patient confidentiality.
+Administrators wield powerful user management tools, overseeing accounts
+for doctors, patients, and secretaries. Disease and Stage Management functionalities
+enable administrators to maintain an accurate and up-to-date disease
+database, including associated images for each stage. The system’s security is
+further fortified through a secure logout process.
+Secretaries leverage their dedicated profile section for easy access to personal
+information. Patient and Appointment Management functionalities empower
+secretaries to supervise patient records, add new patients, and efficiently schedule
+appointments, ensuring optimal coordination between patient schedules and
+doctor availability. Like other roles, secretaries benefit from a secure logout
+mechanism to uphold data security.
+Patients, the end-users, gain access to their comprehensive medical records,
+upcoming appointments, and personal profiles. The platform ensures a patientcentric
+approach by providing a secure environment for accessing healthcare
+information. The software’s intuitive functionalities are tailored to enhance collaboration
+among healthcare professionals, streamline administrative processes,
+and ultimately elevate the quality of dermatological care. From AI-driven preliminary
+diagnoses to efficient appointment management, this platform stands
+as a pioneering solution at the intersection of healthcare and technology.
+
+
 ## Project Structure
 
 Node is required for generation and recommended for development. `package.json` is always generated for a better development experience with prettier, commit hooks, scripts and so on.

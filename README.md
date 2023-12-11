@@ -48,6 +48,15 @@ The figure below represents the authentication page to access the platform, it i
 
 ![3](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/33cba3fa-6da0-4ce1-a70b-76d5d6edd1b7)
 
+#### 2. User management
+The figure below represents the admin Dashboard where he can make his different
+management tasks example: managing doctors, managing patients, managing secretaries and even managing diseases and appointments.
+
+![4](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/623b8dcd-fdb9-4980-a7cd-dd63a85eb4a6)
+
+
+
+
 ## Project Structure
 
 Node is required for generation and recommended for development. `package.json` is always generated for a better development experience with prettier, commit hooks, scripts and so on.

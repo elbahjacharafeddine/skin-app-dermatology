@@ -2,7 +2,30 @@
 
 This application was generated using JHipster 8.0.0-rc.1, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v8.0.0-rc.1](https://www.jhipster.tech/documentation-archive/v8.0.0-rc.1).
 
+
+
 # Project description
+
+### Introduction
+This project harnesses artificial intelligence to provide support for dermatological
+diagnostics to healthcare professionals. Its aim is to enhance the accuracy of
+skin disorder diagnoses through advanced image analysis and machine learning
+techniques. The goal is to optimize dermatological care and streamline clinical
+decision-making.
+The platform prioritizes user-friendliness, featuring intuitive navigation and
+clear action prompts. User interfaces are designed to be easily understood and
+utilized by healthcare professionals, regardless of their level of technical expertise.
+It delivers clear visual responses to user actions, simplifying the skin disease
+diagnostic process for dermatologists. This is achieved by enabling direct
+queries to the ML model to obtain predicted disease results, along with the capability
+to prescribe based on the diagnosis. Additionally, the system facilitates
+appointment scheduling and provides a convenient way to view appointments,
+whether confirmed or pending. These functionalities are well-implemented, ensuring
+effectiveness and practicality in managing appointments.
+The platform not only enhances the diagnostic capabilities but also focuses
+on improving the overall user experience, making it a valuable tool for dermatological
+professionals in their daily operations.
+
 ### Project architecture
 The Dermatological Diagnostic Assistance Platform is built on a modern and
 scalable architecture using the JHipster framework. The architecture consists of

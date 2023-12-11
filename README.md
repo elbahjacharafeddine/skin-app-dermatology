@@ -30,6 +30,8 @@ Native, it enables secure access to medical records, viewing upcoming appointmen
 and receiving diagnostic results. This mobile component significantly
 enhances user accessibility, empowering patients and dermatologists to actively
 engage in their healthcare journey.
+
+
 ![archi](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/73de1c7a-d414-4ef0-a90f-5c23329f6901)
 
 ### Project functionalities

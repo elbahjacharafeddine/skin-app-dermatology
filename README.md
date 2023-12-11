@@ -54,6 +54,17 @@ management tasks example: managing doctors, managing patients, managing secretar
 
 ![4](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/623b8dcd-fdb9-4980-a7cd-dd63a85eb4a6)
 
+##### The figure below represents the list of consultations for a given doctor.
+![6](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/cbd37411-d02c-4db0-9e60-1884b50c3f7f)
+
+##### The figures below represent the list of diagnoses from a visit for a given patient. At this level the doctor can add prescriptions and descriptions to a given diagnosis, he can see the details and also validate the diagnosis;
+
+![7](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/75d0a9ad-e032-4a26-ad03-7ee8a7e7dc0d)
+![8](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/b4a01e1b-8dbe-46e0-88e8-b909d9906758)
+![9](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/74f7b25b-2b6b-4f9e-83a4-3f21cfa0db4e)
+
+
+##### 
 
 
 

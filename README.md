@@ -67,6 +67,9 @@ management tasks example: managing doctors, managing patients, managing secretar
 ##### The figure below represents the validation form for a given diagnosis.
 ![10](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/504f2309-3ed5-4817-aa6e-6d3db4d56740)
 
+##### The figure below represents a calendar of a given dermatologist with the appointments of his patients who have confirmed and not confirmed, as he can view the history of appointments with his patients by day by week and by month.
+
+![11](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/f86a5516-df15-4fdf-b673-5c92ebcc588e)
 
 
 

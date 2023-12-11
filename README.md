@@ -25,7 +25,7 @@ like patient management, appointment scheduling, and diagnostic report generatio
 State management is handled efficiently with React hooks, ensuring
 smooth communication with the backend through API calls.
 Complementing the web application, the Mobile Application extends the
-platform’s capabilities to patients and dermatologists. Developed with React
+platform’s capabilities to dermatologists. Developed with React
 Native, it enables secure access to medical records, viewing upcoming appointments,
 and receiving diagnostic results. This mobile component significantly
 enhances user accessibility, empowering patients and dermatologists to actively

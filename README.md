@@ -2,6 +2,47 @@
 
 This application was generated using JHipster 8.0.0-rc.1, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v8.0.0-rc.1](https://www.jhipster.tech/documentation-archive/v8.0.0-rc.1).
 
+
+
+# Project description
+
+### Introduction
+This project utilizes artificial intelligence to assist healthcare professionals in dermatological diagnostics, with the goal of improving the accuracy of skin disorder diagnoses through advanced image analysis and machine learning techniques. The objective is to optimize dermatological care and simplify clinical decision-making. The platform prioritizes user-friendliness, featuring an intuitive interface and clear prompts for actions. The user interfaces are designed to be easily understood and utilized by healthcare professionals, regardless of their technical expertise. It provides clear visual responses to user actions, simplifying the process of diagnosing skin diseases for dermatologists. This is achieved by allowing direct queries to the machine learning model to obtain predicted disease results, as well as the ability to prescribe based on the diagnosis. Additionally, the system facilitates appointment scheduling and offers a convenient way to view appointments, whether confirmed or pending. These functionalities are well-implemented to ensure effectiveness and practicality in appointment management. The platform not only enhances diagnostic capabilities but also focuses on improving the overall user experience, making it a valuable tool for dermatological professionals in their daily practices.
+
+### Project architecture
+The Dermatological Diagnostic Assistance Platform is built on a modern and
+scalable architecture using the JHipster framework. The architecture consists of
+three main components: the Spring Boot backend, the React web application,
+and the React Native mobile application. The Spring Boot Backend forms
+the foundation, providing robust and scalable support for data processing and
+managing interactions with the database. It adopts a monolithic architecture
+and incorporates RESTful APIs to enable seamless communication with the
+frontend components.
+In parallel, the Web front-end is constructed using React, delivering a responsive
+and user-friendly interface tailored for dermatologists, secretaries, patients,
+and administrative users. This component introduces essential features
+like patient management, appointment scheduling, and diagnostic report generation.
+State management is handled efficiently with React hooks, ensuring
+smooth communication with the backend through API calls.
+Complementing the web application, the Mobile Application extends the
+platform’s capabilities to dermatologists. Developed with React
+Native, it enables secure access to medical records, viewing upcoming appointments,
+and receiving diagnostic results. This mobile component significantly
+enhances user accessibility, empowering patients and dermatologists to actively
+engage in their healthcare journey.
+
+
+![archi](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/73de1c7a-d414-4ef0-a90f-5c23329f6901)
+
+### Project functionalities
+
+The Dermatological Diagnostic Assistance Platform features an extensive range of capabilities aimed at transforming the landscape of dermatological diagnostics. Constructed on a modern and scalable architecture using the JHipster framework, the system caters to four primary user roles: Doctors, Administrators, Secretaries, and Patients. The platform offers a dynamic dashboard that provides a real-time overview of daily appointments and consultations, facilitating efficient schedule management. The Patient Management feature empowers doctors to access, update, and diagnose patients, utilizing machine learning algorithms for initial analysis. The system ensures a smooth integration of expert reviews, allowing dermatologists to confirm, modify, and prescribe treatments as necessary, with a secure logout process to safeguard patient confidentiality.
+
+Administrators have access to robust user management tools, overseeing accounts for doctors, patients, and secretaries. Disease and Stage Management functionalities enable administrators to maintain an accurate and current disease database, complete with associated images for each stage. The system's security is further strengthened through a secure logout process. Secretaries utilize a dedicated profile section for convenient access to personal information. Patient and Appointment Management functionalities empower secretaries to supervise patient records, add new patients, and efficiently schedule appointments, ensuring optimal coordination between patient schedules and doctor availability. Like other roles, secretaries benefit from a secure logout mechanism to uphold data security.
+
+Patients, as end-users, have access to their comprehensive medical records, upcoming appointments, and personal profiles. The platform adopts a patient-centric approach by providing a secure environment for accessing healthcare information. The software's intuitive functionalities are designed to enhance collaboration among healthcare professionals, streamline administrative processes, and ultimately elevate the quality of dermatological care. From AI-driven preliminary diagnoses to efficient appointment management, this platform represents a pioneering solution at the intersection of healthcare and technology.
+
+
 ## Project Structure
 
 Node is required for generation and recommended for development. `package.json` is always generated for a better development experience with prettier, commit hooks, scripts and so on.

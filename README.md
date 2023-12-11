@@ -51,37 +51,11 @@ engage in their healthcare journey.
 
 ### Project functionalities
 
-The Dermatological Diagnostic Assistance Platform boasts a comprehensive set
-of functionalities designed to revolutionize the field of dermatological diagnostics.
-Built on a modern and scalable architecture using the JHipster framework,
-the system accommodates four primary user roles: Doctors, Administrators,
-Secretaries, and Patients.
-For doctors, the platform provides a dynamic dashboard offering a real-time
-snapshot of daily appointments and consultations, empowering efficient schedule
-management. The Patient Management feature enables doctors to access,
-update, and diagnose patients, leveraging machine learning algorithms for preliminary
-analysis. The system ensures a seamless integration of expert review,
-allowing dermatologists to confirm, adjust, and prescribe treatments as needed.
-The software facilitates secure logout to safeguard patient confidentiality.
-Administrators wield powerful user management tools, overseeing accounts
-for doctors, patients, and secretaries. Disease and Stage Management functionalities
-enable administrators to maintain an accurate and up-to-date disease
-database, including associated images for each stage. The system’s security is
-further fortified through a secure logout process.
-Secretaries leverage their dedicated profile section for easy access to personal
-information. Patient and Appointment Management functionalities empower
-secretaries to supervise patient records, add new patients, and efficiently schedule
-appointments, ensuring optimal coordination between patient schedules and
-doctor availability. Like other roles, secretaries benefit from a secure logout
-mechanism to uphold data security.
-Patients, the end-users, gain access to their comprehensive medical records,
-upcoming appointments, and personal profiles. The platform ensures a patientcentric
-approach by providing a secure environment for accessing healthcare
-information. The software’s intuitive functionalities are tailored to enhance collaboration
-among healthcare professionals, streamline administrative processes,
-and ultimately elevate the quality of dermatological care. From AI-driven preliminary
-diagnoses to efficient appointment management, this platform stands
-as a pioneering solution at the intersection of healthcare and technology.
+The Dermatological Diagnostic Assistance Platform features an extensive range of capabilities aimed at transforming the landscape of dermatological diagnostics. Constructed on a modern and scalable architecture using the JHipster framework, the system caters to four primary user roles: Doctors, Administrators, Secretaries, and Patients. The platform offers a dynamic dashboard that provides a real-time overview of daily appointments and consultations, facilitating efficient schedule management. The Patient Management feature empowers doctors to access, update, and diagnose patients, utilizing machine learning algorithms for initial analysis. The system ensures a smooth integration of expert reviews, allowing dermatologists to confirm, modify, and prescribe treatments as necessary, with a secure logout process to safeguard patient confidentiality.
+
+Administrators have access to robust user management tools, overseeing accounts for doctors, patients, and secretaries. Disease and Stage Management functionalities enable administrators to maintain an accurate and current disease database, complete with associated images for each stage. The system's security is further strengthened through a secure logout process. Secretaries utilize a dedicated profile section for convenient access to personal information. Patient and Appointment Management functionalities empower secretaries to supervise patient records, add new patients, and efficiently schedule appointments, ensuring optimal coordination between patient schedules and doctor availability. Like other roles, secretaries benefit from a secure logout mechanism to uphold data security.
+
+Patients, as end-users, have access to their comprehensive medical records, upcoming appointments, and personal profiles. The platform adopts a patient-centric approach by providing a secure environment for accessing healthcare information. The software's intuitive functionalities are designed to enhance collaboration among healthcare professionals, streamline administrative processes, and ultimately elevate the quality of dermatological care. From AI-driven preliminary diagnoses to efficient appointment management, this platform represents a pioneering solution at the intersection of healthcare and technology.
 
 
 ## Project Structure

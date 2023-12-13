@@ -36,7 +36,7 @@ import Select from 'react-select';
 import './form.css';
 import axios from 'axios';
 import { startOfMonth, endOfMonth, eachDayOfInterval, format } from 'date-fns';
-
+import { isBefore } from 'date-fns';
 export const CreateRendezVous = () => {
   const dispatch = useAppDispatch();
 
@@ -63,6 +63,7 @@ export const CreateRendezVous = () => {
   const [daysOfMonthSelected, setDaysOfMonthSelected] = useState(false);
   const [selectedDermatologue, setSelectedDermatologue] = useState('');
   const [selectedPatient, setSelectedPatient] = useState('');
+  const currentDate = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime();
 
   // const [dateSelected, setDateSelected] = useState();
 
@@ -280,7 +281,7 @@ export const CreateRendezVous = () => {
         <h2 className="day-title">DAYS OF THE MONTH ({monthNames[new Date().getMonth()]})</h2>
         <div className="button-group">
           {daysOfMonth.map(day => (
-            <button key={day} className="day-button" onClick={event => handleCellClick(event, day)}>
+            <button key={day} className="day-button" onClick={event => handleCellClick(event, day)} disabled={isBefore(day, currentDate)}>
               {format(day, 'dd')}
             </button>
           ))}

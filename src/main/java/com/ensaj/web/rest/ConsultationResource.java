@@ -3,8 +3,10 @@ package com.ensaj.web.rest;
 import com.ensaj.domain.Consultation;
 import com.ensaj.domain.Diagnostic;
 import com.ensaj.domain.RendezVous;
+import com.ensaj.domain.User;
 import com.ensaj.repository.ConsultationRepository;
 import com.ensaj.repository.DiagnosticRepository;
+import com.ensaj.repository.UserRepository;
 import com.ensaj.service.UserService;
 import com.ensaj.service.dto.*;
 import com.ensaj.web.rest.errors.BadRequestAlertException;
@@ -42,15 +44,18 @@ public class ConsultationResource {
     private final ConsultationRepository consultationRepository;
     private final DiagnosticRepository diagnosticRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
 
     public ConsultationResource(
         ConsultationRepository consultationRepository,
         DiagnosticRepository diagnosticRepository,
-        UserService userService
+        UserService userService,
+        UserRepository userRepository
     ) {
         this.consultationRepository = consultationRepository;
         this.diagnosticRepository = diagnosticRepository;
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -308,5 +313,53 @@ public class ConsultationResource {
                 return consultationDTO;
             })
             .collect(Collectors.toList());
+    }
+
+    @GetMapping("/listeConsultations/dermato/{username}")
+    public List<ConsultationDTOSimplifie> getAllConsultationsByDermatologueUsernameForToday(@PathVariable String username) {
+        log.debug("REST request to get all Consultations for dermatologist with ID: {}", username);
+
+        Instant debutAujourdhui = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant();
+        Instant debutDemain = LocalDate.now().plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant();
+        List<Consultation> consultationList = consultationRepository.findConsultationsForToday(debutAujourdhui, debutDemain);
+
+        Optional<User> user = userRepository.findOneByLogin(username);
+        if (user.isPresent()) {
+            return consultationList
+                .stream()
+                .filter(consultation -> {
+                    RendezVous rendezVous = consultation.getRendezVous();
+                    return (
+                        rendezVous != null &&
+                        rendezVous.getDermatologues() != null &&
+                        rendezVous.getDermatologues().getId().equals(user.get().getId())
+                    );
+                })
+                .map(consultation -> {
+                    ConsultationDTOSimplifie consultationDTO = new ConsultationDTOSimplifie();
+                    consultationDTO.setId(consultation.getId());
+                    consultationDTO.setDateConsultation(consultation.getDateConsultation());
+                    //                DermatologueConsultations
+
+                    DermatologueConsultations rendezVousDTO = new DermatologueConsultations();
+                    RendezVous rendezVous = consultation.getRendezVous();
+                    rendezVousDTO.setId(rendezVous.getId());
+                    rendezVousDTO.setDateDebut(rendezVous.getDateDebut());
+                    rendezVousDTO.setDateFin(rendezVous.getDateFin());
+                    rendezVousDTO.setStatut(rendezVous.getStatut());
+
+                    TransformedDermatologueUserDTO transformedDermatologueUserDTO = userService.findUserDermatologue(
+                        rendezVous.getDermatologues().getId()
+                    );
+                    //                rendezVousDTO.setDermatologue(transformedDermatologueUserDTO);
+
+                    rendezVousDTO.setPatient(rendezVous.getPatients());
+                    consultationDTO.setRendezVous(rendezVousDTO);
+
+                    return consultationDTO;
+                })
+                .collect(Collectors.toList());
+        }
+        return null;
     }
 }

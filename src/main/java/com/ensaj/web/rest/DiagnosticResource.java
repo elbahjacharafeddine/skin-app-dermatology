@@ -71,6 +71,17 @@ public class DiagnosticResource {
             .body(result);
     }
 
+    @PostMapping("/save")
+    public ResponseEntity<Diagnostic> saveDiagnostic(@RequestBody Diagnostic diagnostic) throws URISyntaxException {
+        log.debug("REST request to save Diagnostic : {}", diagnostic);
+        if (diagnostic.getId() != null) {
+            throw new BadRequestAlertException("A new diagnostic cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+
+        System.out.println(diagnostic.getDateDiagnostic() + " Date Diagnostic");
+        return null;
+    }
+
     /**
      * {@code PUT  /diagnostics/:id} : Updates an existing diagnostic.
      *

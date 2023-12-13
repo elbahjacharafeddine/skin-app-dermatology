@@ -303,7 +303,7 @@ export const Dermatologue = () => {
         {dermatologueList && dermatologueList.length > 0 ? (
           <table className="table table-responsive p-2" id="myTable">
             <thead>
-              <tr style={headerColor}>
+              <tr>
                 <th className="hand" onClick={sort('codeEmp')}>
                   <Translate contentKey="assistanteDermatologueApp.dermatologue.codeEmp">Code Emp</Translate>{' '}
                 </th>

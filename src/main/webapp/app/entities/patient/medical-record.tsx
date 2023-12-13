@@ -229,7 +229,7 @@ export default function MedicalRecord() {
               <MDBCardBody className="text-center">
                 <MDBCardImage
                   src="../../../content/images/user-image/patient.png"
-                  alt="AMINE"
+                  alt="IMAGE"
                   className="rounded-circle"
                   style={{ width: '120px' }}
                   fluid
@@ -305,7 +305,7 @@ export default function MedicalRecord() {
                       {data && data.length > 0 ? (
                         <table className="table table-responsive " id="myTable">
                           <thead>
-                            <tr style={headerColor}>
+                            <tr>
                               <th className="hand" style={{ width: '150px' }}>
                                 Date Diagnostic
                               </th>

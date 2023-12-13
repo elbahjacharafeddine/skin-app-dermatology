@@ -400,7 +400,7 @@ export const UserDiagnostics = () => {
           {data && data.length > 0 ? (
             <table className="table table-responsive p-3" id="myTable">
               <thead>
-                <tr style={headerColor}>
+                <tr>
                   <th className="hand" onClick={sort('dateDiagnostic')}>
                     <Translate contentKey="assistanteDermatologueApp.diagnostic.dateDiagnostic">Date Diagnostic</Translate>{' '}
                     <FontAwesomeIcon icon={getSortIconByFieldName('dateDiagnostic')} />

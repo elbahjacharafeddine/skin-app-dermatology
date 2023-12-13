@@ -112,7 +112,7 @@ export const UserManagement = () => {
       </h2>
       <Table responsive striped>
         <thead>
-          <tr style={headerColor}>
+          <tr>
             <th className="hand" onClick={sort('id')}>
               <Translate contentKey="global.field.id">ID</Translate> <FontAwesomeIcon icon={getSortIconByFieldName('id')} />
             </th>

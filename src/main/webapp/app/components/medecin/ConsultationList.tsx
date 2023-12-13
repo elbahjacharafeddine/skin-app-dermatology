@@ -126,7 +126,7 @@ export const ConsultationList = () => {
             {consultationList && consultationList.length > 0 ? (
               <table className="table-responsive" id="myTable">
                 <thead>
-                  <tr style={headerColor}>
+                  <tr>
                     <th className="hand">Date consultation</th>
                     <th>Hour</th>
                     <th>Patient</th>
@@ -174,7 +174,7 @@ export const ConsultationList = () => {
             {conAll && conAll.length > 0 ? (
               <table className="table table-responsive" id="myTableAll">
                 <thead>
-                  <tr style={headerColor}>
+                  <tr>
                     <th className="hand">Date consultation</th>
                     <th>Hour</th>
                     <th>Patient</th>

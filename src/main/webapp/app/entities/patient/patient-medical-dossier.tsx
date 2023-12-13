@@ -232,7 +232,7 @@ export default function PatientDossierMedical() {
               <MDBCardBody className="text-center">
                 <MDBCardImage
                   src="../../../content/images/user-image/patient.png"
-                  alt="AMINE"
+                  alt="Image"
                   className="rounded-circle"
                   style={{ width: '120px' }}
                   fluid
@@ -308,7 +308,7 @@ export default function PatientDossierMedical() {
                       {data && data.length > 0 ? (
                         <table className="table table-responsive " id="myTable">
                           <thead>
-                            <tr style={headerColor}>
+                            <tr>
                               <th className="hand">Date_Diagnostic</th>
                               <th className="hand">Dermatologue</th>
 

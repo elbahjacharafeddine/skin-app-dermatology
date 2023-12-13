@@ -124,7 +124,7 @@ export const ConsultationList = () => {
         {isToday && (
           <div className="card-body table-reponsive">
             {consultationList && consultationList.length > 0 ? (
-              <table className="table-responsive" id="myTable">
+              <table className="table table-responsive" id="myTable">
                 <thead>
                   <tr>
                     <th className="hand">Date consultation</th>

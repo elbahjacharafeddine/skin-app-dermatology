@@ -125,7 +125,7 @@ export const RendezVous = () => {
         {rendezVousList && rendezVousList.length > 0 ? (
           <table className="table table-responsive p-3" id="myTable">
             <thead>
-              <tr style={headerColor}>
+              <tr>
                 {/*<th className="hand" onClick={sort('id')}>*/}
                 {/*  <Translate contentKey="assistanteDermatologueApp.rendezVous.id">ID</Translate>{' '}*/}
                 {/*  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />*/}

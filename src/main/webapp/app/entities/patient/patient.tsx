@@ -324,7 +324,7 @@ export const Patient = () => {
         {patientList && patientList.length > 0 ? (
           <table className="table table-responsive" id="myTable">
             <thead>
-              <tr style={headerColor}>
+              <tr>
                 {/*<th className="hand" onClick={sort('id')}>*/}
                 {/*  <Translate contentKey="assistanteDermatologueApp.patient.id">ID</Translate>{' '}*/}
                 {/*  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />*/}

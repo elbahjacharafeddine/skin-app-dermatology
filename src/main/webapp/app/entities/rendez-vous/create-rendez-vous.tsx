@@ -204,7 +204,7 @@ export const CreateRendezVous = () => {
     // Format the date as needed
     const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 
-    console.log('Date clicked BY AMINE:', formattedDate);
+    console.log('Date clicked BY ME:', formattedDate);
 
     sessionStorage.setItem('Clicked_date', formattedDate);
 
@@ -213,10 +213,10 @@ export const CreateRendezVous = () => {
     const ChooseDate2 = new Date(new Date(args).getDay());
     console.log('ChooseDate: ', ChooseDate);
     console.log('times 1 : ', today, ' times 2 : ', ChooseDate);
-    // if (ChooseDate < today) {
-    //     alert("Please choose a valid date");
-    //     return;
-    // }
+    if (ChooseDate < today) {
+      alert('Please choose a valid date');
+      return;
+    }
     const formatDate2 = `${new Date(args).getFullYear()}${new Date(args).getMonth()}${new Date(args).getDate()}`;
     setDateSelected(args ? new Date(args) : undefined);
     const excludeTimeList = [];
@@ -442,10 +442,10 @@ export const CreateRendezVous = () => {
   return (
     <div className="p-2 card p-4">
       <Row className="justify-content-center">
-        <Col md="8">
-          <h2 id="assistanteDermatologueApp.rendezVous.home.createOrEditLabel" data-cy="RendezVousCreateUpdateHeading">
-            Create or edit a appointment
-          </h2>
+        <Col md="4">
+          <h1 id="assistanteDermatologueApp.rendezVous.home.createOrEditLabel" data-cy="RendezVousCreateUpdateHeading">
+            Create an appointment
+          </h1>
         </Col>
       </Row>
       <Row className="justify-content-center">

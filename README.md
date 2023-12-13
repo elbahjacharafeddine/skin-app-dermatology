@@ -42,6 +42,39 @@ Administrators have access to robust user management tools, overseeing accounts 
 
 Patients, as end-users, have access to their comprehensive medical records, upcoming appointments, and personal profiles. The platform adopts a patient-centric approach by providing a secure environment for accessing healthcare information. The software's intuitive functionalities are designed to enhance collaboration among healthcare professionals, streamline administrative processes, and ultimately elevate the quality of dermatological care. From AI-driven preliminary diagnoses to efficient appointment management, this platform represents a pioneering solution at the intersection of healthcare and technology.
 
+### Some User-Interfaces
+#### 1. Authentication and role
+The figure below represents the authentication page to access the platform, it is made up of the “Username” zone which is unique for each user and the “Password” zone, the user is redirected to the functionalities according to his role :
+
+![3](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/33cba3fa-6da0-4ce1-a70b-76d5d6edd1b7)
+
+#### 2. User management
+The figure below represents the admin Dashboard where he can make his different
+management tasks example: managing doctors, managing patients, managing secretaries and even managing diseases and appointments.
+
+![4](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/623b8dcd-fdb9-4980-a7cd-dd63a85eb4a6)
+
+##### The figure below represents a calendar of a given dermatologist with the appointments of his patients who have confirmed and not confirmed, as he can view the history of appointments with his patients by day by week and by month.
+
+![11](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/f86a5516-df15-4fdf-b673-5c92ebcc588e)
+
+##### The figure below represents the list of consultations for a given doctor.
+![6](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/cbd37411-d02c-4db0-9e60-1884b50c3f7f)
+
+##### The figures below represent the list of diagnoses from a visit for a given patient. At this level the doctor can add prescriptions and descriptions to a given diagnosis, he can see the details and also validate the diagnosis.
+
+![7](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/75d0a9ad-e032-4a26-ad03-7ee8a7e7dc0d)
+![8](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/b4a01e1b-8dbe-46e0-88e8-b909d9906758)
+![9](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/74f7b25b-2b6b-4f9e-83a4-3f21cfa0db4e)
+
+
+##### The figure below represents the validation form for a given diagnosis.
+![10](https://github.com/ElmansouriAMINE/Air-plaine-Flight-Simulator-App/assets/101812229/504f2309-3ed5-4817-aa6e-6d3db4d56740)
+
+
+
+
+
 
 ## Project Structure
 

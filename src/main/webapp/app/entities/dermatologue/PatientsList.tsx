@@ -92,7 +92,8 @@ export const PatientsList = () => {
         table.destroy();
       };
     }
-  }, [patientList]);
+  }, [ListePatients]);
+
   const sortEntities = () => {
     getAllEntities();
     const endURL = `?sort=${sortState.sort},${sortState.order}`;
@@ -238,11 +239,11 @@ export const PatientsList = () => {
           {/*</Button>*/}
         </div>
       </h2>
-      <div className="card-body p-3 ">
+      <div className="table-responsive card-body p-3 ">
         {ListePatients && ListePatients.length > 0 ? (
-          <table className="table table-responsive" id="myTable">
+          <Table className="table table-responsive" id="myTable">
             <thead>
-              <tr style={headerColor}>
+              <tr>
                 {/*<th className="hand" onClick={sort('id')}>*/}
                 {/*  <Translate contentKey="assistanteDermatologueApp.patient.id">ID</Translate>{' '}*/}
                 {/*  <FontAwesomeIcon icon={getSortIconByFieldName('id')} />*/}
@@ -325,7 +326,7 @@ export const PatientsList = () => {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </Table>
         ) : (
           !loading && (
             <div className="alert alert-warning">

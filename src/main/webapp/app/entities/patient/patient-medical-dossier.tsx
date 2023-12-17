@@ -309,6 +309,7 @@ export default function PatientDossierMedical() {
                         <table className="table table-responsive " id="myTable">
                           <thead>
                             <tr>
+                              <th style={{ display: 'none' }}></th>
                               <th className="hand">Date_Diagnostic</th>
                               <th className="hand">Dermatologue</th>
 
@@ -328,6 +329,7 @@ export default function PatientDossierMedical() {
                           <tbody>
                             {data.map((diagnostic, i) => (
                               <tr key={`entity-${i}`} data-cy="entityTable">
+                                <td style={{ display: 'none' }}>{i}</td>
                                 <td>
                                   {diagnostic.dateDiagnostic ? (
                                     <TextFormat type="date" value={diagnostic.dateDiagnostic} format={APP_DATE_FORMAT} />

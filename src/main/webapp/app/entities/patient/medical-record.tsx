@@ -177,6 +177,7 @@ export default function MedicalRecord() {
   }, [patientId]);
 
   useEffect(() => {
+    console.log('mydata: ', data);
     if (data.length > 0) {
       const table = $('#myTable').DataTable();
       return () => {
@@ -306,6 +307,7 @@ export default function MedicalRecord() {
                         <table className="table table-responsive " id="myTable">
                           <thead>
                             <tr>
+                              <th style={{ display: 'none' }}></th>
                               <th className="hand" style={{ width: '150px' }}>
                                 Date Diagnostic
                               </th>
@@ -330,6 +332,7 @@ export default function MedicalRecord() {
                           <tbody>
                             {data.map((diagnostic, i) => (
                               <tr key={`entity-${i}`} data-cy="entityTable">
+                                <td style={{ display: 'none' }}>{i}</td>
                                 <td>
                                   {diagnostic.dateDiagnostic ? (
                                     <TextFormat type="date" value={diagnostic.dateDiagnostic} format={APP_DATE_FORMAT} />

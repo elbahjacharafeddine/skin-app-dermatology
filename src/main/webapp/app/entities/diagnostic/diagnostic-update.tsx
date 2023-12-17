@@ -79,7 +79,7 @@ export const DiagnosticUpdate = () => {
         };
 
   return (
-    <div>
+    <div className="p-2 card p-4">
       <Row className="justify-content-center">
         <Col md="8">
           <h2 id="assistanteDermatologueApp.diagnostic.home.createOrEditLabel" data-cy="DiagnosticCreateUpdateHeading">
@@ -134,7 +134,7 @@ export const DiagnosticUpdate = () => {
                 id="diagnostic-prescription"
                 name="prescription"
                 data-cy="prescription"
-                type="text"
+                type="textarea"
               />
               <ValidatedField
                 label={translate('assistanteDermatologueApp.diagnostic.probability')}

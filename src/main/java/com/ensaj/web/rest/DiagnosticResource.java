@@ -15,10 +15,8 @@ import com.ensaj.web.rest.errors.BadRequestAlertException;
 import com.ensaj.web.rest.vm.ManagedUserVM;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.ZoneId;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -191,15 +189,46 @@ public class DiagnosticResource {
     }
 
     //api dossier medical for a specific patient by dermatologue_id
+    //    @GetMapping("/dermatologue/{id_dermatologue}/dossiermedical/patient/{id}")
+    //    public List<Diagnostic> getAllDiagnosticsForMedicalRecord(@PathVariable String id_dermatologue, @PathVariable String id) {
+    //        log.debug("REST request to get all Diagnostics");
+    //        List<Diagnostic> diagnostics = diagnosticRepository.findAll();
+    //        List<Diagnostic> data = new ArrayList<>();
+    //        for (Diagnostic diagnostic : diagnostics) {
+    //            Patient patient = diagnostic.getConsultations().getRendezVous().getPatients();
+    //            Dermatologue dermatologue = diagnostic.getConsultations().getRendezVous().getDermatologues();
+    //            if (patient.getId().equals(id) && dermatologue.getId().equals(id_dermatologue)) {
+    //                Optional<User> user = userRepository.findById(patient.getUser().getId());
+    //                PatientUserDTO patientUserDTO = new PatientUserDTO();
+    //                ManagedUserVM managedUserVM = new ManagedUserVM();
+    //                managedUserVM.setEmail(user.get().getEmail());
+    //                managedUserVM.setFirstName(user.get().getFirstName());
+    //                managedUserVM.setLastName(user.get().getLastName());
+    //                patientUserDTO.setPatient(patient);
+    //                diagnostic.setPatientUserDTO(patientUserDTO);
+    //                data.add(diagnostic);
+    //            }
+    //        }
+    //
+    //        return data;
+    //    }
     @GetMapping("/dermatologue/{id_dermatologue}/dossiermedical/patient/{id}")
     public List<Diagnostic> getAllDiagnosticsForMedicalRecord(@PathVariable String id_dermatologue, @PathVariable String id) {
         log.debug("REST request to get all Diagnostics");
         List<Diagnostic> diagnostics = diagnosticRepository.findAll();
         List<Diagnostic> data = new ArrayList<>();
-        for (Diagnostic diagnostic : diagnostics) {
-            Patient patient = diagnostic.getConsultations().getRendezVous().getPatients();
-            Dermatologue dermatologue = diagnostic.getConsultations().getRendezVous().getDermatologues();
-            if (patient.getId().equals(id) && dermatologue.getId().equals(id_dermatologue)) {
+
+        // Filter and sort diagnostics
+        diagnostics
+            .stream()
+            .filter(diagnostic -> {
+                Patient patient = diagnostic.getConsultations().getRendezVous().getPatients();
+                Dermatologue dermatologue = diagnostic.getConsultations().getRendezVous().getDermatologues();
+                return patient.getId().equals(id) && dermatologue.getId().equals(id_dermatologue);
+            })
+            .sorted(Comparator.comparing(diagnostic -> ((Diagnostic) diagnostic).getDateDiagnostic()).reversed())
+            .forEach(diagnostic -> {
+                Patient patient = diagnostic.getConsultations().getRendezVous().getPatients();
                 Optional<User> user = userRepository.findById(patient.getUser().getId());
                 PatientUserDTO patientUserDTO = new PatientUserDTO();
                 ManagedUserVM managedUserVM = new ManagedUserVM();
@@ -209,8 +238,8 @@ public class DiagnosticResource {
                 patientUserDTO.setPatient(patient);
                 diagnostic.setPatientUserDTO(patientUserDTO);
                 data.add(diagnostic);
-            }
-        }
+            });
+
         return data;
     }
 
@@ -241,33 +270,66 @@ public class DiagnosticResource {
     }
 
     //api dossier medical for a specific patient
+    //    @GetMapping("/dossiermedical/patient/{id}")
+    //    public List<Diagnostic> getAllPatientDiagnosticsForMedicalRecord(@PathVariable String id) {
+    //        log.debug("REST request to get all Diagnostics");
+    //        List<Diagnostic> diagnostics = diagnosticRepository.findAll();
+    //        List<Diagnostic> data = new ArrayList<>();
+    //        for (Diagnostic diagnostic : diagnostics) {
+    //            Patient patient = diagnostic.getConsultations().getRendezVous().getPatients();
+    //            String dermatologueId = diagnostic.getConsultations().getRendezVous().getDermatologues().getId();
+    //            if (patient.getUser().getId().equals(id)) {
+    //                Optional<User> user = userRepository.findById(patient.getUser().getId());
+    //                NewPatientUserDTO newpatientUserDTO = new NewPatientUserDTO();
+    //                //                PatientUserDTO patientUserDTO = new PatientUserDTO();
+    //                ManagedUserVM managedUserVM = new ManagedUserVM();
+    //                managedUserVM.setEmail(user.get().getEmail());
+    //                managedUserVM.setFirstName(user.get().getFirstName());
+    //                managedUserVM.setLastName(user.get().getLastName());
+    //                //                patientUserDTO.setPatient(patient);
+    //                newpatientUserDTO.setPatient(patient);
+    //                TransformedDermatologueUserDTO transformedDermatologueUserDTO = userService.findUserDermatologue(dermatologueId);
+    //                newpatientUserDTO.setDermatologue(transformedDermatologueUserDTO);
+    //                //                newpatientUserDTO.setDermatologue(dermatologue);
+    //                //                diagnostic.setPatientUserDTO(patientUserDTO);
+    //                //                diagnostic.setNewPatientUserDTO();
+    //                diagnostic.setNewPatientUserDTO(newpatientUserDTO);
+    //                data.add(diagnostic);
+    //            }
+    //        }
+    //        return data;
+    //    }
+
     @GetMapping("/dossiermedical/patient/{id}")
     public List<Diagnostic> getAllPatientDiagnosticsForMedicalRecord(@PathVariable String id) {
         log.debug("REST request to get all Diagnostics");
         List<Diagnostic> diagnostics = diagnosticRepository.findAll();
         List<Diagnostic> data = new ArrayList<>();
-        for (Diagnostic diagnostic : diagnostics) {
-            Patient patient = diagnostic.getConsultations().getRendezVous().getPatients();
-            String dermatologueId = diagnostic.getConsultations().getRendezVous().getDermatologues().getId();
-            if (patient.getUser().getId().equals(id)) {
+
+        diagnostics
+            .stream()
+            .filter(diagnostic -> {
+                Patient patient = diagnostic.getConsultations().getRendezVous().getPatients();
+                String dermatologueId = diagnostic.getConsultations().getRendezVous().getDermatologues().getId();
+                return patient.getUser().getId().equals(id);
+            })
+            .sorted(Comparator.comparing(diagnostic -> ((Diagnostic) diagnostic).getDateDiagnostic()).reversed())
+            .forEach(diagnostic -> {
+                Patient patient = diagnostic.getConsultations().getRendezVous().getPatients();
+                String dermatologueId = diagnostic.getConsultations().getRendezVous().getDermatologues().getId();
                 Optional<User> user = userRepository.findById(patient.getUser().getId());
                 NewPatientUserDTO newpatientUserDTO = new NewPatientUserDTO();
-                //                PatientUserDTO patientUserDTO = new PatientUserDTO();
                 ManagedUserVM managedUserVM = new ManagedUserVM();
                 managedUserVM.setEmail(user.get().getEmail());
                 managedUserVM.setFirstName(user.get().getFirstName());
                 managedUserVM.setLastName(user.get().getLastName());
-                //                patientUserDTO.setPatient(patient);
                 newpatientUserDTO.setPatient(patient);
                 TransformedDermatologueUserDTO transformedDermatologueUserDTO = userService.findUserDermatologue(dermatologueId);
                 newpatientUserDTO.setDermatologue(transformedDermatologueUserDTO);
-                //                newpatientUserDTO.setDermatologue(dermatologue);
-                //                diagnostic.setPatientUserDTO(patientUserDTO);
-                //                diagnostic.setNewPatientUserDTO();
                 diagnostic.setNewPatientUserDTO(newpatientUserDTO);
                 data.add(diagnostic);
-            }
-        }
+            });
+
         return data;
     }
 

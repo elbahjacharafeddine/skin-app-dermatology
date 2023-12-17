@@ -161,15 +161,11 @@ export const Login = () => {
                   <div className="d-flex flex-row mt-2">
                     <MDBIcon fas icon="cubes fa-3x me-3" style={{ color: '#ff6219' }} />
                     <span className="h1 fw-bold mb-0"></span>
-                    <img
-                      src="content/images/icon-app.png"
-                      alt="Logo"
-                      style={{ height: '150px', width: '150px', marginLeft: '190px', marginRight: '50px' }}
-                    />
                   </div>
-                  <h5 className="fw-normal my-4 pb-3" style={{ letterSpacing: '1px', marginLeft: '180px' }}>
-                    Sign into your account
-                  </h5>
+                  <center>
+                    <img src="content/images/icon-app.png" alt="Logo" style={{ height: '150px', width: '150px' }} />
+                    <h5 className="fw-normal my-4 pb-3">Sign into your account</h5>
+                  </center>
                   <MDBInput
                     wrapperClass="mb-4"
                     label="username"

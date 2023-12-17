@@ -96,7 +96,7 @@ const AppRoutes = () => {
           element={<Listpatient nom={'elbahja'} isAuthen={isAuthenicated} role={data ? userData.authorities : null} />}
         />
         <Route path={'/dermatologue/my-scheduler'} element={<Elbahja isAuthenticated={true} role={data ? userData.authorities : null} />} />
-        <Route path={'/maladies/check'} element={<ViewMaladie />} />
+        {/*<Route path={'/maladies/check'} element={<ViewMaladie />} />*/}
         <Route path="*" element={<PageNotFound />} />
       </ErrorBoundaryRoutes>
     </div>

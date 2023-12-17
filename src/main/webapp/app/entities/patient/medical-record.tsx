@@ -180,6 +180,7 @@ export default function MedicalRecord() {
     console.log('mydata: ', data);
     if (data.length > 0) {
       const table = $('#myTable').DataTable();
+      table.order([0, 'desc']).draw();
       return () => {
         table.destroy();
       };

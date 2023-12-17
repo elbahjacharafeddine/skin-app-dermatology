@@ -144,9 +144,9 @@ export const Login = () => {
 
       {showModal && (
         <div className="d-flex align-items-center justify-content-center mt-4 mb-4 login-card">
-          <MDBCard className="" style={{ height: '600px', marginTop: '20px' }}>
+          <MDBCard className="" style={{ height: '550px', marginTop: '20px' }}>
             <MDBRow className="g-0">
-              <MDBCol md="6">
+              {/* <MDBCol md="6">
                 <div style={{ height: '600px', width: '500px', marginRight: '50px' }}>
                   <MDBCardImage
                     src="/content/images/skin.jpeg"
@@ -155,19 +155,19 @@ export const Login = () => {
                     style={{ height: '600px' }}
                   />
                 </div>
-              </MDBCol>
-              <MDBCol md="6">
+              </MDBCol> */}
+              <MDBCol style={{ width: '620px' }}>
                 <MDBCardBody className="d-flex flex-column">
                   <div className="d-flex flex-row mt-2">
                     <MDBIcon fas icon="cubes fa-3x me-3" style={{ color: '#ff6219' }} />
                     <span className="h1 fw-bold mb-0"></span>
                     <img
-                      src="content/images/my_logo.png"
+                      src="content/images/icon-app.png"
                       alt="Logo"
-                      style={{ height: '150px', width: '150px', marginLeft: '50px', marginRight: '50px' }}
+                      style={{ height: '150px', width: '150px', marginLeft: '190px', marginRight: '50px' }}
                     />
                   </div>
-                  <h5 className="fw-normal my-4 pb-3" style={{ letterSpacing: '1px', marginLeft: '35px' }}>
+                  <h5 className="fw-normal my-4 pb-3" style={{ letterSpacing: '1px', marginLeft: '180px' }}>
                     Sign into your account
                   </h5>
                   <MDBInput

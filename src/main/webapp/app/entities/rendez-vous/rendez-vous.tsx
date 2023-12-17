@@ -180,7 +180,7 @@ export const RendezVous = () => {
                   <td className="text-end">
                     <div className="flex-btn-group-container" style={buttonContainerStyle}>
                       {rendezVous.statut == false && (
-                        <Button onClick={() => handleChangeStatus(rendezVous.id)} color="primary" size="sm" style={buttonStyle}>
+                        <Button onClick={() => handleChangeStatus(rendezVous.id)} color="success" size="sm" style={buttonStyle}>
                           <FontAwesomeIcon icon={faCheck} /> <span className="d-none d-md-inline">Confirm</span>
                         </Button>
                       )}

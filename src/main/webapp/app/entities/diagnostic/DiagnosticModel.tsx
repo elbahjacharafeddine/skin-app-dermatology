@@ -15,6 +15,7 @@ import { getEntities as getConsultations } from 'app/entities/consultation/consu
 import { IDiagnostic } from 'app/shared/model/diagnostic.model';
 import { getEntity, updateEntity, createEntity, reset } from './diagnostic.reducer';
 import axios from 'axios';
+
 interface DiagnosticModelProps {
   isOpen: boolean;
   toggle: () => void;
@@ -193,6 +194,12 @@ const DiagnosticModel: React.FC<DiagnosticModelProps> = ({ isOpen, toggle, isNew
           dateDiagnostic: convertDateTimeFromServer(diagnosticEntity.dateDiagnostic),
           consultations: diagnosticEntity?.consultations?.id,
         };
+
+  const [imageSelectionne, setimageSelectionnee] = useState(0);
+  const changeImage = value => {
+    setimageSelectionnee(value);
+  };
+
   return (
     <Modal isOpen={isOpen} toggle={toggle} centered className="p-4" style={{ minWidth: '750px' }}>
       <ModalHeader toggle={toggle}>New Diagnostic</ModalHeader>
@@ -284,6 +291,44 @@ const DiagnosticModel: React.FC<DiagnosticModelProps> = ({ isOpen, toggle, isNew
               /> */}
               {/* <input type="file" name="picture" onChange={handleFileChange} /> */}
 
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+                  <img
+                    src="../../../content/images/maladies/ISIC_0024468.jpg"
+                    alt="Image 1"
+                    style={{
+                      width: '100px',
+                      height: 'auto',
+                      cursor: 'pointer',
+                      border: imageSelectionne === 0 ? '2px solid blue' : 'none',
+                    }}
+                    onClick={() => changeImage(0)}
+                  />
+                  <img
+                    src="../../../content/images/maladies/ISIC_0028076.jpg"
+                    alt="Image 2"
+                    style={{
+                      width: '100px',
+                      height: 'auto',
+                      cursor: 'pointer',
+                      border: imageSelectionne === 1 ? '2px solid blue' : 'none',
+                    }}
+                    onClick={() => changeImage(1)}
+                  />
+                  <img
+                    src="../../../content/images/maladies/ISIC_0031430.jpg"
+                    alt="Image 3"
+                    style={{
+                      width: '100px',
+                      height: 'auto',
+                      cursor: 'pointer',
+                      border: imageSelectionne === 2 ? '2px solid blue' : 'none',
+                    }}
+                    onClick={() => changeImage(2)}
+                  />
+                </div>
+              </div>
+
               <ValidatedBlobField
                 label={translate('assistanteDermatologueApp.diagnostic.picture')}
                 id="diagnostic-picture"
@@ -292,8 +337,7 @@ const DiagnosticModel: React.FC<DiagnosticModelProps> = ({ isOpen, toggle, isNew
                 isImage
                 accept="image/*"
                 onChange={e => {
-                  handleFileChange(e); // Your custom file change logic
-                  // Additional logic related to ValidatedBlobField if needed
+                  handleFileChange(e);
                 }}
               />
 

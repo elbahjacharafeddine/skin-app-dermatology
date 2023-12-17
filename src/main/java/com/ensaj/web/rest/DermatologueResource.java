@@ -393,4 +393,33 @@ public class DermatologueResource {
         }
         return dermatologueRepository.findAll();
     }
+
+    @GetMapping("/dermatologues/profile/{login}")
+    public DermatologueUserDTO getProfile(@PathVariable String login) {
+        Optional<User> user = userRepository.findOneByLogin(login);
+        if (user.isPresent()) {
+            Optional<Dermatologue> dermatologue = dermatologueRepository.findById(user.get().getId());
+            if (dermatologue.isPresent()) {
+                DermatologueUserDTO dermatologueUserDTO = new DermatologueUserDTO();
+                dermatologueUserDTO.setDermatologue(dermatologue.get());
+                ManagedUserVM managedUserVM = new ManagedUserVM();
+                managedUserVM.setLastName(user.get().getLastName());
+                managedUserVM.setFirstName(user.get().getFirstName());
+                managedUserVM.setImageUrl(user.get().getImageUrl());
+                dermatologueUserDTO.setUser(managedUserVM);
+                return dermatologueUserDTO;
+            }
+            System.out.println(user.get().getFirstName());
+            System.out.println(user.get().toString());
+        }
+        return null;
+    }
+
+    @GetMapping("/dermatologues/statistique-data/{login}")
+    public List<Long> getData(@PathVariable String login) {
+        Optional<User> user = userRepository.findOneByLogin(login);
+        if (user.isPresent()) {}
+
+        return null;
+    }
 }

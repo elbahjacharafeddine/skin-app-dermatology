@@ -25,6 +25,7 @@ import PatientsList from './entities/dermatologue/PatientsList';
 import MedicalRecord from './entities/patient/medical-record';
 import PatientRendezVous from './entities/rendez-vous/patient-rendez-vous';
 import PatientDossierMedical from './entities/patient/patient-medical-dossier';
+import ViewMaladie from 'app/components/maladie/ViewMaladie';
 
 // import Elbahja from "app/modules/login/Elbahja";
 // import Test from "app/components/medecin/Test";
@@ -95,7 +96,7 @@ const AppRoutes = () => {
           element={<Listpatient nom={'elbahja'} isAuthen={isAuthenicated} role={data ? userData.authorities : null} />}
         />
         <Route path={'/dermatologue/my-scheduler'} element={<Elbahja isAuthenticated={true} role={data ? userData.authorities : null} />} />
-
+        <Route path={'/maladies/check'} element={<ViewMaladie />} />
         <Route path="*" element={<PageNotFound />} />
       </ErrorBoundaryRoutes>
     </div>

@@ -14,7 +14,28 @@ import 'datatables.net-responsive-dt/js/responsive.dataTables';
 import 'datatables.net-dt/css/jquery.dataTables.css';
 import 'datatables.net-responsive-dt/css/responsive.dataTables.css';
 
+import Modal from '@mui/material/Modal';
+import { ProgressSpinner } from 'primereact/progressspinner';
+import { Skeleton } from 'primereact/skeleton';
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 500,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+import { ProgressBar } from 'primereact/progressbar';
+
 import { getEntities } from './maladie.reducer';
+import Box from '@mui/material/Box';
+import axios from 'axios';
+import ImageListItem from '@mui/material/ImageListItem';
+import ImageList from '@mui/material/ImageList';
+
 const buttonContainerStyle = {
   display: 'flex',
   alignItems: 'center',
@@ -25,6 +46,10 @@ const headerColor = {
 const buttonStyle = {
   marginRight: '10px',
 };
+
+interface Maladie {
+  fullName: string;
+}
 export const Maladie = () => {
   const dispatch = useAppDispatch();
 
@@ -35,6 +60,57 @@ export const Maladie = () => {
 
   const maladieList = useAppSelector(state => state.maladie.entities);
   const loading = useAppSelector(state => state.maladie.loading);
+
+  const [visibleModal, setModalVisible] = useState(false);
+  const [data, setData] = useState<Maladie | {}>({});
+  const [stades, setStades] = useState([]);
+  const [images, setImages] = useState([]);
+  const [indice, setIndice] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentImages = images && images[0] && images[indice].slice(indexOfFirstItem, indexOfLastItem);
+  const [loadingM, setLoadingM] = useState(true);
+
+  const changeIndice = i => {
+    setIndice(i);
+  };
+  const handlePageChange = newPage => {
+    setCurrentPage(newPage);
+  };
+
+  const ViewDisease = async id => {
+    console.log(id);
+    setModalVisible(true);
+    try {
+      let response = await axios
+        .get('/api/maladies/' + id)
+        .then(response => {
+          setData(response.data.maladie);
+          setStades(response.data.stades);
+          const stadeImages = response.data.stades.map(e => e.imageStades);
+          setLoadingM(false);
+          setImages(stadeImages);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    } catch (error) {
+      console.log(error);
+      setModalVisible(false);
+    }
+  };
+
+  const handleClose = () => {
+    setModalVisible(false);
+    setData({});
+    setImages([]);
+    setStades([]);
+    setCurrentPage(1);
+    setIndice(0);
+    setLoadingM(true);
+  };
 
   const getAllEntities = () => {
     dispatch(
@@ -129,8 +205,9 @@ export const Maladie = () => {
                   <td className="text-end">
                     <div className="flex-btn-group-container" style={buttonContainerStyle}>
                       <Button
-                        tag={Link}
-                        to={`/maladie/${maladie.id}`}
+                        // tag={Link}
+                        // to={`/maladie/${maladie.id}`}
+                        onClick={() => ViewDisease(maladie.id)}
                         color="info"
                         size="sm"
                         data-cy="entityDetailsButton"
@@ -180,6 +257,63 @@ export const Maladie = () => {
           )
         )}
       </div>
+
+      <Modal open={visibleModal} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+        <Box sx={style}>
+          <div className="card card-responsive" style={{ overflowY: 'auto' }}>
+            <div style={{ textAlign: 'center' }}>
+              {Object.keys(data).length > 0 && <div className="card-header">Details of {'fullName' in data ? data.fullName : ''} </div>}
+            </div>
+
+            <div style={{ marginBottom: '20px', justifyContent: 'space-between' }}>
+              {stades.map((e, index) => (
+                <Button key={index} variant="outlined" onClick={() => changeIndice(index)}>
+                  {e.stade}
+                </Button>
+              ))}
+            </div>
+            {loadingM ? (
+              <div className="card flex justify-content-center">
+                <ProgressSpinner />
+              </div>
+            ) : (
+              <div className="">
+                <ImageList sx={{ height: 350 }} cols={3} rowHeight={100}>
+                  {currentImages &&
+                    currentImages.map(item => (
+                      <ImageListItem key={item.picture}>
+                        <img
+                          srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                          src={`data:image/jpeg;base64,${item.picture}`}
+                          alt={item.id}
+                          loading="lazy"
+                        />
+                      </ImageListItem>
+                    ))}
+                </ImageList>
+              </div>
+            )}
+
+            <hr />
+            <div>
+              {images && images[0] && images[indice].length > itemsPerPage && (
+                <div>
+                  {Array.from({ length: Math.ceil(images[indice].length / itemsPerPage) }).map((_, index) => (
+                    <Button
+                      key={index}
+                      variant={currentPage === index + 1 ? 'contained' : 'outlined'}
+                      onClick={() => handlePageChange(index + 1)}
+                      style={{ margin: '5px' }}
+                    >
+                      {index + 1}
+                    </Button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </Box>
+      </Modal>
     </div>
   );
 };

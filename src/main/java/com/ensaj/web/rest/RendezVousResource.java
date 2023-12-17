@@ -1,9 +1,6 @@
 package com.ensaj.web.rest;
 
-import com.ensaj.domain.Consultation;
-import com.ensaj.domain.Patient;
-import com.ensaj.domain.RendezVous;
-import com.ensaj.domain.User;
+import com.ensaj.domain.*;
 import com.ensaj.repository.*;
 import com.ensaj.service.UserService;
 import com.ensaj.service.dto.PatientUserDTO;
@@ -13,6 +10,7 @@ import com.ensaj.web.rest.errors.BadRequestAlertException;
 import com.ensaj.web.rest.vm.ManagedUserVM;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.ZoneId;
@@ -565,5 +563,35 @@ public class RendezVousResource {
         });
 
         return dataJson;
+    }
+
+    @GetMapping("/statistique-data/{login}")
+    public List<Long> getData(@PathVariable String login) {
+        Optional<User> user = userRepository.findOneByLogin(login);
+        if (user.isPresent()) {
+            Optional<Dermatologue> dermatologue = dermatologueRepository.findById(user.get().getId());
+            Instant debutAujourdhui = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant();
+            Instant debutDemain = LocalDate.now().plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant();
+            if (dermatologue.isPresent()) {
+                List<Long> listData = new ArrayList<>();
+                List<RendezVous> liste = rendezVousRepository.findTodayTrueStatusByDermatologues(
+                    dermatologue.get().getId(),
+                    debutAujourdhui,
+                    debutDemain
+                );
+                listData.add(Long.valueOf(liste.size()));
+
+                List<RendezVous> rendezVousList = rendezVousRepository.findDistinctPatientsByDermatologueId(dermatologue.get().getId());
+                Set<String> patientIds = new HashSet<>();
+                for (RendezVous rendezVous : rendezVousList) {
+                    patientIds.add(rendezVous.getPatients().getId());
+                }
+                int nombrePatient = patientIds.size();
+                listData.add(Long.valueOf(nombrePatient));
+                return listData;
+            }
+        }
+        //
+        return null;
     }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 function MaladieCreate() {
@@ -26,20 +26,23 @@ function MaladieCreate() {
   }
 
   const [data, setData] = useState({
-    fullName: '',
-    abbr: '',
+    maladie: {
+      fullName: '',
+      abbr: '',
+      stades: [],
+    },
   });
 
   const handleSumbit = () => {
     console.log('send data');
-    const levels = levelInputs.map((level, index) => ({
+    const stades = levelInputs.map((level, index) => ({
       level: levelInputs[index],
       description: descriptionInputs[index],
       images: fileInputs[index],
     }));
     setData(prevData => ({
       ...prevData,
-      levels,
+      stades,
     }));
 
     console.log(data);
@@ -47,45 +50,12 @@ function MaladieCreate() {
 
   const handleChange = e => {
     const { name, value } = e.target;
-    setData(prevData => ({ ...prevData, [name]: value }));
-  };
-
-  const changeLevelNameAndDescription = async () => {
-    const dataJson = {
+    setData(prevData => ({
       maladie: {
-        fullName: data.fullName,
-        abbr: data.abbr,
-        stades: [],
+        ...prevData.maladie,
+        [name]: value,
       },
-    };
-    for (let i = 0; i < levelInputs.length; i++) {
-      console.log(levelInputs[i]);
-      const newDataStade = {
-        stade: levelInputs[i],
-        description: descriptionInputs[i],
-        imageStades: [],
-      };
-      for (const file of fileInputs) {
-        const FR = new FileReader();
-
-        FR.readAsDataURL(this.files[0]);
-
-        // newDataStade.imageStades.push(string64)
-      }
-
-      dataJson.maladie.stades.push(newDataStade);
-    }
-
-    console.log(dataJson);
-
-    axios
-      .post('/api/maladies/save', dataJson)
-      .then(response => {
-        console.log(response.data);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    }));
   };
 
   const changeImage = () => {
@@ -112,42 +82,88 @@ function MaladieCreate() {
     }
   };
 
-  function getBase64Image(img): string {
-    const canvas: HTMLCanvasElement = document.createElement('canvas');
-    canvas.width = img.width;
-    canvas.height = img.height;
-    const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d');
+  const [notifySenddata, setNotifySendDada] = useState(false);
+  const [imagesTransfered, setImagesTransfered] = useState([]);
+  const handleSubmitData = async () => {
+    console.log('je vais transferer data vers le backend');
 
-    if (ctx) {
-      ctx.drawImage(img, 0, 0);
-      const dataURL: string = canvas.toDataURL('image/png');
-      return dataURL.replace(/^data:image\/?[A-z]*;base64,/, '');
-    } else {
-      throw new Error('Canvas 2D context is not supported');
+    for (let i = 0; i < levelInputs.length; i++) {
+      console.log(levelInputs[i]);
+      const newStade = {
+        stade: levelInputs[i],
+        description: descriptionInputs[i],
+        imageStades: [],
+      };
+
+      for (let j = 0; j < fileInputs[i].length; j++) {
+        newStade.imageStades.push({
+          picture: imagesTransfered[i][j],
+        });
+      }
+      console.log('new stade is');
+      console.log(newStade);
+
+      setData(prevData => ({
+        maladie: {
+          ...prevData.maladie,
+          stades: [...prevData.maladie.stades, newStade],
+        },
+      }));
     }
-  }
+    setNotifySendDada(false);
+  };
 
-  //
-  function readFileAsBase64(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
+  useEffect(() => {
+    if (notifySenddata) {
+      handleSubmitData();
+    }
+  }, [notifySenddata]);
 
-      reader.onload = () => {
-        if (typeof reader.result === 'string') {
-          const base64String = reader.result.split(',')[1]; // Extract base64 string
-          resolve(base64String);
-        } else {
-          reject(new Error('Invalid result type'));
-        }
-      };
+  const convertFilesToBase64 = async () => {
+    try {
+      console.log('je vais transferer les images au base 64');
+      const base64List = await Promise.all(
+        fileInputs.map(async files => {
+          const base64Images = await Promise.all(
+            files.map(file => {
+              return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                  const result = reader.result as string;
+                  const base64Data = result.split(',')[1];
+                  resolve(base64Data);
+                };
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(file);
+              });
+            }),
+          );
+          return base64Images;
+        }),
+      );
 
-      reader.onerror = error => {
-        reject(error);
-      };
+      // console.log('Base64 Images:', base64List);
+      setImagesTransfered(base64List);
+      setNotifySendDada(true);
+      return base64List;
+    } catch (error) {
+      console.error('Erreur lors de la conversion des fichiers en base64', error);
+      throw error;
+    }
+  };
 
-      reader.readAsDataURL(file);
-    });
-  }
+  const handleSendToServer = async () => {
+    await axios
+      .post('/api/maladies/save', data)
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+    // console.log(data)
+  };
 
   return (
     <div className="row p-4">
@@ -213,8 +229,12 @@ function MaladieCreate() {
               )}
             </div>
           ))}
-          <button className="btn btn-primary p-2 m-2" onClick={() => handleSumbit()}>
+          <button className="btn btn-primary p-2 m-2" onClick={() => handleSendToServer()}>
             Save
+          </button>
+
+          <button className="btn btn-primary p-2 m-2" onClick={() => convertFilesToBase64()}>
+            Convert
           </button>
         </div>
       </div>

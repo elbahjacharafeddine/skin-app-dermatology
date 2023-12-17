@@ -1,5 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
+import { ProgressSpinner } from 'primereact/progressspinner';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
+
+import toast, { Toaster } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 function MaladieCreate() {
   const [numberOfLevels, setNumberOfLevels] = useState(0);
@@ -9,6 +20,7 @@ function MaladieCreate() {
 
   const newLevels = [...levelInputs];
 
+  const [loading, setLoading] = useState(false);
   function handleNumberChange(e) {
     const newNumberOfLevels = parseInt(e.target.value, 10);
 
@@ -33,21 +45,6 @@ function MaladieCreate() {
     },
   });
 
-  const handleSumbit = () => {
-    console.log('send data');
-    const stades = levelInputs.map((level, index) => ({
-      level: levelInputs[index],
-      description: descriptionInputs[index],
-      images: fileInputs[index],
-    }));
-    setData(prevData => ({
-      ...prevData,
-      stades,
-    }));
-
-    console.log(data);
-  };
-
   const handleChange = e => {
     const { name, value } = e.target;
     setData(prevData => ({
@@ -58,32 +55,10 @@ function MaladieCreate() {
     }));
   };
 
-  const changeImage = () => {
-    var imgBase64Arr = [];
-
-    for (var i = 0; i < fileInputs.length; i++) {
-      (function (i) {
-        var FR = new FileReader();
-        FR.onload = function (e) {
-          imgBase64Arr.push(e.target.result); // adding base64 value to array
-
-          if (i === fileInputs.length - 1) {
-            // after all files are processed
-            submitData(imgBase64Arr);
-          }
-        };
-
-        FR.readAsDataURL(fileInputs[i]);
-      })(i);
-    }
-
-    function submitData(imgBase64Arr) {
-      console.log(imgBase64Arr);
-    }
-  };
-
   const [notifySenddata, setNotifySendDada] = useState(false);
+  const [notifyTransferData, setNotifyTransferData] = useState(false);
   const [imagesTransfered, setImagesTransfered] = useState([]);
+  const navigation = useNavigate();
   const handleSubmitData = async () => {
     console.log('je vais transferer data vers le backend');
 
@@ -110,18 +85,19 @@ function MaladieCreate() {
         },
       }));
     }
-    setNotifySendDada(false);
+    setNotifyTransferData(false);
+    setNotifySendDada(true);
   };
 
   useEffect(() => {
-    if (notifySenddata) {
+    if (notifyTransferData) {
       handleSubmitData();
     }
-  }, [notifySenddata]);
+  }, [notifyTransferData]);
 
   const convertFilesToBase64 = async () => {
     try {
-      console.log('je vais transferer les images au base 64');
+      setLoading(true);
       const base64List = await Promise.all(
         fileInputs.map(async files => {
           const base64Images = await Promise.all(
@@ -144,7 +120,7 @@ function MaladieCreate() {
 
       // console.log('Base64 Images:', base64List);
       setImagesTransfered(base64List);
-      setNotifySendDada(true);
+      setNotifyTransferData(true);
       return base64List;
     } catch (error) {
       console.error('Erreur lors de la conversion des fichiers en base64', error);
@@ -153,22 +129,39 @@ function MaladieCreate() {
   };
 
   const handleSendToServer = async () => {
+    // console.log(data)
     await axios
       .post('/api/maladies/save', data)
       .then(response => {
         console.log(response.data);
+        setLoading(false);
+        toast.success('The disease saved with success');
       })
       .catch(error => {
         console.log(error);
+        toast.error('Error try again !');
       });
-
-    // console.log(data)
+    setNotifySendDada(false);
+    navigation('/maladie');
   };
+
+  useEffect(() => {
+    if (notifySenddata) {
+      handleSendToServer();
+    }
+  }, [notifySenddata]);
+
+  // const notify = () =>
 
   return (
     <div className="row p-4">
       <div className="card mt-1 offset-md-3 col-md-6">
         {/*<button onClick={() => changeImage()} >Show data</button>*/}
+
+        <div>
+          <Toaster position="top-left" />
+        </div>
+
         <div className="card-header">New disease</div>
         <div className="card-body">
           <label className="form-label">Full name</label>
@@ -229,13 +222,14 @@ function MaladieCreate() {
               )}
             </div>
           ))}
-          <button className="btn btn-primary p-2 m-2" onClick={() => handleSendToServer()}>
+          <button className="btn btn-primary p-2 m-2" onClick={() => convertFilesToBase64()}>
             Save
           </button>
-
-          <button className="btn btn-primary p-2 m-2" onClick={() => convertFilesToBase64()}>
-            Convert
-          </button>
+          {loading && (
+            <div className="card flex justify-content-center">
+              <ProgressSpinner />
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -35,6 +35,8 @@ import Box from '@mui/material/Box';
 import axios from 'axios';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageList from '@mui/material/ImageList';
+import _default from 'chart.js/dist/plugins/plugin.tooltip';
+import borderColor = _default.defaults.borderColor;
 
 const buttonContainerStyle = {
   display: 'flex',
@@ -267,7 +269,16 @@ export const Maladie = () => {
 
             <div style={{ marginBottom: '20px', justifyContent: 'space-between' }}>
               {stades.map((e, index) => (
-                <Button key={index} variant="outlined" onClick={() => changeIndice(index)}>
+                <Button
+                  className="btn btn-secondary"
+                  key={index}
+                  variant="outlined"
+                  onClick={() => changeIndice(index)}
+                  style={{
+                    border: indice === index ? '2px solid blue' : '2px solid transparent',
+                    marginRight: '8px',
+                  }}
+                >
                   {e.stade}
                 </Button>
               ))}

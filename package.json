@@ -214,5 +214,6 @@
   },
   "cacheDirectories": [
     "node_modules"
-  ]
+  ],
+  "proxy": "http://myflaskapp:5000"
 }

@@ -22,7 +22,22 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+    networks:
+      - mynetwork
   mongodb:
     extends:
       file: ./mongodb.yml
       service: mongodb
+    networks:
+      - mynetwork
+
+  mymodel:
+    image: myflaskapp
+    ports:
+      - 127.0.0.1:5000:5000
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge

@@ -55,7 +55,7 @@
         <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
         <maven-surefire-plugin.version>3.2.1</maven-surefire-plugin.version>
         <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
-        <modernizer-maven-plugin.version>2.7.0</modernizer-maven-plugin.version>
+        <modernizer-maven-plugin.version>2.5.0</modernizer-maven-plugin.version>
         <nohttp-checkstyle.version>0.0.11</nohttp-checkstyle.version>
         <profile.api-docs/>
         <profile.e2e/>
@@ -886,6 +886,10 @@
                                 <goals>
                                     <goal>npm</goal>
                                 </goals>
+                                <configuration>
+                                    <arguments>install --force</arguments>
+                                </configuration>
+
                             </execution>
                             <execution>
                                 <id>webapp build test</id>

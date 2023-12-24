@@ -29,5 +29,4 @@ jobs:
       run: |
         chmod +x mvnw
         ./mvnw -Pprod package verify jib:dockerBuild -DskipTests=true
-        docker login registry-1.docker.io -u "elbahjacharafeddine" -p "charafdine2020"
         docker push assistante-dermatologue

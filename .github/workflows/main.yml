@@ -29,4 +29,5 @@ jobs:
       run: |
         chmod +x mvnw
         ./mvnw -Pprod package verify jib:dockerBuild -DskipTests=true
-        docker push docker.io/repoworkflow/assistante-dermatologue
+        docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+        docker push assistante-dermatologue

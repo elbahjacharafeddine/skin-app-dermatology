@@ -21,6 +21,7 @@ jobs:
 
     - name: Build with Maven and Jib
       run: |
+        chmod +x mvnw
         ./mvnw -Pprod package verify jib:dockerBuild -DskipTests=true
 
     - name: Set up Docker Buildx

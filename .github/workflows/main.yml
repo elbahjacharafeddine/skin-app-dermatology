@@ -26,5 +26,5 @@ jobs:
       run: |
         docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
         chmod +x mvnw
-        ./mvnw -Pprod package verify jib:dockerBuild -DskipTests=true
+        ./mvnw -Pprod package verify jib:dockerBuild -DskipTests=true -Djib.to.image=elbahjacharafeddine/repoworkflow:latest
         docker push elbahjacharafeddine/repoworkflow:latest

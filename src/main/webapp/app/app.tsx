@@ -19,7 +19,7 @@ import AppRoutes from 'app/routes';
 import SidebarApp from 'app/components/SidebarApp';
 
 const baseHref = document.querySelector('base').getAttribute('href').replace(/\/$/, '');
-
+//
 export const App = () => {
   const dispatch = useAppDispatch();
 
